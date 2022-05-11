@@ -4,7 +4,7 @@ var dbm;
 var type;
 var seed;
 // seeding
-const bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 const { Pool } = require('pg');
 const pool = new Pool();

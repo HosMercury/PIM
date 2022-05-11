@@ -3,36 +3,50 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const morgan = require('morgan');
-app.use(morgan('tiny'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(morgan('tiny'));
 
-// cookie-sessions
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-const sessions = require('express-session');
-var FileStore = require('session-file-store')(sessions);
-var fileStoreOptions = {};
-const oneDay = 1000 * 60 * 60 * 24;
-
+const session = require('express-session');
+var fileStore = require('session-file-store')(session);
 app.use(
-  sessions({
-    store: new FileStore(fileStoreOptions),
+  session({
+    store: new fileStore(),
     secret: process.env.KEY,
     saveUninitialized: true,
-    cookie: { maxAge: oneDay },
-    resave: false
+    resave: false,
+    cookie: {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'development' ? false : true
+    }
   })
 );
+
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
 
 // view-engine
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.set('view engine', 'ejs');
 
-app.use('/', require('./routes'));
+const { auth, trim } = require('./middlewares');
+app.use(auth);
+app.use(trim);
 
+app.use('/', require('./routes/auth'));
+const flash = require('connect-flash');
+app.use(flash());
+app.use(function (req, res, next) {
+  res.locals.message = req.flash('msg'); // success msg
+  res.locals.errs = req.flash('errs'); // validation errors
+  res.locals.data = req.flash('data'); // form data
+  next();
+});
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });
