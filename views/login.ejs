@@ -1,0 +1,38 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/fav/favicon.ico" />
+    <title>P I M - N E X | Login</title>
+  </head>
+  <body>
+    <form action="/login" method="post">
+      <div class="container">
+        <label for="username"><b>Username</b></label>
+        <input
+          type="text"
+          placeholder="Enter Username"
+          name="username"
+          required
+        />
+
+        <label for="password"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="password"
+          required
+        />
+        <button type="submit">Login</button>
+
+        <? if(typeof errs != "undefined" ) {?>
+        <h1>errs h1</h1>
+        <? for( let i = 0; i < errs.length; i++ ) { ?>
+        <?= errs[i].username ?>
+        <? } ?>
+        <? } ?>
+      </div>
+    </form>
+  </body>
+</html>
