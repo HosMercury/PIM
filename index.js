@@ -2,14 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = 3000;
+const path = require('path');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-const ejs = require('ejs');
-ejs.delimiter = '?';
-app.set('view engine', 'ejs');
 
 // const cookieParser = require('cookie-parser');
 // app.use(cookieParser());
@@ -23,35 +20,39 @@ app.use(
   session({
     store: new pgSession({
       pool: require('./config/db'),
-      tableName: 'session'
+      tableName: 'sessions'
     }),
-    name: 'SSid',
+    name: 'sid',
     secret: process.env.KEY,
     saveUninitialized: false,
-    resave: false
-    // cookie: {
-    //   path: '/',
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'development' ? false : true
-    // }
+    resave: false,
+    cookie: {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'development' ? false : true
+    }
   })
 );
 
 // // view-engine
-app.use(express.static(__dirname + '/public'));
-// app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
+const { engine } = require('express-handlebars');
+app.engine(
+  '.hbs',
+  engine({ extname: '.hbs', layoutsDir: path.join(__dirname, 'views/layouts') })
+);
+app.set('view engine', '.hbs');
+app.set('views', './views');
 
-// const flash = require('express-flash');
-// app.use(flash());
+app.use(express.static('public'));
 
 const { auth, trim, flash } = require('./middlewares');
+app.use(auth);
 app.use(trim);
 app.use(flash);
-app.use(auth);
 
 // Routes
-app.get('/', (req, res) => res.render('index'));
-app.use('/', require('./routes/auth'));
+app.use('/', require('./routes/attributes_router'));
+app.use('/', require('./routes/auth_router'));
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);

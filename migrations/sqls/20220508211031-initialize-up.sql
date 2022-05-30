@@ -1,27 +1,39 @@
 -- Table: public.users
-
 CREATE TABLE IF NOT EXISTS users
 (
-    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1000 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    username character varying(50) COLLATE pg_catalog."default" NOT NULL UNIQUE,
-    password character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    created_at timestamp with time zone NOT NULL DEFAULT now(),
-    CONSTRAINT users_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
+  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1000  ),
+  name character varying(50) NOT NULL,
+  username character varying(50) NOT NULL UNIQUE,
+  password character varying(100) NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now()
+);
 
 -- session
-
-CREATE TABLE session (
+CREATE TABLE sessions (
   "sid" varchar NOT NULL COLLATE "default",
   "sess" json NOT NULL,
   "expire" timestamp(6) NOT NULL
 )
 WITH (OIDS=FALSE);
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+CREATE INDEX "IDX_sessions_expire" ON "sessions" ("expire");
 
-ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+-- form control
+CREATE TABLE IF NOT EXISTS locals
+(
+  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY ,
+  name character varying(50) NOT NULL,
+  abbreviation character varying(10) NOT NULL,
+  direction character varying(5) NOT NULL DEFAULT 'left' check(direction = 'left' OR direction = 'right' ),
+  created_at timestamp with time zone NOT NULL DEFAULT now()
+);
 
-CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+-- form control
+CREATE TABLE IF NOT EXISTS attributes
+(
+  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1000 ),
+  name character varying(50) NOT NULL,
+  required BOOLEAN NOT NULL DEFAULT FALSE,
+  validation character varying(50),
+  created_at timestamp with time zone NOT NULL DEFAULT now()
+);
