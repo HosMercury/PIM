@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 var bcrypt = require('bcryptjs');
-const pool = require('../config/db');
-const { isAlphanumeric } = require('validator');
+const pool = require('../config/db_pool');
+// const { isAlphanumeric } = require('validator');
 const { isEmpty } = require('lodash');
 
 function validateCredentials(username, password) {
@@ -12,8 +12,8 @@ function validateCredentials(username, password) {
 
   if (isEmpty(password)) errs.push({ password: 'password is required' });
 
-  if (!isAlphanumeric(username))
-    errs.push({ username: 'Username:  Only letters and numbers are allowed' });
+  // if (!isAlphanumeric(username))
+  //   errs.push({ username: 'Username:  Only letters and numbers are allowed' });
 
   // if (!isAlphanumeric(password))
   //   errs.push({ password: 'Password: Only letters and numbers are allowed' });
@@ -35,17 +35,20 @@ function validateCredentials(username, password) {
 
 async function authenticateUser(username, password) {
   try {
-    const {
-      rows: [user]
-    } = await pool.query(`SELECT * FROM "users" WHERE username = $1 LIMIT 1`, [
-      username
-    ]);
+    const results = await pool.query(
+      `SELECT * FROM users WHERE username = ? LIMIT 1`,
+      [username]
+    );
+
+    const user = results[0];
+    console.log(user);
 
     if (!user) return null;
 
     const validPassword = await bcrypt.compare(password, user.password);
     return validPassword ? user : null;
   } catch (e) {
+    console.log(e);
     return null;
   }
 }
@@ -61,11 +64,10 @@ router.post('/login', async (req, res) => {
   const errs = validateCredentials(username, password, remember);
 
   if (errs.length === 0) {
-    const user = await authenticateUser(username, password);
+    const user = await authenticateUser(username, password); // Returns user or null
 
     if (user != null) {
       req.session.user = user;
-
       if (remember === 'yes')
         req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
 

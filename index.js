@@ -15,12 +15,12 @@ app.use(bodyParser.json());
 // if (process.env.NODE_ENV !== 'production') app.use(morgan('tiny'));
 
 const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
+const MariaDBStore = require('express-session-mariadb-store');
+
 app.use(
   session({
-    store: new pgSession({
-      pool: require('./config/db'),
-      tableName: 'sessions'
+    store: new MariaDBStore({
+      pool: require('./config/db_pool')
     }),
     name: 'sid',
     secret: process.env.KEY,
@@ -43,7 +43,7 @@ app.engine(
 app.set('view engine', '.hbs');
 app.set('views', './views');
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const { auth, trim, flash } = require('./middlewares');
 app.use(auth);
@@ -53,6 +53,8 @@ app.use(flash);
 // Routes
 app.use('/', require('./routes/attributes_router'));
 app.use('/', require('./routes/auth_router'));
+
+require('./config/db_pool');
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);

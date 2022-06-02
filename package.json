@@ -1,18 +1,19 @@
 {
-  "name": "pimx",
+  "name": "pim",
   "version": "1.0.0",
   "description": "PIM",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon .",
-    "tw": "postcss public/css/tailwind.css -o public/css/style.css --watch"
+    "tw": "postcss public/css/tailwind.css -o public/css/style.css --watch",
+    "db": "npx db-migrate up"
   },
   "keywords": [],
   "author": "Hossam Maher",
   "license": "copyrighted to awfarlak.com and nex-gasming Egypt",
   "devDependencies": {
     "autoprefixer": "^10.4.7",
-    "db-migrate": "^0.11.13",
+    "cross-env": "^7.0.3",
     "db-migrate-pg": "^1.2.2",
     "nodemon": "^2.0.16",
     "postcss": "^8.4.14",
@@ -22,18 +23,20 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
-    "connect-pg-simple": "^7.0.0",
     "cookie-parser": "^1.4.6",
+    "db-migrate": "^0.11.13",
+    "db-migrate-mysql": "^2.2.0",
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.2",
+    "express-session-mariadb-store": "^0.1.4",
     "install": "^0.13.0",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
+    "mariadb": "^3.0.0",
     "morgan": "^1.10.0",
     "npm": "^8.9.0",
-    "pg": "^8.7.3",
     "validator": "^13.7.0"
   }
 }

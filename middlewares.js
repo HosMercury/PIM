@@ -3,7 +3,7 @@ module.exports = {
     if (req.session.user) {
       // LoggedIn
       if (req.url === '/login') return res.redirect('/');
-      // if (req.method.toUpperCase() === 'POST' && req.url === '/logout' ) return next();
+
       return next();
     } else {
       // Not LoggedIn -- only can get::Login and post::login ( ONLY 2 routes availabale)
@@ -14,6 +14,7 @@ module.exports = {
 
       if (req.method.toUpperCase() === 'POST' && req.url === '/login')
         return next();
+
       return res.status(401).send('Unauthorized request');
     }
   },
