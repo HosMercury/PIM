@@ -1,32 +1,39 @@
-create table users
-(
-  id int primary key not null auto_increment,
-  firstname varchar(50) not null,
-  lastname varchar(50) not null,
-  username varchar(50) not null unique,
-  password varchar(100) not null,
-  created_at timestamp default current_timestamp
+create table users (
+	id int primary key not null auto_increment,
+	firstname varchar(50) not null,
+	lastname varchar(50) not null,
+	username varchar(50) not null unique,
+	password varchar(100) not null,
+	created_at datetime default now()
 );
 
-CREATE TABLE session(
-  sid                     VARCHAR(100) PRIMARY KEY NOT NULL,   
-  session                 VARCHAR(2048) DEFAULT '{}',   
-  lastSeen                DATETIME DEFAULT NOW() 
+create table session (
+	sid varchar(100) primary key not null,
+	session varchar(2048) default '{}',
+	lastSeen datetime default now()
 );
 
-create table locals
-(
-  id int primary key not null auto_increment,
-  name varchar(50) not null,
-  abbreviation varchar(10) not null,
-  direction enum('left','right') default 'left',
-  created_at timestamp default current_timestamp
+create table locals (
+	id int primary key not null auto_increment,
+	language varchar(50) not null,
+	abbreviation varchar(10) not null,
+	direction enum ('left','right') default 'left',
+	created_at datetime default now()
 );
 
-CREATE TABLE attributes (
-	id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-	name varchar(50) NOT NULL,
-	required boolean NOT NULL DEFAULT FALSE,
-	validation varchar(50),
-	created_at timestamp DEFAULT CURRENT_TIMESTAMP
+create table attributes (
+	id int primary key not null auto_increment,
+	type varchar(50) not null,
+	required boolean not null default false,
+	min varchar(50),
+  max varchar(50),
+  unit varchar(50),
+	created_at datetime default now()
+);
+
+create table attr_options (
+	id int primary key not null auto_increment,
+  attribute_id int not null references attributes(id) on delete cascade,
+	value varchar(50) not null,
+	created_at datetime default now()
 );

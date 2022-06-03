@@ -35,8 +35,11 @@ module.exports = {
 
   flash: (req, res, next) => {
     res.locals.errs = req.session.errs;
-    res.locals.old = req.session.data;
+    res.locals.old = req.session.old;
     res.locals.msg = req.session.msg;
+    res.locals.user = req.session.user;
+
+    console.log(res.locals);
 
     delete req.session.errs;
     delete req.session.data;

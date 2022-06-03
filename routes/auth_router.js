@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 var bcrypt = require('bcryptjs');
 const pool = require('../config/db_pool');
-// const { isAlphanumeric } = require('validator');
+const { isAlphanumeric } = require('validator');
 const { isEmpty } = require('lodash');
 
 function validateCredentials(username, password) {
@@ -10,25 +10,25 @@ function validateCredentials(username, password) {
 
   if (isEmpty(username)) errs.push({ username: 'Username is required' });
 
-  if (isEmpty(password)) errs.push({ password: 'password is required' });
+  if (isEmpty(password)) errs.push({ password: 'Password is required' });
 
-  // if (!isAlphanumeric(username))
-  //   errs.push({ username: 'Username:  Only letters and numbers are allowed' });
+  if (!isAlphanumeric(username))
+    errs.push({ username: 'Username:  Only letters and numbers are allowed' });
 
-  // if (!isAlphanumeric(password))
-  //   errs.push({ password: 'Password: Only letters and numbers are allowed' });
+  if (!isAlphanumeric(password))
+    errs.push({ password: 'Password: Only letters and numbers are allowed' });
 
   if (username.length < 5)
-    errs.push({ username: 'Username: must be at least 5 letters' });
+    errs.push({ username: 'Username must be at least 5 letters' });
 
   if (password.length < 5)
-    errs.push({ password: 'Password: must be at least 5 letters' });
+    errs.push({ password: 'Password must be at least 5 letters' });
 
   if (username.length > 50)
-    errs.push({ username: 'Username: maximum 50 letters' });
+    errs.push({ username: 'Username maximum 50 letters' });
 
   if (password.length > 100)
-    errs.push({ username: 'Password: maximum 100 letters' });
+    errs.push({ username: 'Password maximum 100 letters' });
 
   return errs;
 }
@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
 
     if (user != null) {
       req.session.user = user;
-      if (remember === 'yes')
+      if (remember === 'true')
         req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
 
       return res.redirect('/');
@@ -77,7 +77,7 @@ router.post('/login', async (req, res) => {
   }
 
   req.session.errs = errs;
-  req.session.old = [username];
+  req.session.old = { username, remember };
 
   return res.redirect('back');
 });

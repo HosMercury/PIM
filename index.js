@@ -51,7 +51,7 @@ app.use(trim);
 app.use(flash);
 
 // Routes
-app.use('/', require('./routes/attributes_router'));
+app.use('/', require('./routes/attrs_router'));
 app.use('/', require('./routes/auth_router'));
 
 require('./config/db_pool');

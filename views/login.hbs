@@ -8,44 +8,85 @@
     <title>NEX PIM | Login</title>
   </head>
   <body class='bg-nex'>
-    <div class="relative flex flex-col justify-center min-h-screen overflow-hidden">
-      <div class="w-5/6 m-auto p-6 bg-white border-t-4 border- nex rounded-xl shadow-md border-top md:w-3/5 lg:w-1/3">
-        <div class="flex items-center justify-center relative bottom-16 mb-0 p-0">
-            <img class="object-contain rounded-xl mb-0 border-solid border-2 border-white" src="/img/nex.png">
+    <div
+      class='relative flex flex-col justify-center min-h-screen overflow-hidden'
+    >
+      <div
+        class='w-5/6 m-auto p-6 bg-white border-t-4 border- nex rounded-xl shadow-md border-top md:w-3/5 lg:w-1/3'
+      >
+        <div
+          class='flex items-center justify-center relative bottom-16 mb-0 p-0'
+        >
+          <img
+            class='object-contain rounded-xl mb-0 border-solid border-2 border-white'
+            src='/img/nex.png'
+          />
         </div>
-        <div class="text-center p-0 mb-2">
-            {{#if errs}}
-              {{#each errs}}
-                <p class="text-red-500 ">{{ this.username }}</p>
-                <p class="text-red-500 ">{{ this.password }}</p>
-                <p class="text-red-500 ">{{ this.general }}</p>
-              {{/each}}
-            {{/if}}
-          </div>
-        <form class="mt-0" action="/login" method="post">
+        <div class='text-center p-0 mb-2'>
+          {{#if errs}}
+            <div role='alert' class='my-8 text-left'>
+              <div class='bg-red-500 text-white font-bold rounded-t px-4 py-2'>
+                Errors
+              </div>
+              <div
+                class='border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700'
+              >
+                {{#each errs}}
+                  <p class='text-red-500'>{{this.username}}</p>
+                  <p class='text-red-500'>{{this.password}}</p>
+                  <p class='text-red-500'>{{this.general}}</p>
+                {{/each}}
+              </div>
+            </div>
+          {{/if}}
+        </div>
+        <form class='mt-0' action='/login' method='post'>
           <div>
-            <label for="username" class="block text-sm text-gray-800">Username</label>
-            <input type="text" name="username" value="{{locals.data.username}}"
-              class="block w-full px-4 py-2 mt-2 text-nex bg-white border rounded-md focus:border-nex focus:ring-nex focus:outline-none focus:ring focus:ring-opacity-40">
+            <label
+              for='username'
+              class='block text-sm text-gray-800'
+            >Username</label>
+            <input
+              type='text'
+              name='username'
+              value='{{old.username}}'
+              class='block w-full px-4 py-2 mt-2 text-nex bg-white border rounded-md focus:border-nex focus:ring-nex focus:outline-none focus:ring focus:ring-opacity-40'
+            />
           </div>
-          <div class="mt-4">
+          <div class='mt-4'>
             <div>
-              <label for="password" class="block text-sm text-gray-800">Password</label>
-              <input type="password" name="password"
-                class="block w-full px-4 py-2 mt-2 text-nex bg-white border rounded-md focus:border-nex focus:ring-nex focus:outline-none focus:ring focus:ring-opacity-40">
+              <label
+                for='password'
+                class='block text-sm text-gray-800'
+              >Password</label>
+              <input
+                type='password'
+                name='password'
+                class='block w-full px-4 py-2 mt-2 text-nex bg-white border rounded-md focus:border-nex focus:ring-nex focus:outline-none focus:ring focus:ring-opacity-40'
+              />
 
             </div>
-            <div class="mt-4">
-                <input type="checkbox" checked="checked" name="remember" value="yes" class="w-6 h-6
-                rounded border-nex focus:nex focus:ring-2  ">
-                <label for="remember" class=" text-sm text-gray-800 relative -top-2 px-2"> Remember me</label> 
+            <div class='mt-4'>
+              <input
+                type='checkbox'
+                checked='checked'
+                name='remember'
+                value='true'
+                class='w-6 h-6 rounded border-nex focus:nex focus:ring-2'
+              />
+              <label
+                for='remember'
+                class='text-sm text-gray-800 relative -top-2 px-2'
+              > Remember me</label>
             </div>
-            <div class="mt-6">
+            <div class='mt-6'>
               <button
-                class="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-nex rounded-md hover:opacity-90 focus:outline-none focus:opacity-90">
+                class='w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-nex rounded-md hover:opacity-90 focus:outline-none focus:opacity-90'
+              >
                 Login
               </button>
             </div>
+          </div>
         </form>
       </div>
     </div>

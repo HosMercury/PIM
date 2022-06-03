@@ -26,12 +26,12 @@ exports.up = async function (db) {
   pool.query(user, values);
 
   const en_lang =
-    'INSERT INTO locals(name, abbreviation, direction) VALUES(?, ?, ?)';
+    'INSERT INTO locals(language, abbreviation, direction) VALUES(?, ?, ?)';
   const values2 = ['English', 'en', 'left'];
   pool.query(en_lang, values2);
 
   const ar_lang =
-    'INSERT INTO locals(name, abbreviation, direction) VALUES(?, ?, ?)';
+    'INSERT INTO locals(language, abbreviation, direction) VALUES(?, ?, ?)';
   const values3 = ['Arabic', 'ar', 'right'];
   pool.query(ar_lang, values3);
 
