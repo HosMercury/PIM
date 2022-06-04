@@ -1,0 +1,251 @@
+<div
+  class='nex-modal fixed z-10 overflow-auto top-20 left-40 w-5/6 border-2 border-nex bg-white m-auto p-4 rounded drop-shadow-2xl'
+>
+  <div>
+    <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
+    <button class='absolute right-8 top-8 close-nex-modal'>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        class='h-8 w-8'
+        fill='none'
+        viewBox='0 0 24 24'
+        stroke='currentColor'
+        stroke-width='2'
+      >
+        <path
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          d='M6 18L18 6M6 6l12 12'
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <section class='my-4 mx-2'>
+    {{! Text input }}
+    <div class='mx-auto'>
+      <input type='hidden' name='type' value='' />
+
+      <h3 class='border p-1 inline-block rounded-md relative inset-x-2/4'>Choose
+        type</h3>
+      {{! buttons }}
+      <div
+        class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center justify-items-center border rounded border-gray-400 p-3 my-4 mx-auto'
+      >
+        <button
+          class='w-28 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
+          onclick='chooseInputType("text")'
+        >Text input
+        </button>
+        <button
+          class='w-28 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button'
+          onclick='chooseInputType("number")'
+        >Number
+        </button>
+        <button
+          class='w-28 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button'
+          onclick='chooseInputType("date")'
+        >Date
+        </button>
+        <button
+          class='w-28 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button'
+          onclick='chooseInputType("email")'
+        >Email
+        </button>
+        <button
+          class='w-32 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button'
+          onclick='chooseInputType("textarea")'
+        >Textarea
+        </button>
+        <button
+          class='w-40 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button'
+          onclick='chooseInputType("switch")'
+        >Switch ( Yes/No )
+        </button>
+        <button
+          class='w-28 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md image-button'
+          onclick='chooseInputType("image")'
+        >Image
+        </button>
+        <button
+          class='w-40 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md checks-button'
+          onclick='chooseInputType("checks")'
+        >Check boxes
+        </button>
+        <button
+          class='w-40 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md radios-button'
+          onclick='chooseInputType("radios")'
+        >Radio buttons
+        </button>
+        <button
+          class='w-40 h-16 m-2 border-2 p-2 hover:bg-gray-200 rounded-md select-button'
+          onclick='chooseInputType("select")'
+        >Multipl select
+        </button>
+
+      </div>
+    </div>
+
+    <div class='flex w-100 space-x-4 attrs'>
+      <div class='w-1/2'>
+        <h3 class='text-2xl mb-4 border-b pb-3 text-nex field-options'></h3>
+
+        <div class='my-3 mx-2' id='required_control'>
+          <input
+            type='checkbox'
+            checked='checked'
+            name='required'
+            class='w-8 h-8'
+          />
+          <label for='required' class='py-4 mx-2 relative -top-2'>Required field</label>
+        </div>
+
+        <div class='my-3 flex align-items f-control' id='default_control'>
+          <label
+            id='default_label'
+            for='default'
+            class='mx-2 w-1/4 py-2'
+          >Default value
+          </label>
+          <input
+            id='default'
+            type='text'
+            name='default'
+            class='h-12 px-2 border border-gray-400 rounded w-80'
+          />
+        </div>
+
+        <div class='my-3 flex align-items f-control' id='default_area_control'>
+          <label
+            id='default_area_label'
+            for='default_area'
+            class='mx-2 w-1/4 py-2'
+          >Default text
+          </label>
+          <textarea
+            id='default_area'
+            type='text'
+            rows='5'
+            name='default_area'
+            class='px-2 border border-gray-400 rounded w-80'
+          ></textarea>
+        </div>
+
+        <div class='my-3 flex align-items f-control' id='minimum_control'>
+          <label
+            id='minimum_label'
+            for='minimum'
+            class='mx-2 w-1/4 py-2'
+          >Minimum value</label>
+          <input
+            id='minimum'
+            type='number'
+            name='minimum'
+            class='h-12 px-2 border border-gray-400 rounded w-80'
+          />
+        </div>
+
+        <div class='my-3 flex align-items f-control' id='maximum_control'>
+          <label
+            id='maximum_label'
+            for='maximum'
+            class='mx-2 w-1/4 py-2'
+          >Maximum value</label>
+          <input
+            type='number'
+            name='maximum'
+            id='maximum'
+            class='h-12 px-2 border border-gray-400 rounded w-80'
+          />
+        </div>
+
+        <div class='my-3 flex align-items f-control' id='unit_control'>
+          <label id='unit_label' for='unit' class='mx-2 w-1/4 py-2'>Suffix
+            (units)</label>
+          <input
+            id='unit'
+            type='text'
+            name='unit'
+            class='h-12 px-2 border border-gray-400 rounded w-80'
+          />
+        </div>
+
+        <div class='my-3 flex align-items f-control' id='options_control'>
+          <label
+            id='options_label'
+            for='options'
+            class='mx-2 w-1/4 py-2'
+          >Multiple options
+            <span class='text-sm text-gray-500 block my-2'>Each line corrosponds
+              to an option</span></label>
+
+          <textarea
+            name='options'
+            id='options'
+            rows='3'
+            class='px-2 border border-gray-400 rounded w-80'
+          ></textarea>
+        </div>
+      </div>
+
+      <div class='w-1/2 border-l pl-4'>
+        <h3 class='text-2xl mb-4 border-b pb-3 text-nex'>Local labels</h3>
+
+        {{#each locals}}
+          <div class='my-3 flex align-middle'>
+            <label for='en_label' class='mx-2 w-1/4 py-2'>{{this.language}}
+              label
+              <span
+                class='text-sm text-gray-500 inline-block'
+              >({{this.abbreviation}})</span></label>
+            <input
+              lang='{{this.abbreviation}}'
+              dir='{{this.direction}}'
+              type='text'
+              name='en_label'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+            />
+          </div>
+        {{/each}}
+
+        <div class='my-3 flex align-items'>
+          <label
+            id='groups_label'
+            for='ar_label'
+            class='mx-2 w-1/4 py-2'
+          >Attribute group(s)
+            <span class='text-sm text-gray-500 block my-2'>Shift key for
+              multiple select</span>
+          </label>
+
+          <select
+            multiple
+            id='options'
+            name='group'
+            size='6'
+            class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2'
+          >
+            <option value='' class='my-1'>Group 1</option>
+            <option value='' class='my-1'>Group 2</option>
+            <option value='' class='my-1'>Group 3</option>
+            <option value='' class='my-1'>Group 4</option>
+            <option value='' class='my-1'>Group 5</option>
+            <option value='' class='my-1'>Group 6</option>
+            <option value='' class='my-1'>Group 7</option>
+            <option value='' class='my-1'>Group 8</option>
+            <option value='' class='my-1'>Group 9</option>
+            <option value='' class='my-1'>Group 10</option>
+          </select>
+
+        </div>
+
+        <div class='flex align-middle justify-center h-100 w-100 mt-4'>
+          <button
+            class='bg-nex px-3 py-2 text-white rounded-md w-48 h-12 hover:opacity-80'
+          >Save Attribute</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>

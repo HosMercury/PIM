@@ -16,8 +16,8 @@ create table session (
 create table locals (
 	id int primary key not null auto_increment,
 	language varchar(50) not null,
-	abbreviation varchar(10) not null,
-	direction enum ('left','right') default 'left',
+	abbreviation varchar(10) not null unique,
+	direction enum ('ltr','rtl') default 'ltr',
 	created_at datetime default now()
 );
 

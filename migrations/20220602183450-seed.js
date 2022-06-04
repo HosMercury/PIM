@@ -25,14 +25,13 @@ exports.up = async function (db) {
   const values = ['Hossam', 'Maher', 'admin', password];
   pool.query(user, values);
 
-  const en_lang =
-    'INSERT INTO locals(language, abbreviation, direction) VALUES(?, ?, ?)';
-  const values2 = ['English', 'en', 'left'];
+  const en_lang = 'INSERT INTO locals(language, abbreviation) VALUES(?, ?)';
+  const values2 = ['English', 'en'];
   pool.query(en_lang, values2);
 
   const ar_lang =
     'INSERT INTO locals(language, abbreviation, direction) VALUES(?, ?, ?)';
-  const values3 = ['Arabic', 'ar', 'right'];
+  const values3 = ['Arabic', 'ar', 'rtl'];
   pool.query(ar_lang, values3);
 
   return;
