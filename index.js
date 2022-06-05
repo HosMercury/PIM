@@ -35,13 +35,18 @@ app.use(
 );
 
 // // view-engine
-const { engine } = require('express-handlebars');
-app.engine(
-  '.hbs',
-  engine({ extname: '.hbs', layoutsDir: path.join(__dirname, 'views/layouts') })
-);
-app.set('view engine', '.hbs');
-app.set('views', './views');
+// const { engine } = require('express-handlebars');
+// app.engine(
+//   '.hbs',
+//   engine({ extname: '.hbs', layoutsDir: path.join(__dirname, 'views/layouts') })
+// );
+// app.set('view engine', '.hbs');
+// app.set('views', './views');
+
+const ejs = require('ejs');
+ejs.delimiter = '?';
+ejs.openDelimiter = '[';
+ejs.closeDelimiter = ']';
 
 app.use(express.static(path.join(__dirname, 'public')));
 
