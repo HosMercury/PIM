@@ -67,9 +67,10 @@ function chooseInputType(buttonType) {
   }
 
   if (
-    buttonType === 'checks' ||
-    buttonType === 'radios' ||
-    buttonType === 'select'
+    buttonType === 'check-boxes' ||
+    buttonType === 'radio-buttons' ||
+    buttonType === 'single-select' ||
+    buttonType === 'multiple-select'
   ) {
     $(
       '#default_control,#minimum_control , #maximum_control, #options_control'
