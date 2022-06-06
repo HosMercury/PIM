@@ -51,8 +51,9 @@ function chooseInputType(buttonType) {
 
   if (buttonType === 'date') {
     $('#unit_control').addClass('hidden');
-    $('#minimum').prop('type', buttonType); // label text
-    $('#maximum').prop('type', buttonType);
+    $('#minimum').prop('type', 'datetime-local'); // label text
+    $('#maximum').prop('type', 'datetime-local');
+    $('#default').prop('type', 'datetime-local');
   }
 
   if (buttonType === 'switch') {

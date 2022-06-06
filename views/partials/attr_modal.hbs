@@ -1,9 +1,9 @@
 <div
-  class='nex-modal fixed z-10 overflow-auto top-20 left-40 w-5/6 border-2 border-nex bg-white m-auto p-4 rounded drop-shadow-2xl'
+  class='nex-modal w-100 max-h-80 fixed z-10 overflow-scroll top-20 left-40 w-5/6 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
 >
   <div>
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
-    <button class='absolute right-8 top-8 close-nex-modal'>
+    <button class='absolute right-4 top-2 close-nex-modal'>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         class='h-8 w-8'
@@ -21,7 +21,7 @@
     </button>
   </div>
 
-  <section class='my-4 mx-2'>
+  <section class='m-2'>
     {{! Text input }}
     <div class='mx-auto'>
       <input type='hidden' name='type' value='' />
@@ -153,8 +153,8 @@
           Switch (Y/N)
         </button>
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md image-button'
-          onclick='chooseInputType("image")'
+          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
+          onclick='chooseInputType("images")'
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -170,7 +170,7 @@
               d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
             ></path>
           </svg>
-          <span class='mx-auto'>Image</span>
+          <span class='mx-auto'>Images</span>
         </button>
         <button
           class='w-40 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
@@ -260,8 +260,9 @@
     <div class='flex w-100 space-x-4 attrs'>
       <div class='w-1/2'>
 
-        <h3 class='text-2xl mb-4 border-b border-nex pb-3 text-nex'>Attribute
-          properties</h3>
+        <h3
+          class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
+        >Properties</h3>
 
         <div class='my-3 flex align-items' id='name_control'>
           <label
@@ -274,6 +275,21 @@
             id='attr_name'
             type='text'
             name='attr_name'
+            class='h-12 px-2 border border-gray-400 rounded w-80'
+          />
+        </div>
+
+        <div class='my-3 flex align-items' id='key_control'>
+          <label
+            id='key_label'
+            for='attr_key'
+            class='mx-2 w-1/4 py-2'
+          >Woocomerce key<span class=''>*</span>
+          </label>
+          <input
+            id='attr_key'
+            type='text'
+            name='attr_key'
             class='h-12 px-2 border border-gray-400 rounded w-80'
           />
         </div>
@@ -294,17 +310,17 @@
         </div>
 
         <h3
-          class='text-2xl mb-4 border-b border-nex pb-3 text-nex field-options'
+          class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex field-options'
         >Field options</h3>
 
-        <div class='my-3 mx-2' id='required_control'>
+        <div class='mx-2' id='required_control'>
           <input
             type='checkbox'
             checked='checked'
             name='required'
-            class='w-8 h-8'
+            class='w-6 h-6'
           />
-          <label for='required' class='py-4 mx-2 relative -top-2'>Required field</label>
+          <label for='required' class='mx-2 relative bottom-1'>Required field</label>
         </div>
 
         <div class='my-3 flex align-items f-control' id='default_control'>
@@ -395,7 +411,8 @@
       </div>
 
       <div class='w-1/2 border-l pl-4'>
-        <h3 class='text-2xl mb-4 border-b border-nex pb-3 text-nex'>Local labels</h3>
+        <h3 class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'>Local
+          labels</h3>
 
         {{#each locals}}
           <div class='my-3 flex align-middle'>
@@ -413,7 +430,9 @@
             />
           </div>
         {{/each}}
-
+        <h3
+          class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
+        >Groups</h3>
         <div class='my-3 flex align-items'>
           <label
             id='groups_label'
