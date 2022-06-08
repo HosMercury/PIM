@@ -1,6 +1,7 @@
 function chooseInputType(buttonType) {
   console.log(buttonType);
   $('.attrs').slideDown(500);
+  $('.button-type').prop('value', buttonType);
 
   $('.f-control').addClass('hidden');
 
@@ -14,7 +15,8 @@ function chooseInputType(buttonType) {
   if (
     buttonType === 'text' ||
     buttonType === 'number' ||
-    buttonType === 'date'
+    buttonType === 'date' ||
+    buttonType === 'datetime'
   ) {
     $('#default').prop('type', buttonType); // input type
     // labels
@@ -49,15 +51,18 @@ function chooseInputType(buttonType) {
     $('#minimum_label').text('Minimum length');
   }
 
-  if (buttonType === 'date') {
+  if (buttonType === 'date' || buttonType === 'datetime') {
     $('#unit_control').addClass('hidden');
-    $('#minimum').prop('type', 'datetime-local'); // label text
-    $('#maximum').prop('type', 'datetime-local');
-    $('#default').prop('type', 'datetime-local');
+    $('#default_control').addClass('hidden');
+    $('#minimum_control').addClass('hidden');
+    $('#maximum_control').addClass('hidden');
+    // $('#minimum').prop('type', buttonType); // label text
+    // $('#maximum').prop('type', buttonType);
+    // $('#default').prop('type', buttonType);
   }
 
   if (buttonType === 'switch') {
-    $('#default_label').text('Switch text ( Yes/No )'); // label text
+    $('#default_label').text('Switch text (Yes/No)'); // label text
     $('#default_control').removeClass('hidden');
   }
 

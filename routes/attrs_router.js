@@ -25,4 +25,8 @@ router.get('/attributes', async (req, res) => {
   }
 });
 
+router.post('/attributes', async (req, res) => {
+  res.json(req.body);
+});
+
 module.exports = router;

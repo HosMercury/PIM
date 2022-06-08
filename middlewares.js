@@ -24,7 +24,7 @@ module.exports = {
     if (req.method === 'POST') {
       for (const key in body) {
         if (typeof body[key] === 'object' || Array.isArray(body[key])) {
-          trim(body[key]);
+          body[key].toString().trim();
         } else if (typeof body[key] === 'string') {
           body[key] = body[key].trim();
         }
@@ -39,7 +39,7 @@ module.exports = {
     res.locals.msg = req.session.msg;
     res.locals.user = req.session.user;
 
-    console.log(res.locals);
+    // console.log(res.locals);
 
     delete req.session.errs;
     delete req.session.data;

@@ -1,5 +1,6 @@
 <div
-  class='nex-modal w-100 max-h-80 fixed z-10 overflow-scroll top-20 left-40 w-5/6 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
+  {{! style='max-height:800px;' }}
+  class='nex-modal w-5/6 h-[500px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
 >
   <div>
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
@@ -24,7 +25,6 @@
   <section class='m-2'>
     {{! Text input }}
     <div class='mx-auto'>
-      <input type='hidden' name='type' value='' />
 
       {{! <h3 class='border p-1 inline-block rounded-md relative inset-x-2/4'>Choose
         type</h3> }}
@@ -91,6 +91,26 @@
             ></path>
           </svg>
           <span class='mx-auto'>Date</span>
+        </button>
+        <button
+          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button'
+          onclick='chooseInputType("datetime")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-2'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+            ></path>
+          </svg>
+          <span class='mx-auto'>Datetime</span>
         </button>
         <button
           class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button flex align-middle justify-items-center flex-col'
@@ -257,220 +277,220 @@
       </div>
     </div>
 
-    <div class='flex w-100 space-x-4 attrs'>
-      <div class='w-1/2'>
+    <div>
+      <form
+        action='/attributes'
+        method='post'
+        class='flex w-100 space-x-4 attrs'
+      >
+        <input type='hidden' name='type' value='' class='button-type' />
+        <div class='w-1/2'>
+          <h3
+            class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
+          >Properties</h3>
 
-        <h3
-          class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
-        >Properties</h3>
-
-        <div class='my-3 flex align-items' id='name_control'>
-          <label
-            id='name_label'
-            for='attr_name'
-            class='mx-2 w-1/4 py-2'
-          >Name<span class=''>*</span>
-          </label>
-          <input
-            id='attr_name'
-            type='text'
-            name='attr_name'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <div class='my-3 flex align-items' id='key_control'>
-          <label
-            id='key_label'
-            for='attr_key'
-            class='mx-2 w-1/4 py-2'
-          >Woocomerce key<span class=''>*</span>
-          </label>
-          <input
-            id='attr_key'
-            type='text'
-            name='attr_key'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <div class='my-3 flex align-items' id='description_control'>
-          <label
-            id='description_label'
-            for='attr_description'
-            class='mx-2 w-1/4 py-2'
-          >Description
-          </label>
-          <input
-            id='attr_description'
-            type='text'
-            name='attr_description'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <h3
-          class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex field-options'
-        >Field options</h3>
-
-        <div class='mx-2' id='required_control'>
-          <input
-            type='checkbox'
-            checked='checked'
-            name='required'
-            class='w-6 h-6'
-          />
-          <label for='required' class='mx-2 relative bottom-1'>Required field</label>
-        </div>
-
-        <div class='my-3 flex align-items f-control' id='default_control'>
-          <label
-            id='default_label'
-            for='default'
-            class='mx-2 w-1/4 py-2'
-          >Default value
-          </label>
-          <input
-            id='default'
-            type='text'
-            name='default'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <div class='my-3 flex align-items f-control' id='default_area_control'>
-          <label
-            id='default_area_label'
-            for='default_area'
-            class='mx-2 w-1/4 py-2'
-          >Default text
-          </label>
-          <textarea
-            id='default_area'
-            type='text'
-            rows='5'
-            name='default_area'
-            class='px-2 border border-gray-400 rounded w-80'
-          ></textarea>
-        </div>
-
-        <div class='my-3 flex align-items f-control' id='minimum_control'>
-          <label
-            id='minimum_label'
-            for='minimum'
-            class='mx-2 w-1/4 py-2'
-          >Minimum value</label>
-          <input
-            id='minimum'
-            type='number'
-            name='minimum'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <div class='my-3 flex align-items f-control' id='maximum_control'>
-          <label
-            id='maximum_label'
-            for='maximum'
-            class='mx-2 w-1/4 py-2'
-          >Maximum value</label>
-          <input
-            type='number'
-            name='maximum'
-            id='maximum'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <div class='my-3 flex align-items f-control' id='unit_control'>
-          <label id='unit_label' for='unit' class='mx-2 w-1/4 py-2'>Suffix
-            (units)</label>
-          <input
-            id='unit'
-            type='text'
-            name='unit'
-            class='h-12 px-2 border border-gray-400 rounded w-80'
-          />
-        </div>
-
-        <div class='my-3 flex align-items f-control' id='options_control'>
-          <label
-            id='options_label'
-            for='options'
-            class='mx-2 w-1/4 py-2'
-          >Multiple options
-            <span class='text-sm text-gray-500 block my-2'>Each line for option</span></label>
-
-          <textarea
-            name='options'
-            id='options'
-            rows='3'
-            class='px-2 border border-gray-400 rounded w-80'
-          ></textarea>
-        </div>
-      </div>
-
-      <div class='w-1/2 border-l pl-4'>
-        <h3 class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'>Local
-          labels</h3>
-
-        {{#each locals}}
-          <div class='my-3 flex align-middle'>
-            <label for='en_label' class='mx-2 w-1/4 py-2'>{{this.language}}
-              label
-              <span
-                class='text-sm text-gray-500 inline-block'
-              >({{this.abbreviation}})</span></label>
+          <div class='my-3 flex align-items' id='name_control'>
+            <label
+              id='name_label'
+              for='attr_name'
+              class='mx-2 w-1/4 py-2'
+            >Name<span class=''>*</span>
+            </label>
             <input
-              lang='{{this.abbreviation}}'
-              dir='{{this.direction}}'
+              id='attr_name'
               type='text'
-              name='en_label'
+              name='attr_name'
               class='h-12 px-2 border border-gray-400 rounded w-80'
             />
           </div>
-        {{/each}}
-        <h3
-          class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
-        >Groups</h3>
-        <div class='my-3 flex align-items'>
-          <label
-            id='groups_label'
-            for='options'
-            class='mx-2 w-1/4 py-2'
-          >Attribute group(s)
-            <span class='text-sm text-gray-500 block my-2'>Shift key for
-              multiple select</span>
-          </label>
 
-          <select
-            multiple
-            id='options'
-            name='options'
-            size='8'
-            class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
+          <div class='my-3 flex align-items' id='description_control'>
+            <label
+              id='description_label'
+              for='attr_description'
+              class='mx-2 w-1/4 py-2'
+            >Description
+            </label>
+            <input
+              id='attr_description'
+              type='text'
+              name='attr_description'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+            />
+          </div>
+
+          <h3
+            class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex field-options'
+          >Field options</h3>
+
+          <div class='mx-2' id='required_control'>
+            <input
+              type='checkbox'
+              checked='checked'
+              name='required'
+              class='w-6 h-6'
+            />
+            <label for='required' class='mx-2 relative bottom-1'>Required field</label>
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='default_control'>
+            <label
+              id='default_label'
+              for='default'
+              class='mx-2 w-1/4 py-2'
+            >Default value
+            </label>
+            <input
+              id='default'
+              type='text'
+              name='default'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+            />
+          </div>
+
+          <div
+            class='my-3 flex align-items f-control'
+            id='default_area_control'
           >
-            <option value='' class='my-1'>Group 1</option>
-            <option value='' class='my-1'>Group 2</option>
-            <option value='' class='my-1'>Group 3</option>
-            <option value='' class='my-1'>Group 4</option>
-            <option value='' class='my-1'>Group 5</option>
-            <option value='' class='my-1'>Group 6</option>
-            <option value='' class='my-1'>Group 7</option>
-            <option value='' class='my-1'>Group 8</option>
-            <option value='' class='my-1'>Group 9</option>
-            <option value='' class='my-1'>Group 10</option>
-          </select>
+            <label
+              id='default_area_label'
+              for='default_area'
+              class='mx-2 w-1/4 py-2'
+            >Default text
+            </label>
+            <textarea
+              id='default_area'
+              type='text'
+              rows='5'
+              name='default_area'
+              class='px-2 border border-gray-400 rounded w-80'
+            ></textarea>
+          </div>
 
+          <div class='my-3 flex align-items f-control' id='minimum_control'>
+            <label
+              id='minimum_label'
+              for='minimum'
+              class='mx-2 w-1/4 py-2'
+            >Minimum value</label>
+            <input
+              id='minimum'
+              type='number'
+              name='minimum'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+            />
+            <p class='.minimum-err'></p>
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='maximum_control'>
+            <label
+              id='maximum_label'
+              for='maximum'
+              class='mx-2 w-1/4 py-2'
+            >Maximum value</label>
+            <input
+              type='number'
+              name='maximum'
+              id='maximum'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+            />
+            <p class='.maximum-err'></p>
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='unit_control'>
+            <label id='unit_label' for='unit' class='mx-2 w-1/4 py-2'>Suffix
+              (units)</label>
+            <input
+              id='unit'
+              type='text'
+              name='unit'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+            />
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='options_control'>
+            <label
+              id='options_label'
+              for='options'
+              class='mx-2 w-1/4 py-2'
+            >Multiple options
+              <span class='text-sm text-gray-500 block my-2'>Each line for
+                option</span></label>
+
+            <textarea
+              name='options'
+              id='options'
+              rows='3'
+              class='px-2 border border-gray-400 rounded w-80'
+            ></textarea>
+          </div>
         </div>
 
-        <div class='flex align-middle justify-center h-100 w-100 mt-4'>
-          <button
-            class='bg-nex px-3 py-2 text-white rounded-md w-48 h-12 hover:opacity-80'
-          >Save Attribute</button>
-        </div>
-      </div>
+        <div class='w-1/2 border-l pl-4'>
+          <h3 class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'>Local
+            labels</h3>
 
+          {{#each locals}}
+            <div class='my-3 flex align-middle'>
+              <label
+                for='{{this.abbreviation}}_label'
+                class='mx-2 w-1/4 py-2'
+              >{{this.language}}
+                label
+                <span
+                  class='text-sm text-gray-500 inline-block'
+                >({{this.abbreviation}})</span></label>
+              <input
+                lang='{{this.abbreviation}}'
+                dir='{{this.direction}}'
+                type='text'
+                name='{{this.abbreviation}}_label'
+                class='h-12 px-2 border border-gray-400 rounded w-80'
+              />
+            </div>
+          {{/each}}
+          <h3
+            class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
+          >Groups</h3>
+          <div class='my-3 flex align-items'>
+            <label
+              id='groups_label'
+              for='options'
+              class='mx-2 w-1/4 py-2'
+            >Attribute group(s)
+              <span class='text-sm text-gray-500 block my-2'>Shift key for
+                multiple select</span>
+            </label>
+
+            <select
+              multiple
+              id='options'
+              name='options'
+              size='8'
+              class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
+            >
+              <option value='' class='my-1'>Group 1</option>
+              <option value='' class='my-1'>Group 2</option>
+              <option value='' class='my-1'>Group 3</option>
+              <option value='' class='my-1'>Group 4</option>
+              <option value='' class='my-1'>Group 5</option>
+              <option value='' class='my-1'>Group 6</option>
+              <option value='' class='my-1'>Group 7</option>
+              <option value='' class='my-1'>Group 8</option>
+              <option value='' class='my-1'>Group 9</option>
+              <option value='' class='my-1'>Group 10</option>
+            </select>
+
+          </div>
+
+          <div class='flex align-end justify-center h-100 w-100 mt-4 re'>
+            <button
+              class='bg-nex px-3 py-2 text-white rounded-md w-48 h-12 hover:opacity-80'
+            >Save Attribute</button>
+          </div>
+        </div>
+      </form>
     </div>
   </section>
+
 </div>
