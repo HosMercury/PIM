@@ -35,6 +35,10 @@ app.use(
 );
 
 const { engine } = require('express-handlebars');
+const helpers =
+  require('handlebars-helpers')();
+  // ['math', 'string']
+
 app.engine(
   '.hbs',
   engine({ extname: '.hbs', layoutsDir: path.join(__dirname, 'views/layouts') })

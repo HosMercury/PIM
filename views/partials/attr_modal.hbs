@@ -1,6 +1,6 @@
 <div
   {{! style='max-height:800px;' }}
-  class='nex-modal w-5/6 h-[500px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
+  class='nex-modal w-5/6 max-h-[800px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
 >
   <div>
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
@@ -33,7 +33,7 @@
         class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center justify-items-center border rounded border-gray-400 p-3 my-4 mx-auto'
       >
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
+          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
           onclick='chooseInputType("text")'
         >
           <svg
@@ -51,10 +51,10 @@
             ></path>
           </svg>
           <span class='mx-auto'>Text input</span>
-
         </button>
+
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button'
+          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button'
           onclick='chooseInputType("number")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -72,8 +72,9 @@
           </svg>
           <span class='mx-auto'>Number</span>
         </button>
+
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button'
+          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button'
           onclick='chooseInputType("date")'
         >
           <svg
@@ -92,8 +93,9 @@
           </svg>
           <span class='mx-auto'>Date</span>
         </button>
+
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button'
+          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button'
           onclick='chooseInputType("datetime")'
         >
           <svg
@@ -107,16 +109,16 @@
             <path
               stroke-linecap='round'
               stroke-linejoin='round'
-              d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+              d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
             ></path>
           </svg>
           <span class='mx-auto'>Datetime</span>
         </button>
+
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button flex align-middle justify-items-center flex-col'
+          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button'
           onclick='chooseInputType("email")'
-        >
-          <svg
+        ><svg
             xmlns='http://www.w3.org/2000/svg'
             class='h-10 w-10 m-auto mb-2'
             fill='none'
@@ -132,8 +134,9 @@
           </svg>
           <span class='mx-auto'>Email</span>
         </button>
+
         <button
-          class='w-32 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button'
+          class='w-32 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button'
           onclick='chooseInputType("textarea")'
         >
           <svg
@@ -153,7 +156,7 @@
           <span class='mx-auto'>Textarea</span>
         </button>
         <button
-          class='w-32 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button'
+          class='w-32 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button'
           onclick='chooseInputType("switch")'
         >
           <svg
@@ -173,7 +176,7 @@
           Switch (Y/N)
         </button>
         <button
-          class='w-28 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
+          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
           onclick='chooseInputType("images")'
         >
           <svg
@@ -193,7 +196,7 @@
           <span class='mx-auto'>Images</span>
         </button>
         <button
-          class='w-40 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
+          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
           onclick='chooseInputType("check-boxes")'
         >
           <svg
@@ -213,7 +216,7 @@
           <span class='mx-auto'>Check boxes</span>
         </button>
         <button
-          class='w-40 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button'
+          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button'
           onclick='chooseInputType("radio-buttons")'
         >
           <svg
@@ -234,7 +237,7 @@
         </button>
 
         <button
-          class='w-40 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button'
+          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button'
           onclick='chooseInputType("single-select")'
         >
           <svg
@@ -255,7 +258,7 @@
         </button>
 
         <button
-          class='w-40 h-32 m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button'
+          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button'
           onclick='chooseInputType("multiple-select")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -300,6 +303,7 @@
               id='attr_name'
               type='text'
               name='attr_name'
+              required
               class='h-12 px-2 border border-gray-400 rounded w-80'
             />
           </div>
@@ -361,9 +365,9 @@
             <textarea
               id='default_area'
               type='text'
-              rows='5'
+              rows='2'
               name='default_area'
-              class='px-2 border border-gray-400 rounded w-80'
+              class='p-2 border border-gray-400 rounded w-80'
             ></textarea>
           </div>
 
@@ -379,9 +383,8 @@
               name='minimum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
             />
-            <p class='.minimum-err'></p>
           </div>
-
+          <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
           <div class='my-3 flex align-items f-control' id='maximum_control'>
             <label
               id='maximum_label'
@@ -394,7 +397,6 @@
               id='maximum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
             />
-            <p class='.maximum-err'></p>
           </div>
 
           <div class='my-3 flex align-items f-control' id='unit_control'>
@@ -413,15 +415,15 @@
               id='options_label'
               for='options'
               class='mx-2 w-1/4 py-2'
-            >Multiple options
+            >Options
               <span class='text-sm text-gray-500 block my-2'>Each line for
                 option</span></label>
 
             <textarea
               name='options'
               id='options'
-              rows='3'
-              class='px-2 border border-gray-400 rounded w-80'
+              rows='5'
+              class='p-2 border border-gray-400 rounded w-80'
             ></textarea>
           </div>
         </div>
@@ -466,7 +468,7 @@
               multiple
               id='options'
               name='options'
-              size='8'
+              size='6'
               class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
             >
               <option value='' class='my-1'>Group 1</option>
@@ -485,7 +487,7 @@
 
           <div class='flex align-end justify-center h-100 w-100 mt-4 re'>
             <button
-              class='bg-nex px-3 py-2 text-white rounded-md w-48 h-12 hover:opacity-80'
+              class='bg-nex px-3 py-2 text-white rounded-md w-48 h-12 hover:opacity-80 attr-button'
             >Save Attribute</button>
           </div>
         </div>

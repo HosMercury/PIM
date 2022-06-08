@@ -1,4 +1,8 @@
 function chooseInputType(buttonType) {
+  if (buttonType !== 'text' || buttonType !== 'number') {
+    $('.minimum-err').text('');
+  }
+
   console.log(buttonType);
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
@@ -56,9 +60,6 @@ function chooseInputType(buttonType) {
     $('#default_control').addClass('hidden');
     $('#minimum_control').addClass('hidden');
     $('#maximum_control').addClass('hidden');
-    // $('#minimum').prop('type', buttonType); // label text
-    // $('#maximum').prop('type', buttonType);
-    // $('#default').prop('type', buttonType);
   }
 
   if (buttonType === 'switch') {
@@ -78,12 +79,47 @@ function chooseInputType(buttonType) {
     buttonType === 'single-select' ||
     buttonType === 'multiple-select'
   ) {
-    $(
-      '#default_control,#minimum_control , #maximum_control, #options_control'
-    ).removeClass('hidden');
+    $('#options_control').removeClass('hidden');
     $('#default_control').addClass('hidden');
     $('#maximum_label').text('Maximum length');
     $('#minimum_label').text('Minimum length');
+    $('#options_label').text(
+      buttonType.charAt(0).toUpperCase() + buttonType.slice(1) + ' options'
+    );
+  }
+
+  if (buttonType === 'number') {
+    if (parseInt($('#minimum').val()) > parseInt($('#maximum').val())) {
+    }
+  }
+
+  $('#minimum').blur(callBackOnBlur);
+
+  $('#maximum').blur(callBackOnBlur);
+
+  function callBackOnBlur() {
+    if (buttonType === 'number' || buttonType === 'text') {
+      if (
+        parseInt($('#minimum').val()) > parseInt($('#maximum').val()) ||
+        parseInt($('#maximum').val()) == parseInt($('#minimum').val())
+      ) {
+        $('.minimum-err').text('Minmum must be less than maximum');
+        disableSubmit();
+      } else {
+        $('.minimum-err').text('');
+        enableSubmit();
+      }
+    }
+  }
+
+  function disableSubmit() {
+    $('.attr-button').prop('disabled', true);
+    $('.attr-button').addClass('bg-gray-200');
+  }
+
+  function enableSubmit() {
+    $('.attr-button').prop('disabled', false);
+    $('.attr-button').removeClass('bg-gray-200');
   }
 }
 
