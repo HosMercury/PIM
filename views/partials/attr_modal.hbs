@@ -1,6 +1,6 @@
 <div
   {{! style='max-height:800px;' }}
-  class='nex-modal w-5/6 max-h-[800px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
+  class='nex-modal w-5/6 max-h-[750px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
 >
   <div>
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
@@ -22,7 +22,7 @@
     </button>
   </div>
 
-  <section class='m-2'>
+  <section class=''>
     {{! Text input }}
     <div class='mx-auto'>
 
@@ -30,10 +30,10 @@
         type</h3> }}
       {{! buttons }}
       <div
-        class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center justify-items-center border rounded border-gray-400 p-3 my-4 mx-auto'
+        class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center justify-items-center border rounded border-gray-400 p-3 my-2 mx-auto'
       >
         <button
-          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
+          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
           onclick='chooseInputType("text")'
         >
           <svg
@@ -50,11 +50,11 @@
               d='M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
             ></path>
           </svg>
-          <span class='mx-auto'>Text input</span>
+          <span class='mx-auto'>Text</span>
         </button>
 
         <button
-          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button'
+          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button'
           onclick='chooseInputType("number")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -74,7 +74,7 @@
         </button>
 
         <button
-          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button'
           onclick='chooseInputType("date")'
         >
           <svg
@@ -95,7 +95,7 @@
         </button>
 
         <button
-          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button'
           onclick='chooseInputType("datetime")'
         >
           <svg
@@ -116,7 +116,7 @@
         </button>
 
         <button
-          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button'
           onclick='chooseInputType("email")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -136,7 +136,7 @@
         </button>
 
         <button
-          class='w-32 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button'
+          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button'
           onclick='chooseInputType("textarea")'
         >
           <svg
@@ -156,7 +156,7 @@
           <span class='mx-auto'>Textarea</span>
         </button>
         <button
-          class='w-32 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button'
+          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button'
           onclick='chooseInputType("switch")'
         >
           <svg
@@ -176,7 +176,7 @@
           Switch (Y/N)
         </button>
         <button
-          class='w-28 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
           onclick='chooseInputType("images")'
         >
           <svg
@@ -196,7 +196,7 @@
           <span class='mx-auto'>Images</span>
         </button>
         <button
-          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
           onclick='chooseInputType("check-boxes")'
         >
           <svg
@@ -216,7 +216,7 @@
           <span class='mx-auto'>Check boxes</span>
         </button>
         <button
-          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button'
           onclick='chooseInputType("radio-buttons")'
         >
           <svg
@@ -237,7 +237,7 @@
         </button>
 
         <button
-          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button'
           onclick='chooseInputType("single-select")'
         >
           <svg
@@ -258,7 +258,7 @@
         </button>
 
         <button
-          class='w-40 h-28 m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button'
           onclick='chooseInputType("multiple-select")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -289,7 +289,7 @@
         <input type='hidden' name='type' value='' class='button-type' />
         <div class='w-1/2'>
           <h3
-            class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
+            class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
           >Properties</h3>
 
           <div class='my-3 flex align-items' id='name_control'>
@@ -324,7 +324,7 @@
           </div>
 
           <h3
-            class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex field-options'
+            class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex field-options'
           >Field options</h3>
 
           <div class='mx-2' id='required_control'>
@@ -429,7 +429,7 @@
         </div>
 
         <div class='w-1/2 border-l pl-4'>
-          <h3 class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'>Local
+          <h3 class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'>Local
             labels</h3>
 
           {{#each locals}}
@@ -441,18 +441,19 @@
                 label
                 <span
                   class='text-sm text-gray-500 inline-block'
-                >({{this.abbreviation}})</span></label>
+                >({{this.abbreviation}})</span>{{#compare this.abbreviation "==" "en"}}*{{/compare}}</label>
               <input
                 lang='{{this.abbreviation}}'
                 dir='{{this.direction}}'
                 type='text'
                 name='{{this.abbreviation}}_label'
                 class='h-12 px-2 border border-gray-400 rounded w-80'
+                {{#compare this.abbreviation "==" "en"}} required {{/compare}}
               />
             </div>
           {{/each}}
           <h3
-            class='text-2xl mb-6 p-1 border-b border-nex pb-3 text-nex'
+            class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
           >Groups</h3>
           <div class='my-3 flex align-items'>
             <label
@@ -468,7 +469,7 @@
               multiple
               id='options'
               name='options'
-              size='6'
+              size='5'
               class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
             >
               <option value='' class='my-1'>Group 1</option>
@@ -487,7 +488,7 @@
 
           <div class='flex align-end justify-center h-100 w-100 mt-4 re'>
             <button
-              class='bg-nex px-3 py-2 text-white rounded-md w-48 h-12 hover:opacity-80 attr-button'
+              class='bg-nex px-3 text-white rounded-md w-48 h-12 hover:opacity-80 attr-button'
             >Save Attribute</button>
           </div>
         </div>

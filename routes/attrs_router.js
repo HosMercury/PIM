@@ -26,6 +26,7 @@ router.get('/attributes', async (req, res) => {
 });
 
 router.post('/attributes', async (req, res) => {
+  const errs = [];
   res.json(req.body);
 });
 

@@ -2,6 +2,7 @@ function chooseInputType(buttonType) {
   if (buttonType !== 'text' || buttonType !== 'number') {
     $('.minimum-err').text('');
   }
+  $('#options').removeAttr('required');
 
   console.log(buttonType);
   $('.attrs').slideDown(500);
@@ -45,6 +46,8 @@ function chooseInputType(buttonType) {
   ) {
     $('#minimum').prop('type', 'number');
     $('#maximum').prop('type', 'number');
+    $('#minimum').prop('min', '2');
+    $('#minimum').prop('value', '2');
   }
 
   if (buttonType === 'textarea') {
@@ -63,8 +66,8 @@ function chooseInputType(buttonType) {
   }
 
   if (buttonType === 'switch') {
-    $('#default_label').text('Switch text (Yes/No)'); // label text
-    $('#default_control').removeClass('hidden');
+    // $('#default_label').text('Switch text (Yes/No)'); // label text
+    // $('#default_control').removeClass('hidden');
   }
 
   if (buttonType === 'email') {
@@ -86,12 +89,14 @@ function chooseInputType(buttonType) {
     $('#options_label').text(
       buttonType.charAt(0).toUpperCase() + buttonType.slice(1) + ' options'
     );
+    $('#options').prop('required', 'required');
+    $('#options_label').append('*');
   }
 
-  if (buttonType === 'number') {
-    if (parseInt($('#minimum').val()) > parseInt($('#maximum').val())) {
-    }
-  }
+  // if (buttonType === 'number') {
+  //   if (parseInt($('#minimum').val()) > parseInt($('#maximum').val())) {
+  //   }
+  // }
 
   $('#minimum').blur(callBackOnBlur);
 

@@ -530,6 +530,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .mb-8 {
   margin-bottom: 2rem;
 }
+.mb-4 {
+  margin-bottom: 1rem;
+}
 .box-border {
   box-sizing: border-box;
 }
@@ -566,8 +569,26 @@ Ensure the default browser behavior of the `hidden` attribute.
 .h-12 {
   height: 3rem;
 }
+.h-24 {
+  height: 6rem;
+}
 .max-h-\[800px\] {
   max-height: 800px;
+}
+.max-h-\[700px\] {
+  max-height: 700px;
+}
+.max-h-\[650px\] {
+  max-height: 650px;
+}
+.max-h-\[740px\] {
+  max-height: 740px;
+}
+.max-h-\[730px\] {
+  max-height: 730px;
+}
+.max-h-\[750px\] {
+  max-height: 750px;
 }
 .min-h-screen {
   min-height: 100vh;
@@ -614,6 +635,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .w-48 {
   width: 12rem;
 }
+.w-60 {
+  width: 15rem;
+}
 .shrink-0 {
   flex-shrink: 0;
 }
@@ -659,6 +683,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .overflow-hidden {
   overflow: hidden;
+}
+.overflow-scroll {
+  overflow: scroll;
 }
 .rounded-xl {
   border-radius: 0.75rem;
