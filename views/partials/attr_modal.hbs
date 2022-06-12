@@ -30,7 +30,8 @@
         type</h3> }}
       {{! buttons }}
       <div
-        class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center justify-items-center border rounded border-gray-400 p-3 my-2 mx-auto'
+        class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center 
+        justify-items-center border rounded border-gray-400 p-1 my-2 mx-auto'
       >
         <button
           class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
@@ -50,7 +51,7 @@
               d='M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
             ></path>
           </svg>
-          <span class='mx-auto'>Text</span>
+          <span class='mx-auto  text-sm'>Text</span>
         </button>
 
         <button
@@ -70,7 +71,7 @@
               d='M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z'
             ></path>
           </svg>
-          <span class='mx-auto'>Number</span>
+          <span class='mx-auto text-sm'>Number</span>
         </button>
 
         <button
@@ -91,7 +92,7 @@
               d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
             ></path>
           </svg>
-          <span class='mx-auto'>Date</span>
+          <span class='mx-auto text-sm'>Date</span>
         </button>
 
         <button
@@ -112,7 +113,7 @@
               d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
             ></path>
           </svg>
-          <span class='mx-auto'>Datetime</span>
+          <span class='mx-auto text-sm'>Datetime</span>
         </button>
 
         <button
@@ -132,7 +133,7 @@
               d='M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207'
             ></path>
           </svg>
-          <span class='mx-auto'>Email</span>
+          <span class='mx-auto text-sm'>Email</span>
         </button>
 
         <button
@@ -173,7 +174,8 @@
               d='M5 13l4 4L19 7'
             ></path>
           </svg>
-          Switch (Y/N)
+          <span class='mx-auto  text-sm'>Switch (Y/N)</span>
+        
         </button>
         <button
           class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
@@ -193,7 +195,7 @@
               d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
             ></path>
           </svg>
-          <span class='mx-auto'>Images</span>
+          <span class='mx-auto  text-sm'>Images</span>
         </button>
         <button
           class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
@@ -213,7 +215,7 @@
               d='M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'
             ></path>
           </svg>
-          <span class='mx-auto'>Check boxes</span>
+          <span class='mx-auto  text-sm'>Check boxes</span>
         </button>
         <button
           class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button'
@@ -233,7 +235,7 @@
               d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
             ></path>
           </svg>
-          <span class='mx-auto'>Radio buttons</span>
+          <span class='mx-auto  text-sm'>Radio buttons</span>
         </button>
 
         <button
@@ -254,7 +256,7 @@
               d='M4 6h16M4 12h16m-7 6h7'
             ></path>
           </svg>
-          <span class='mx-auto'>Single select</span>
+          <span class='mx-auto  text-sm'>Single select</span>
         </button>
 
         <button
@@ -274,7 +276,7 @@
               d='M4 6h16M4 10h16M4 14h16M4 18h16'
             ></path>
           </svg>
-          <span class='mx-auto'>Multiple select</span>
+          <span class='mx-auto text-sm'>Multiple select</span>
         </button>
 
       </div>
@@ -286,7 +288,7 @@
         method='post'
         class='flex w-100 space-x-4 attrs'
       >
-        <input type='hidden' name='type' value='' class='button-type' />
+        <input type='hidden' name='attr_type' value='' class='button-type' />
         <div class='w-1/2'>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
@@ -305,6 +307,7 @@
               name='attr_name'
               required
               class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
             />
           </div>
 
@@ -320,6 +323,7 @@
               type='text'
               name='attr_description'
               class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
             />
           </div>
 
@@ -331,8 +335,9 @@
             <input
               type='checkbox'
               checked='checked'
-              name='required'
+              name='attr_required'
               class='w-6 h-6'
+              value="true"
             />
             <label for='required' class='mx-2 relative bottom-1'>Required field</label>
           </div>
@@ -347,8 +352,9 @@
             <input
               id='default'
               type='text'
-              name='default'
+              name='attr_default'
               class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
             />
           </div>
 
@@ -366,8 +372,9 @@
               id='default_area'
               type='text'
               rows='2'
-              name='default_area'
+              name='attr_default_area'
               class='p-2 border border-gray-400 rounded w-80'
+              minlength="10"
             ></textarea>
           </div>
 
@@ -380,8 +387,10 @@
             <input
               id='minimum'
               type='number'
-              name='minimum'
+              name='attr_minimum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
+              min="1"
+              pattern='[0-9]'
             />
           </div>
           <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
@@ -393,9 +402,11 @@
             >Maximum value</label>
             <input
               type='number'
-              name='maximum'
+              name='attr_maximum'
               id='maximum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
+              min="1"
+              pattern='[0-9]'
             />
           </div>
 
@@ -405,8 +416,9 @@
             <input
               id='unit'
               type='text'
-              name='unit'
+              name='attr_unit'
               class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
             />
           </div>
 
@@ -420,10 +432,11 @@
                 option</span></label>
 
             <textarea
-              name='options'
+              name='attr_options'
               id='options'
               rows='5'
               class='p-2 border border-gray-400 rounded w-80'
+              minlength="2"
             ></textarea>
           </div>
         </div>
@@ -440,14 +453,16 @@
               >{{this.language}}
                 label
                 <span
-                  class='text-sm text-gray-500 inline-block'
-                >({{this.abbreviation}})</span>{{#compare this.abbreviation "==" "en"}}*{{/compare}}</label>
+                  class='text-sm text-gray-700 inline-block'
+                >({{this.abbreviation}})</span>{{#compare this.abbreviation "==" "en"}}*{{/compare}}
+                </label>
               <input
                 lang='{{this.abbreviation}}'
                 dir='{{this.direction}}'
                 type='text'
-                name='{{this.abbreviation}}_label'
+                name='attr_labels[]'
                 class='h-12 px-2 border border-gray-400 rounded w-80'
+                minlength="2"
                 {{#compare this.abbreviation "==" "en"}} required {{/compare}}
               />
             </div>
@@ -458,7 +473,7 @@
           <div class='my-3 flex align-items'>
             <label
               id='groups_label'
-              for='options'
+              for='groups'
               class='mx-2 w-1/4 py-2'
             >Attribute group(s)
               <span class='text-sm text-gray-500 block my-2'>Shift key for
@@ -467,21 +482,21 @@
 
             <select
               multiple
-              id='options'
-              name='options'
+              id='groups'
+              name='attr_groups[]'
               size='5'
               class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
             >
-              <option value='' class='my-1'>Group 1</option>
-              <option value='' class='my-1'>Group 2</option>
-              <option value='' class='my-1'>Group 3</option>
-              <option value='' class='my-1'>Group 4</option>
-              <option value='' class='my-1'>Group 5</option>
-              <option value='' class='my-1'>Group 6</option>
-              <option value='' class='my-1'>Group 7</option>
-              <option value='' class='my-1'>Group 8</option>
-              <option value='' class='my-1'>Group 9</option>
-              <option value='' class='my-1'>Group 10</option>
+              <option value='g1' class='my-1'>Group 1</option>
+              <option value='g2' class='my-1'>Group 2</option>
+              <option value='g3' class='my-1'>Group 3</option>
+              <option value='g4' class='my-1'>Group 4</option>
+              <option value='g5' class='my-1'>Group 5</option>
+              <option value='g6' class='my-1'>Group 6</option>
+              <option value='g7' class='my-1'>Group 7</option>
+              <option value='g8' class='my-1'>Group 8</option>
+              <option value='g9' class='my-1'>Group 9</option>
+              <option value='g10' class='my-1'>Group 10</option>
             </select>
 
           </div>
