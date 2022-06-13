@@ -487,16 +487,9 @@
               size='5'
               class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
             >
-              <option value='g1' class='my-1'>Group 1</option>
-              <option value='g2' class='my-1'>Group 2</option>
-              <option value='g3' class='my-1'>Group 3</option>
-              <option value='g4' class='my-1'>Group 4</option>
-              <option value='g5' class='my-1'>Group 5</option>
-              <option value='g6' class='my-1'>Group 6</option>
-              <option value='g7' class='my-1'>Group 7</option>
-              <option value='g8' class='my-1'>Group 8</option>
-              <option value='g9' class='my-1'>Group 9</option>
-              <option value='g10' class='my-1'>Group 10</option>
+            {{#each groups}}
+              <option value='{{this.id}}' class='my-1'>{{this.name}}</option>
+            {{/each}}
             </select>
 
           </div>

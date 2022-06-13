@@ -1,3 +1,5 @@
+const { escape } = require('validator');
+
 module.exports = {
   auth: (req, res, next) => {
     if (req.session.user) {
@@ -21,15 +23,13 @@ module.exports = {
 
   trim: (req, res, next) => {
     body = req.body;
-    if (req.method === 'POST') {
-      for (const key in body) {
-        if (typeof body[key] === 'object' || Array.isArray(body[key])) {
-          body[key].toString().trim();
-        } else if (typeof body[key] === 'string') {
-          body[key] = body[key].trim();
-        }
-      }
-    }
+    const trimmed = JSON.parse(
+      JSON.stringify(body, (k, v) =>
+        ['string', 'number'].includes(typeof v) ? v.trim() : v
+      )
+    );
+
+    req.body = trimmed;
     next();
   },
 

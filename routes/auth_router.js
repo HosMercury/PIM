@@ -41,14 +41,14 @@ async function authenticateUser(username, password) {
     );
 
     const user = results[0];
-    console.log(user);
+    // console.log(user);
 
     if (!user) return null;
 
     const validPassword = await bcrypt.compare(password, user.password);
     return validPassword ? user : null;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return null;
   }
 }

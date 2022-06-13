@@ -21,18 +21,24 @@ exports.up = async function (db) {
   const password = await bcrypt.hash(process.env.ADMIN_PASS, 8);
 
   const user =
-    'INSERT INTO users(firstname,lastname, username, password) VALUES(?, ?, ?, ?)';
+    'insert into users(firstname,lastname, username, password) values(?, ?, ?, ?)';
   const values = ['Hossam', 'Maher', 'admin', password];
   pool.query(user, values);
 
-  const en_lang = 'INSERT INTO locals(language, abbreviation) VALUES(?, ?)';
+  const en_lang = 'insert into locals(language, abbreviation) values(?, ?)';
   const values2 = ['English', 'en'];
   pool.query(en_lang, values2);
 
   const ar_lang =
-    'INSERT INTO locals(language, abbreviation, direction) VALUES(?, ?, ?)';
+    'insert into locals(language, abbreviation, direction) values(?, ?, ?)';
   const values3 = ['Arabic', 'ar', 'rtl'];
   pool.query(ar_lang, values3);
+
+  const basic_group = 'insert into groups(name) values(?)';
+  pool.query(basic_group, 'basic');
+
+  const dimentions_group = 'insert into groups(name) values(?)';
+  pool.query(basic_group, 'dimentions');
 
   return;
 };

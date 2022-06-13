@@ -4,7 +4,6 @@ function chooseInputType(buttonType) {
   }
   $('#options').removeAttr('required');
 
-  console.log(buttonType);
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
 
