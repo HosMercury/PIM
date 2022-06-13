@@ -254,9 +254,9 @@ async function prepareAttributeObject(body) {
       const options_values = [];
       splitted_options.forEach((option) => {
         console.log('option', option);
-        options_values.push(option, attr_id);
+        options_values.push([option, attr_id]);
       });
-      await conn.query(attr_options_query, options_values);
+      await conn.batch(attr_options_query, options_values);
     }
 
     // labels
@@ -264,18 +264,19 @@ async function prepareAttributeObject(body) {
     const attr_labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,?)`;
     const labels_values = [];
     for (let i = 0; i < attr_labels.length; i++) {
-      labels_values.push(locals[i].id, attr_labels[i], attr_id);
+      labels_values.push([locals[i].id, attr_labels[i], attr_id]);
     }
-    await conn.query(attr_labels_query, labels_values);
+    await conn.batch(attr_labels_query, labels_values);
 
     //groups
     if (typeof attr_groups !== 'undefined') {
       const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,?)`;
       const groups_values = [];
       attr_groups.forEach((group_id) => {
-        groups_values.push(parseInt(group_id));
+        groups_values.push([group_id, attr_id]);
       });
-      await conn.query(groups_query, groups_values);
+
+      await conn.batch(groups_query, groups_values);
     }
 
     await conn.commit();
