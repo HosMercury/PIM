@@ -39,10 +39,10 @@ module.exports = {
     res.locals.msg = req.session.msg;
     res.locals.user = req.session.user;
 
-    // console.log(res.locals);
+    console.log(res.locals);
 
     delete req.session.errs;
-    delete req.session.data;
+    delete req.session.old;
     delete req.session.msg;
 
     next();

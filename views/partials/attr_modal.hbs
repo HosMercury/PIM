@@ -1,6 +1,7 @@
 <div
   {{! style='max-height:800px;' }}
-  class='nex-modal w-5/6 max-h-[750px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl'
+  class='nex-modal w-5/6 max-h-[750px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl
+  {{#if errs}} block {{else}} hidden {{/if}}'
 >
   <div>
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
@@ -22,7 +23,8 @@
     </button>
   </div>
 
-  <section class=''>
+  <section>
+    {{> errors}}
     {{! Text input }}
     <div class='mx-auto'>
 
@@ -34,7 +36,7 @@
         justify-items-center border rounded border-gray-400 p-1 my-2 mx-auto'
       >
         <button
-          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button'
+          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button {{#is old.attr_type 'text'}} border-nex {{/is}}'
           onclick='chooseInputType("text")'
         >
           <svg
@@ -51,11 +53,11 @@
               d='M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
             ></path>
           </svg>
-          <span class='mx-auto  text-sm'>Text</span>
+          <span class='mx-auto text-sm'>Text</span>
         </button>
 
         <button
-          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button'
+          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button {{#is old.attr_type 'number'}} border-nex {{/is}}'
           onclick='chooseInputType("number")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -75,7 +77,7 @@
         </button>
 
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button {{#is old.attr_type 'date'}} border-nex {{/is}}'
           onclick='chooseInputType("date")'
         >
           <svg
@@ -96,7 +98,7 @@
         </button>
 
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button {{#is old.attr_type 'datetime'}} border-nex {{/is}}'
           onclick='chooseInputType("datetime")'
         >
           <svg
@@ -117,7 +119,7 @@
         </button>
 
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button {{#is old.attr_type 'email'}} border-nex {{/is}}'
           onclick='chooseInputType("email")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -137,7 +139,7 @@
         </button>
 
         <button
-          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button'
+          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button {{#is old.attr_type 'textarea'}} border-nex {{/is}}'
           onclick='chooseInputType("textarea")'
         >
           <svg
@@ -157,7 +159,7 @@
           <span class='mx-auto'>Textarea</span>
         </button>
         <button
-          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button'
+          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button {{#is old.attr_type 'switch'}} border-nex {{/is}}'
           onclick='chooseInputType("switch")'
         >
           <svg
@@ -178,7 +180,7 @@
         
         </button>
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button {{#is old.attr_type 'images'}} border-nex {{/is}}'
           onclick='chooseInputType("images")'
         >
           <svg
@@ -198,7 +200,7 @@
           <span class='mx-auto  text-sm'>Images</span>
         </button>
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button {{#is old.attr_type 'check-boxes'}} border-nex {{/is}}'
           onclick='chooseInputType("check-boxes")'
         >
           <svg
@@ -218,7 +220,7 @@
           <span class='mx-auto  text-sm'>Check boxes</span>
         </button>
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button {{#is old.attr_type 'radio-buttons'}} border-nex {{/is}}'
           onclick='chooseInputType("radio-buttons")'
         >
           <svg
@@ -239,7 +241,7 @@
         </button>
 
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button {{#is old.attr_type 'single-select'}} border-nex {{/is}}'
           onclick='chooseInputType("single-select")'
         >
           <svg
@@ -260,7 +262,7 @@
         </button>
 
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button {{#is old.attr_type 'multiple-select'}} border-nex {{/is}}'
           onclick='chooseInputType("multiple-select")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -278,15 +280,14 @@
           </svg>
           <span class='mx-auto text-sm'>Multiple select</span>
         </button>
-
       </div>
     </div>
 
-    <div>
+    <div class="attrs {{#if errs}} block {{else}} hidden {{/if}} ">
       <form
         action='/attributes'
         method='post'
-        class='flex w-100 space-x-4 attrs'
+        class='flex w-100 space-x-4 '
       >
         <input type='hidden' name='attr_type' value='' class='button-type' />
         <div class='w-1/2'>
@@ -308,6 +309,7 @@
               required
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
+              value='{{old.attr_name}}'
             />
           </div>
 
@@ -324,6 +326,7 @@
               name='attr_description'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
+              value='{{old.attr_description}}'
             />
           </div>
 
@@ -334,12 +337,13 @@
           <div class='mx-2' id='required_control'>
             <input
               type='checkbox'
-              checked='checked'
+              {{#is old.attr_required 'true'}} checked {{/is}} 
               name='attr_required'
+              id="attr_required"
               class='w-6 h-6'
               value="true"
             />
-            <label for='required' class='mx-2 relative bottom-1'>Required field</label>
+            <label for='attr_required' class='mx-2 relative bottom-1'>Required field</label>
           </div>
 
           <div class='my-3 flex align-items f-control' id='default_control'>
@@ -355,6 +359,7 @@
               name='attr_default'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
+              value='{{old.attr_default}}'
             />
           </div>
 
@@ -375,7 +380,7 @@
               name='attr_default_area'
               class='p-2 border border-gray-400 rounded w-80'
               minlength="10"
-            ></textarea>
+            >{{old.attr_default_area}}</textarea>
           </div>
 
           <div class='my-3 flex align-items f-control' id='minimum_control'>
@@ -391,6 +396,7 @@
               class='h-12 px-2 border border-gray-400 rounded w-80'
               min="1"
               pattern='[0-9]'
+              value='{{old.attr_minimum}}'
             />
           </div>
           <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
@@ -406,7 +412,8 @@
               id='maximum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               min="1"
-              pattern='[0-9]'
+              pattern='[0-9]' 
+              value='{{old.attr_maximum}}'
             />
           </div>
 
@@ -419,6 +426,7 @@
               name='attr_unit'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
+              value='{{old.attr_unit}}'
             />
           </div>
 
@@ -454,16 +462,17 @@
                 label
                 <span
                   class='text-sm text-gray-700 inline-block'
-                >({{this.abbreviation}})</span>{{#compare this.abbreviation "==" "en"}}*{{/compare}}
+                >({{this.abbreviation}})</span>{{#is this.abbreviation "en"}}*{{/is}}
                 </label>
               <input
+                id='{{this.abbreviation}}_label'
                 lang='{{this.abbreviation}}'
                 dir='{{this.direction}}'
                 type='text'
-                name='attr_labels[]'
+                name='attr_labels["{{this.id}}"]'
                 class='h-12 px-2 border border-gray-400 rounded w-80'
                 minlength="2"
-                {{#compare this.abbreviation "==" "en"}} required {{/compare}}
+                {{#is this.abbreviation "en"}} required {{/is}}
               />
             </div>
           {{/each}}
