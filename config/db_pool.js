@@ -11,12 +11,11 @@ const pool = mariadb.createPool({
 });
 
 async function asyncFunction() {
-  console.log('process.env', process.env);
   let conn;
   try {
     conn = await pool.getConnection();
     const rows = await conn.query('SELECT 1 as val');
-    console.log(rows); //[ {val: 1}, meta: ... ]
+    //console.log(rows); //[ {val: 1}, meta: ... ]
     // const res = await conn.query('INSERT INTO myTable value (?, ?)', [
     //   1,
     //   'mariadb'

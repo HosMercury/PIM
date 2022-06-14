@@ -43,6 +43,7 @@ app.engine(
   engine({
     extname: '.hbs',
     layoutsDir: path.join(__dirname, 'views/layouts'),
+    // partials: path.join(__dirname, 'views/partials'),
     helpers
   })
 );

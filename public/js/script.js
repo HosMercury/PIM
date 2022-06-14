@@ -4,7 +4,6 @@ function chooseInputType(buttonType) {
   }
   $('#options').removeAttr('required');
 
-  console.log(buttonType);
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
 
@@ -130,8 +129,8 @@ function chooseInputType(buttonType) {
 
 $(document).ready(function () {
   // hide the attrs modal
-  $('.attrs').hide();
-  $('.nex-modal').hide();
+  // $('.attrs').hide();
+  // $('.nex-modal').hide();
 
   // animate the attrs modal
   $('.create-attribute').click(function () {
@@ -142,4 +141,13 @@ $(document).ready(function () {
     $('.attrs').slideUp(500);
     $('.nex-modal').slideUp(500);
   });
+
+  $('.close-errs-button').click(function () {
+    $('.errs-box').slideUp(500);
+  });
+
+  $('.msg-button').click(function () {
+    $('.msg-box').slideUp(500);
+  });
+  $('.msg-box').fadeOut(15000);
 });
