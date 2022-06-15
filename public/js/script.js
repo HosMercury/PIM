@@ -1,7 +1,7 @@
 function chooseInputType(buttonType) {
-  if (buttonType !== 'text' || buttonType !== 'number') {
+  if (buttonType !== 'text' || buttonType !== 'number')
     $('.minimum-err').text('');
-  }
+
   $('#options').removeAttr('required');
 
   $('.attrs').slideDown(500);
@@ -64,11 +64,6 @@ function chooseInputType(buttonType) {
     $('#maximum_control').addClass('hidden');
   }
 
-  if (buttonType === 'switch') {
-    // $('#default_label').text('Switch text (Yes/No)'); // label text
-    // $('#default_control').removeClass('hidden');
-  }
-
   if (buttonType === 'email') {
     $('#default').prop('type', buttonType);
     $('#default_label').text('Default ' + buttonType); // label text
@@ -91,11 +86,6 @@ function chooseInputType(buttonType) {
     $('#options').prop('required', 'required');
     $('#options_label').append('*');
   }
-
-  // if (buttonType === 'number') {
-  //   if (parseInt($('#minimum').val()) > parseInt($('#maximum').val())) {
-  //   }
-  // }
 
   $('#minimum').blur(callBackOnBlur);
 
@@ -128,10 +118,6 @@ function chooseInputType(buttonType) {
 }
 
 $(document).ready(function () {
-  // hide the attrs modal
-  // $('.attrs').hide();
-  // $('.nex-modal').hide();
-
   // animate the attrs modal
   $('.create-attribute').click(function () {
     $('.nex-modal').slideDown(500);
@@ -149,5 +135,8 @@ $(document).ready(function () {
   $('.msg-button').click(function () {
     $('.msg-box').slideUp(500);
   });
-  $('.msg-box').fadeOut(15000);
+
+  setTimeout(function () {
+    $('.msg-box').slideUp(500);
+  }, 7000);
 });

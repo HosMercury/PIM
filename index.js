@@ -34,21 +34,8 @@ app.use(
   })
 );
 
-const { engine } = require('express-handlebars');
-const helpers = require('handlebars-helpers')();
-// ['math', 'string']
-
-app.engine(
-  '.hbs',
-  engine({
-    extname: '.hbs',
-    layoutsDir: path.join(__dirname, 'views/layouts'),
-    // partials: path.join(__dirname, 'views/partials'),
-    helpers
-  })
-);
-app.set('view engine', '.hbs');
-
+const ejs = require('ejs');
+app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 const { auth, trim, flash } = require('./middlewares');

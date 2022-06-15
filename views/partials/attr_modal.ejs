@@ -1,7 +1,6 @@
 <div
-  {{! style='max-height:800px;' }}
   class='nex-modal w-5/6 max-h-[750px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl
-  {{#if errs}} block {{else}} hidden {{/if}}'
+  <%= typeof errs !== 'undefined' ? 'block' : 'hidden' %> '
 >
   <div>
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
@@ -24,19 +23,14 @@
   </div>
 
   <section>
-    {{> errors}}
-    {{! Text input }}
+    <%- include('./errs'); %> 
     <div class='mx-auto'>
-
-      {{! <h3 class='border p-1 inline-block rounded-md relative inset-x-2/4'>Choose
-        type</h3> }}
-      {{! buttons }}
       <div
         class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center 
         justify-items-center border rounded border-gray-400 p-1 my-2 mx-auto'
       >
         <button
-          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button {{#is old.attr_type 'text'}} border-nex {{/is}}'
+          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md text-button <%= typeof locals.old !== 'undefined' && old.attr_type === 'text' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("text")'
         >
           <svg
@@ -57,7 +51,7 @@
         </button>
 
         <button
-          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button {{#is old.attr_type 'number'}} border-nex {{/is}}'
+          class='w-28 h-24 m-2 border-2 p-2 hover:bg-gray-200 rounded-md number-button <%= typeof locals.old !== "undefined" && old.attr_type === 'number' ? " border-nex " : "" %> '
           onclick='chooseInputType("number")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -77,7 +71,9 @@
         </button>
 
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button {{#is old.attr_type 'date'}} border-nex {{/is}}'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button          
+           <%= typeof locals.old !== 'undefined' && old.attr_type === 'date' ? ' border-nex ' : '' %>
+          '
           onclick='chooseInputType("date")'
         >
           <svg
@@ -98,7 +94,8 @@
         </button>
 
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button {{#is old.attr_type 'datetime'}} border-nex {{/is}}'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md datetime-button 
+          <%= typeof locals.old !== 'undefined' && old.attr_type === 'datetime' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("datetime")'
         >
           <svg
@@ -119,7 +116,7 @@
         </button>
 
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button {{#is old.attr_type 'email'}} border-nex {{/is}}'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md email-button <%= typeof locals.old !== 'undefined' && old.attr_type === 'email' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("email")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -139,7 +136,7 @@
         </button>
 
         <button
-          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button {{#is old.attr_type 'textarea'}} border-nex {{/is}}'
+          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md textarea-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'textarea' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("textarea")'
         >
           <svg
@@ -159,7 +156,7 @@
           <span class='mx-auto'>Textarea</span>
         </button>
         <button
-          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button {{#is old.attr_type 'switch'}} border-nex {{/is}}'
+          class='w-32 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md switch-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'switch' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("switch")'
         >
           <svg
@@ -180,7 +177,7 @@
         
         </button>
         <button
-          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button {{#is old.attr_type 'images'}} border-nex {{/is}}'
+          class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md images-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'images' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("images")'
         >
           <svg
@@ -200,7 +197,7 @@
           <span class='mx-auto  text-sm'>Images</span>
         </button>
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button {{#is old.attr_type 'check-boxes'}} border-nex {{/is}}'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md check-boxes-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'check-boxes' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("check-boxes")'
         >
           <svg
@@ -220,7 +217,7 @@
           <span class='mx-auto  text-sm'>Check boxes</span>
         </button>
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button {{#is old.attr_type 'radio-buttons'}} border-nex {{/is}}'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'radio-buttons' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("radio-buttons")'
         >
           <svg
@@ -241,7 +238,7 @@
         </button>
 
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button {{#is old.attr_type 'single-select'}} border-nex {{/is}}'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md single-select-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'single-select' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("single-select")'
         >
           <svg
@@ -262,7 +259,7 @@
         </button>
 
         <button
-          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button {{#is old.attr_type 'multiple-select'}} border-nex {{/is}}'
+          class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md multiple-select-button  <%= typeof locals.old !== 'undefined' && old.attr_type === 'multiple-select' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("multiple-select")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -283,13 +280,13 @@
       </div>
     </div>
 
-    <div class="attrs {{#if errs}} block {{else}} hidden {{/if}} ">
+    <div class="attrs <%= typeof locals.errs !== 'undefined' ? ' block ' : ' hidden '%> ">
       <form
         action='/attributes'
         method='post'
         class='flex w-100 space-x-4 '
       >
-        <input type='hidden' name='attr_type' value='' class='button-type' />
+        <input type='hidden' name='attr_type' value='text' class='button-type' />
         <div class='w-1/2'>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
@@ -309,7 +306,7 @@
               required
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='{{old.attr_name}}'
+              value='<%= typeof locals.old !== 'undefined' ? old.attr_name : '' %>'
             />
           </div>
 
@@ -326,7 +323,7 @@
               name='attr_description'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='{{old.attr_description}}'
+              value='<%= typeof locals.old !== 'undefined' ? old.attr_description : '' %>'
             />
           </div>
 
@@ -337,7 +334,7 @@
           <div class='mx-2' id='required_control'>
             <input
               type='checkbox'
-              {{#is old.attr_required 'true'}} checked {{/is}} 
+              <%= typeof locals.old !== 'undefined' && old.attr_required == 'true'  ? ' checked ' : '' %>
               name='attr_required'
               id="attr_required"
               class='w-6 h-6'
@@ -359,7 +356,7 @@
               name='attr_default'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='{{old.attr_default}}'
+              value='<%= typeof locals.old !== 'undefined' ? old.att_default : '' %>'
             />
           </div>
 
@@ -380,7 +377,7 @@
               name='attr_default_area'
               class='p-2 border border-gray-400 rounded w-80'
               minlength="10"
-            >{{old.attr_default_area}}</textarea>
+            ><%= typeof locals.old !== 'undefined' ? old.attr_default_area : '' %></textarea>
           </div>
 
           <div class='my-3 flex align-items f-control' id='minimum_control'>
@@ -396,7 +393,7 @@
               class='h-12 px-2 border border-gray-400 rounded w-80'
               min="1"
               pattern='[0-9]'
-              value='{{old.attr_minimum}}'
+              value='<%= typeof locals.old !== 'undefined' ? old.attr_minimum : '' %>'
             />
           </div>
           <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
@@ -413,7 +410,7 @@
               class='h-12 px-2 border border-gray-400 rounded w-80'
               min="1"
               pattern='[0-9]' 
-              value='{{old.attr_maximum}}'
+              value='<%= typeof locals.old !== 'undefined' ? old.attr_maximum : '' %>'
             />
           </div>
 
@@ -426,7 +423,7 @@
               name='attr_unit'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='{{old.attr_unit}}'
+              value='<%= typeof locals.old !== 'undefined' ? old.attr_unit: '' %>'
             />
           </div>
 
@@ -452,30 +449,32 @@
         <div class='w-1/2 border-l pl-4'>
           <h3 class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'>Local
             labels</h3>
-
-          {{#each locals}}
+          
+            <% if (locals.labels) { %>
+            <% labels.forEach(label => { %>
             <div class='my-3 flex align-middle'>
               <label
-                for='{{this.abbreviation}}_label'
+                for='<%= label.abbreviation %>_label'
                 class='mx-2 w-1/4 py-2'
-              >{{this.language}}
+              ><%= label.english %> 
                 label
                 <span
                   class='text-sm text-gray-700 inline-block'
-                >({{this.abbreviation}})</span>{{#is this.abbreviation "en"}}*{{/is}}
+                >(<%= label.abbreviation %>)</span><%= label.abbreviation === 'en' ? '*': '' %> 
                 </label>
               <input
-                id='{{this.abbreviation}}_label'
-                lang='{{this.abbreviation}}'
-                dir='{{this.direction}}'
+                id='<%= label.abbreviation %>_label'
+                lang='<%= label.abbreviation %>'
+                dir='{<%= label.direction %>'
                 type='text'
-                name='attr_labels["{{this.id}}"]'
+                name='attr_labels["<%= label.id %>"]'
                 class='h-12 px-2 border border-gray-400 rounded w-80'
                 minlength="2"
-                {{#is this.abbreviation "en"}} required {{/is}}
+                <%= label.abbreviation === 'en' ? ' required' : '' %>
               />
             </div>
-          {{/each}}
+            <% }) %>
+            <% } %>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
           >Groups</h3>
@@ -496,11 +495,12 @@
               size='5'
               class='px-2 border border-gray-400 rounded w-80 appearance-nonebg-white p-2 mb-8'
             >
-            {{#each groups}}
-              <option value='{{this.id}}' class='my-1'>{{this.name}}</option>
-            {{/each}}
+            <% if (typeof locals.group !== 'undefined') { %>
+            <% groups.forEach(group => { %>
+                <option value='<%= group.id %> ' class='my-1'><%= group.name %> </option>
+            <% }) %>
+            <% } %>
             </select>
-
           </div>
 
           <div class='flex align-end justify-center h-100 w-100 mt-4 re'>

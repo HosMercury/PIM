@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 // Get -- Attributes home
 router.get('/attributes', async (req, res) => {
   try {
-    const locals = await pool.query(
+    const labels = await pool.query(
       'select id, language, abbreviation, direction from locals'
     );
 
@@ -24,7 +24,7 @@ router.get('/attributes', async (req, res) => {
       title: 'Attributes',
       button: 'Create attribute',
       buttonClass: 'create-attribute',
-      locals,
+      labels,
       groups
     });
   } catch (err) {
@@ -72,6 +72,8 @@ async function validateAttribute(body) {
   ////////// Attribute Type //////////////
   if (typeof attr_type === 'undefined' || !types.includes(attr_type))
     errs.push('Attribute type field is invalid');
+
+  console.log('atttt typpppe', attr_type);
 
   ////////// Attribute Name //////////////
   if (typeof attr_name === 'undefined' || attr_name === '')
