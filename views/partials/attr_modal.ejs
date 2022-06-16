@@ -72,8 +72,7 @@
 
         <button
           class='w-28 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md date-button          
-           <%= typeof locals.old !== 'undefined' && old.type === 'date' ? ' border-nex ' : '' %>
-          '
+           <%= typeof locals.old !== 'undefined' && old.type === 'date' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("date")'
         >
           <svg
@@ -214,7 +213,7 @@
               d='M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'
             ></path>
           </svg>
-          <span class='mx-auto  text-sm'>Check boxes</span>
+          <span class='mx-auto  text-sm'>Check Boxes</span>
         </button>
         <button
           class='w-40 h-24m-2 border-2 p-2 hover:bg-gray-200 rounded-md radio-buttons-button  <%= typeof locals.old !== 'undefined' && old.type === 'radio-buttons' ? ' border-nex ' : '' %>'
@@ -234,7 +233,7 @@
               d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
             ></path>
           </svg>
-          <span class='mx-auto  text-sm'>Radio buttons</span>
+          <span class='mx-auto  text-sm'>Radio Buttons</span>
         </button>
 
         <button
@@ -255,7 +254,7 @@
               d='M4 6h16M4 12h16m-7 6h7'
             ></path>
           </svg>
-          <span class='mx-auto  text-sm'>Single select</span>
+          <span class='mx-auto  text-sm'>Single Select</span>
         </button>
 
         <button
@@ -275,7 +274,7 @@
               d='M4 6h16M4 10h16M4 14h16M4 18h16'
             ></path>
           </svg>
-          <span class='mx-auto text-sm'>Multiple select</span>
+          <span class='mx-auto text-sm'>Multiple Select</span>
         </button>
       </div>
     </div>
@@ -340,7 +339,7 @@
               class='w-6 h-6'
               value="true"
             />
-            <label for='required' class='mx-2 relative bottom-1'>Required field</label>
+            <label for='required' class='mx-2 relative bottom-1'>Required Field</label>
           </div>
 
           <div class='my-3 flex align-items f-control' id='default_control'>
@@ -427,20 +426,19 @@
             />
           </div>
 
-          <div class='my-3 flex align-items f-control' id='options_control'>
-            <label
-              id='options_label'
-              for='options'
-              class='mx-2 w-1/4 py-2'
-            >Options
-
-            <textarea
-              name='options'
-              id='options'
-              rows='5'
-              class='p-2 border border-gray-400 rounded w-80'
+          <div class='my-3 f-control' id='choices_control'>
+            <h3 class=' text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex field-options'
+            >Choices</h3>
+            <div class=' flex align-items'>
+              <label id='unit_label' for='unit' class='mx-2 w-1/4 py-2'>Add Choice</label>
+              <input
+              id='choice'
+              type='text'
+              name='choice'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-            ></textarea>
+            />
+            </div>
           </div>
         </div>
 
