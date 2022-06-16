@@ -2,16 +2,10 @@ function chooseInputType(buttonType) {
   if (buttonType !== 'text' || buttonType !== 'number')
     $('.minimum-err').text('');
 
-  $('#choices').removeAttr('required');
-
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
 
   $('.f-control').addClass('hidden');
-
-  $('.field-choices').text(
-    buttonType.charAt(0).toUpperCase() + buttonType.slice(1) + ' Choices'
-  );
 
   $('button.border-nex').removeClass('border-nex');
   $('.' + buttonType + '-button').addClass('border-nex');
@@ -141,4 +135,25 @@ $(document).ready(function () {
   }, 7000);
 
   $('.chosen-select').chosen({ width: '510px' });
+
+  function delChoice() {
+    console.log('here');
+  }
+
+  $('.add-choice').click(function (e) {
+    const choice_value = $('#choice').val();
+    $(
+      '.choices-list'
+    ).append(`<li class="my-1 id="${new Date().getTime()}">${choice_value} 
+    <button type="button" class="inline-block  choice-delete-button" id="${new Date().getTime()}">X</button>
+    </li>  
+    `);
+  });
+
+  $(document).on('click', '.choice-delete-button', function (e) {
+    const li_id = $(this).attr('id');
+    $('#' + li_id)
+      .parent()
+      .remove();
+  });
 });

@@ -17,4 +17,14 @@ input {
   padding-top: 8px !important;
 }
 
+.chosen-results {
+  height: 150px !important;
+  padding: 4px !important;
+}
+
+.choice-delete-button {
+  color: red;
+  padding-left: 10px;
+}
+
 @tailwind utilities;
