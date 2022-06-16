@@ -1,7 +1,18 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
 input {
   padding: 8px;
 }
+
+.search-field input[type='text'] {
+  padding: 10px !important;
+  border: solid 1px rgb(156, 163, 175) !important;
+}
+
+.chosen-choices,
+.search-choice {
+  border-radius: 0.25rem !important;
+}
+
+@tailwind utilities;

@@ -1,7 +1,7 @@
 module.exports = {
   // content: ['./views/**/*.{html,hbs}'],
   // content: ['./**/*.{html,hbs}'],
-  content: ['./views/*.hbs', './views/**/*.hbs'],
+  content: ['./views/*.ejs', './views/**/*.ejs'],
   theme: {
     extend: {
       colors: {
