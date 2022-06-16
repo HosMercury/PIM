@@ -426,7 +426,7 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 
 input {
-  padding: 8px;
+  padding: 8px !important;
 }
 
 .search-field input[type='text'] {
@@ -434,9 +434,11 @@ input {
   border: solid 1px rgb(156, 163, 175) !important;
 }
 
-.chosen-choices,
-.search-choice {
+.chosen-choices {
   border-radius: 0.25rem !important;
+  height: 45px !important;
+  line-height: 21px !important;
+  padding-top: 8px !important;
 }
 
 .fixed {
@@ -682,10 +684,6 @@ input {
 
 .w-80 {
   width: 20rem;
-}
-
-.w-48 {
-  width: 12rem;
 }
 
 .w-\[6rem\] {
@@ -935,6 +933,11 @@ input {
   padding-right: 0.75rem;
 }
 
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
@@ -948,11 +951,6 @@ input {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-
-.py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
 }
 
 .pb-3 {

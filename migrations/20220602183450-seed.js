@@ -52,6 +52,12 @@ exports.up = async function (db) {
   const g6 = 'insert into groups(name) values(?)';
   await pool.query(g6, 'Colours');
 
+  const g7 = 'insert into groups(name) values(?)';
+  await pool.query(g7, 'Motherboards');
+
+  const g8 = 'insert into groups(name) values(?)';
+  await pool.query(g8, 'Cases');
+
   return;
 };
 

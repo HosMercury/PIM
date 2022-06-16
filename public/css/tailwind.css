@@ -2,7 +2,7 @@
 @tailwind components;
 
 input {
-  padding: 8px;
+  padding: 8px !important;
 }
 
 .search-field input[type='text'] {
@@ -10,9 +10,11 @@ input {
   border: solid 1px rgb(156, 163, 175) !important;
 }
 
-.chosen-choices,
-.search-choice {
+.chosen-choices {
   border-radius: 0.25rem !important;
+  height: 45px !important;
+  line-height: 21px !important;
+  padding-top: 8px !important;
 }
 
 @tailwind utilities;

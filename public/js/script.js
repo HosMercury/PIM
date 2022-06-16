@@ -140,5 +140,5 @@ $(document).ready(function () {
     $('.msg-box').slideUp(500);
   }, 7000);
 
-  $('.chosen-select').chosen({ width: '480px' });
+  $('.chosen-select').chosen({ width: '510px' });
 });
