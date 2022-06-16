@@ -38,7 +38,9 @@
     "mariadb": "^3.0.0",
     "morgan": "^1.10.0",
     "npm": "^8.9.0",
+    "select2": "^4.1.0-rc.0",
     "tailwind": "^4.0.0",
+    "tom-select": "^2.0.3",
     "validator": "^13.7.0"
   }
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 var bcrypt = require('bcryptjs');
 const pool = require('../config/db_pool');
-const { isAlphanumeric } = require('validator');
+// const { isAlphanumeric } = require('validator');
 const { isEmpty } = require('lodash');
 
 // if (!isAlphanumeric(username))

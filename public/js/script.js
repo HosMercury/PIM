@@ -22,7 +22,7 @@ function chooseInputType(buttonType) {
     buttonType === 'date' ||
     buttonType === 'datetime'
   ) {
-    $('#default').prop('type', buttonType); // input type
+    $('#default_value').prop('type', buttonType); // input type
     // labels
     $('#default_label').text('Default ' + buttonType); // label text
     $('#minimum_label').text('Minimum ' + buttonType); // label text
@@ -65,7 +65,7 @@ function chooseInputType(buttonType) {
   }
 
   if (buttonType === 'email') {
-    $('#default').prop('type', buttonType);
+    $('#default_value').prop('type', buttonType);
     $('#default_label').text('Default ' + buttonType); // label text
     $('#default_control').removeClass('hidden');
   }
@@ -139,4 +139,6 @@ $(document).ready(function () {
   setTimeout(function () {
     $('.msg-box').slideUp(500);
   }, 7000);
+
+  $('.chosen-select').chosen({ width: '480px' });
 });

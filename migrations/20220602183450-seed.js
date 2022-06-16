@@ -23,22 +23,34 @@ exports.up = async function (db) {
   const user =
     'insert into users(firstname,lastname, username, password) values(?, ?, ?, ?)';
   const values = ['Hossam', 'Maher', 'admin', password];
-  pool.query(user, values);
+  await pool.query(user, values);
 
   const en_lang = 'insert into locals(language, abbreviation) values(?, ?)';
-  const values2 = ['English', 'en'];
-  pool.query(en_lang, values2);
+  const values2 = ['English USA', 'en-us'];
+  await pool.query(en_lang, values2);
 
   const ar_lang =
     'insert into locals(language, abbreviation, direction) values(?, ?, ?)';
-  const values3 = ['Arabic', 'ar', 'rtl'];
-  pool.query(ar_lang, values3);
+  const values3 = ['Arabic Egypt', 'ar-eg', 'rtl'];
+  await pool.query(ar_lang, values3);
 
-  const basic_group = 'insert into groups(name) values(?)';
-  pool.query(basic_group, 'basic');
+  const g1 = 'insert into groups(name) values(?)';
+  pool.query(g1, 'Basic');
 
-  const dimentions_group = 'insert into groups(name) values(?)';
-  pool.query(basic_group, 'dimentions');
+  const g2 = 'insert into groups(name) values(?)';
+  await pool.query(g2, 'Dimentions');
+
+  const g3 = 'insert into groups(name) values(?)';
+  await pool.query(g3, 'Size');
+
+  const g4 = 'insert into groups(name) values(?)';
+  await pool.query(g4, 'Rams');
+
+  const g5 = 'insert into groups(name) values(?)';
+  await pool.query(g5, 'Cpus');
+
+  const g6 = 'insert into groups(name) values(?)';
+  await pool.query(g6, 'Colours');
 
   return;
 };
