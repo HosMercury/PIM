@@ -58,7 +58,7 @@ create table attributes (
 	description varchar(255),
 	required boolean not null default false,
 	default_value varchar(255),
-	attr_default_area text,
+	default_area text,
 	min int unsigned,
   max int unsigned,
   unit varchar(255),

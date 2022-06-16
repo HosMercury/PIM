@@ -580,8 +580,12 @@ input {
   margin-bottom: 1rem;
 }
 
-.ml-12 {
-  margin-left: 3rem;
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.ml-28 {
+  margin-left: 7rem;
 }
 
 .mt-24 {
@@ -734,10 +738,6 @@ input {
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.list-decimal {
-  list-style-type: decimal;
 }
 
 .flex-row-reverse {

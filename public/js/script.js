@@ -70,6 +70,7 @@ function chooseInputType(buttonType) {
     buttonType === 'single-select' ||
     buttonType === 'multiple-select'
   ) {
+    disableSubmit();
     $('#choices_control').removeClass('hidden');
     $('#default_control').addClass('hidden');
     $('#maximum_label').text('Maximum length');
@@ -99,16 +100,16 @@ function chooseInputType(buttonType) {
       }
     }
   }
+}
 
-  function disableSubmit() {
-    $('.attr-button').prop('disabled', true);
-    $('.attr-button').addClass('bg-gray-200');
-  }
+function disableSubmit() {
+  $('.attr-button').prop('disabled', true);
+  $('.attr-button').addClass('bg-gray-200');
+}
 
-  function enableSubmit() {
-    $('.attr-button').prop('disabled', false);
-    $('.attr-button').removeClass('bg-gray-200');
-  }
+function enableSubmit() {
+  $('.attr-button').prop('disabled', false);
+  $('.attr-button').removeClass('bg-gray-200');
 }
 
 $(document).ready(function () {
@@ -134,26 +135,37 @@ $(document).ready(function () {
     $('.msg-box').slideUp(500);
   }, 7000);
 
-  $('.chosen-select').chosen({ width: '510px' });
+  $('.chosen-select').chosen({ width: '400px' });
 
-  function delChoice() {
-    console.log('here');
-  }
+  let li_count = 0;
 
   $('.add-choice').click(function (e) {
     const choice_value = $('#choice').val();
-    $(
-      '.choices-list'
-    ).append(`<li class="my-1 id="${new Date().getTime()}">${choice_value} 
-    <button type="button" class="inline-block  choice-delete-button" id="${new Date().getTime()}">X</button>
+
+    if (choice_value.trim().length > 0) {
+      $('.choices-list')
+        .append(`<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
+    <input type="hidden" name="choices[]" value="${choice_value}"/>
+    <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
     </li>  
     `);
+    }
+
+    li_count = $('.choices-list').children().length;
+    if (li_count > 0) {
+      $('.please-add-choices').hide();
+      enableSubmit();
+    }
   });
 
   $(document).on('click', '.choice-delete-button', function (e) {
-    const li_id = $(this).attr('id');
-    $('#' + li_id)
-      .parent()
-      .remove();
+    const _id = $(this).attr('id');
+    $('#li-' + _id).remove();
+
+    li_count = $('.choices-list').children().length;
+    if (li_count < 1) {
+      disableSubmit();
+      $('.please-add-choices').show();
+    }
   });
 });

@@ -3,6 +3,8 @@ const router = express.Router();
 const pool = require('../config/db_pool');
 const { isEmail } = require('validator');
 
+let conn;
+
 router.get('/', (req, res) => {
   return res.render('index', {
     title: 'Dashboard'
@@ -44,7 +46,7 @@ async function validateAttribute(body) {
     minimum,
     maximum,
     unit,
-    options,
+    choices,
     labels,
     groups
   } = body;
@@ -73,27 +75,21 @@ async function validateAttribute(body) {
   if (typeof type === 'undefined' || !types.includes(type))
     errs.push('Attribute type field is invalid');
 
-  console.log('atttt typpppe', type);
-
   ////////// Attribute Name //////////////
-  if (typeof name === 'undefined' || name === '')
+  if (typeof name === 'undefined' || name.trim() === '')
     errs.push('Name field is required');
-
   if (name.length < 2) errs.push('Name field minimum length is 2 letters');
-
   if (name.length > 250) errs.push('Name field maximum length is 250 letters');
 
   ////////// Attribute Description //////////////
   if (description !== '' && description.length < 2)
     errs.push('Description field minimum length is 2 letters');
-
   if (description !== '' && description.length > 250)
     errs.push('Description field maximum length is 250 letters');
 
   ////////// Attribute Default //////////////
   if (default_value !== '' && default_value.length < 2)
     errs.push('Default field minimum length is 2 letters');
-
   if (default_value !== '' && default_value.length > 250)
     errs.push('Default field maximum length is 250 letters');
 
@@ -101,18 +97,13 @@ async function validateAttribute(body) {
   if (type == 'text' || type == 'textarea' || type == 'number') {
     if (minimum !== '' && isNaN(minimum))
       errs.push('Minimum field must be numeric');
-
     if (minimum !== '' && minimum < 1) errs.push('Minimum field value is 1');
-
     if (minimum !== '' && minimum > 10000)
       errs.push('Minimum field maximum value is 10000');
-
     if (maximum !== '' && isNaN(maximum))
       errs.push('Maximum field must be numeric');
-
     if (maximum !== '' && maximum < 1)
       errs.push('Maximum field minimum value is 1');
-
     if (maximum !== '' && maximum > 10000)
       errs.push('Maximum field maximum value is 10000');
   }
@@ -120,54 +111,46 @@ async function validateAttribute(body) {
   ////////// Attribute Unit //////////////
   if (unit !== '' && unit.length < 2)
     errs.push('Unit field minimum length is 2 letters');
-
   if (unit !== '' && unit.length > 250)
     errs.push('Unit field maximum length is 250 letters');
 
   ////////// Attribute english label //////////////
-  const posted_label_ids = [];
-  if (typeof labels === 'undefined') {
-    errs.push('Label is required.');
+  const posted_labels = [];
+  if (typeof labels === 'undefined' || labels.length < 1) {
+    errs.push('At least english label is required');
   } else {
-    for (let id in labels) {
-      if (Object.hasOwnProperty.call(labels, id)) {
-        number_id = parseInt(id.replace('"', '')); // remove "" around the number
-        if (number_id === 1 && labels[id] == '')
-          errs.push('English label is required');
-        try {
-          const locals = await pool.query('select id from locals');
-          const locals_ids = locals.map((local) => parseInt(local.id)); // coloct loclas ids
-          // check group ids are exist in locals  table
-          if (!locals_ids.includes(number_id)) errs.push('Invalid label id');
-        } catch (err) {
-          // console.log('db err',err);
-          errs.push('DB error getting labels');
-        }
-        // validate id
-        if (!isNaN(number_id)) posted_label_ids.push(number_id);
-        else errs.push('Label is invalid');
+    for (let abbreviation in labels) {
+      try {
+        const locals = await pool.query('select abbreviation from locals');
+        const locals_abbrs = locals.map((local) => local.abbreviation); // coloct loclas abbrs
+        // check group ids are exist in locals  table
+        if (!locals_abbrs.includes(abbreviation)) errs.push('Invalid label');
+      } catch (err) {
+        // console.log('db err',err);
+        errs.push('DB error getting labels');
       }
     }
   }
-  if (!posted_label_ids.includes(1)) errs.push('English label is required'); // id 1 is the english label
 
-  ////////// Attribute english label //////////////
+  ////////// Attribute required label //////////////
   if (typeof required !== 'undefined' && required !== 'true')
     errs.push('Required field is invalid');
 
   ////////// Attribute Default //////////////
   if (default_area !== '' && default_area.length < 10)
     errs.push('Default textarea field minimum length is 10 letters');
-
   if (default_area !== '' && default_area.length > 10000)
     errs.push('Default textarea field maximum length is 10000 letters');
 
-  ////////// Attribute Options //////////////
-  if (options !== '' && options.length < 2)
-    errs.push('Options field minimum length is 2 letters');
-
-  if (options !== '' && options.length > 10000)
-    errs.push('Options field maximum length is 10000 letters');
+  ////////// Attribute choices //////////////
+  if (typeof choices !== 'undefined' && choices.length < 1) {
+    errs.push('At least one choice is required');
+  } else {
+    if (typeof choices !== 'undefined') {
+      choices.filter((choice) => choice.trim().length > 0);
+      if (choices.length < 1) errs.push('At least one choice is required');
+    }
+  }
 
   ////////// Attribute email //////////////
   if (type === 'email' && default_value !== '' && !isEmail(default_value))
@@ -180,7 +163,7 @@ async function validateAttribute(body) {
     // check group ids are exist in groups in table
     if (typeof groups !== 'undefined') {
       groups.forEach((group) => {
-        if (!groups_ids.includes(parseInt(group)) || isNaN(parseInt(group)))
+        if (!groups_ids.includes(parseInt(group.id)))
           errs.push('Invalid group id');
       });
     }
@@ -203,12 +186,12 @@ async function postAttribute(body) {
     minimum,
     maximum,
     unit,
-    options,
+    choices,
     groups,
     labels
   } = body;
 
-  const slug = name + '-' + new Date().getTime();
+  const slug = name.replace(' ', '-') + '-' + new Date().getTime();
   required = required == 'true';
   minimum = parseInt(minimum) || null;
   maximum = parseInt(maximum) || null;
@@ -231,7 +214,7 @@ async function postAttribute(body) {
       default_area
     ];
 
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
     await conn.beginTransaction();
 
     const res = await conn.query(query, values);
@@ -255,13 +238,17 @@ async function postAttribute(body) {
     const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,?)`;
 
     const posted_labels = [];
-    for (let id in labels) {
-      if (Object.hasOwnProperty.call(labels, id)) {
-        v = labels[id];
-        number_id = parseInt(id.replace('"', '')); // remove "" around the number
-        if (typeof v !== 'undefined' && v.length > 1) {
-          posted_labels.push([number_id, v, id]);
-        }
+    for (let abbreviation in labels) {
+      if (
+        typeof abbreviation !== 'undefined' &&
+        labels[abbreviation].length > 1
+      ) {
+        const result = await pool.query(
+          'select id from locals where abbreviation = (?) limit 1',
+          [abbreviation]
+        );
+        const _id = result[0].id;
+        posted_labels.push([_id, labels[abbreviation], id]);
       }
     }
     await conn.batch(labels_query, posted_labels);
