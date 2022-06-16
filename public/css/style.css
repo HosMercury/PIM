@@ -441,6 +441,16 @@ input {
   padding-top: 8px !important;
 }
 
+.chosen-results {
+  height: 150px !important;
+  padding: 4px !important;
+}
+
+.choice-delete-button {
+  color: red;
+  padding-left: 10px;
+}
+
 .fixed {
   position: fixed;
 }
@@ -522,16 +532,6 @@ input {
   margin-right: 3rem;
 }
 
-.my-1 {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.my-8 {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -540,6 +540,16 @@ input {
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .mb-0 {
@@ -562,16 +572,24 @@ input {
   margin-top: 1.5rem;
 }
 
-.mb-2 {
-  margin-bottom: 0.5rem;
+.mb-1 {
+  margin-bottom: 0.25rem;
 }
 
 .mb-4 {
   margin-bottom: 1rem;
 }
 
-.mt-40 {
-  margin-top: 10rem;
+.ml-12 {
+  margin-left: 3rem;
+}
+
+.mt-24 {
+  margin-top: 6rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
 }
 
 .mb-6 {
@@ -670,8 +688,8 @@ input {
   width: 8rem;
 }
 
-.w-40 {
-  width: 10rem;
+.w-36 {
+  width: 9rem;
 }
 
 .w-1\/2 {
@@ -684,6 +702,18 @@ input {
 
 .w-80 {
   width: 20rem;
+}
+
+.w-56 {
+  width: 14rem;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
+.w-40 {
+  width: 10rem;
 }
 
 .w-\[6rem\] {
@@ -704,6 +734,10 @@ input {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.list-decimal {
+  list-style-type: decimal;
 }
 
 .flex-row-reverse {
@@ -862,6 +896,11 @@ input {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
 .bg-red-500 {

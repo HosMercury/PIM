@@ -2,16 +2,10 @@ function chooseInputType(buttonType) {
   if (buttonType !== 'text' || buttonType !== 'number')
     $('.minimum-err').text('');
 
-  $('#options').removeAttr('required');
-
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
 
   $('.f-control').addClass('hidden');
-
-  $('.field-options').text(
-    buttonType.charAt(0).toUpperCase() + buttonType.slice(1) + ' options'
-  );
 
   $('button.border-nex').removeClass('border-nex');
   $('.' + buttonType + '-button').addClass('border-nex');
@@ -76,15 +70,15 @@ function chooseInputType(buttonType) {
     buttonType === 'single-select' ||
     buttonType === 'multiple-select'
   ) {
-    $('#options_control').removeClass('hidden');
+    $('#choices_control').removeClass('hidden');
     $('#default_control').addClass('hidden');
     $('#maximum_label').text('Maximum length');
     $('#minimum_label').text('Minimum length');
-    $('#options_label').text(
-      buttonType.charAt(0).toUpperCase() + buttonType.slice(1) + ' options'
+    $('#choices_label').text(
+      buttonType.charAt(0).toUpperCase() + buttonType.slice(1) + ' Choices'
     );
-    $('#options').prop('required', 'required');
-    $('#options_label').append('*');
+    $('#choices').prop('required', 'required');
+    $('#choices_label').append('*');
   }
 
   $('#minimum').blur(callBackOnBlur);
@@ -141,4 +135,25 @@ $(document).ready(function () {
   }, 7000);
 
   $('.chosen-select').chosen({ width: '510px' });
+
+  function delChoice() {
+    console.log('here');
+  }
+
+  $('.add-choice').click(function (e) {
+    const choice_value = $('#choice').val();
+    $(
+      '.choices-list'
+    ).append(`<li class="my-1 id="${new Date().getTime()}">${choice_value} 
+    <button type="button" class="inline-block  choice-delete-button" id="${new Date().getTime()}">X</button>
+    </li>  
+    `);
+  });
+
+  $(document).on('click', '.choice-delete-button', function (e) {
+    const li_id = $(this).attr('id');
+    $('#' + li_id)
+      .parent()
+      .remove();
+  });
 });
