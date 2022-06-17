@@ -296,7 +296,7 @@ async function postAttribute(body) {
 }
 
 router.post('/attributes', async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   // return res.json(req.body);
   const errs = await validateAttribute(req.body);
   if (errs.length > 0) {

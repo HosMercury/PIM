@@ -1,6 +1,100 @@
 @tailwind base;
 @tailwind components;
 
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-Bold.woff2') format('woff2'),
+    url('lato/Lato-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-BoldItalic.woff2') format('woff2'),
+    url('lato/Lato-BoldItalic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-Black.woff2') format('woff2'),
+    url('lato/Lato-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-BlackItalic.woff2') format('woff2'),
+    url('lato/Lato-BlackItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-Light.woff2') format('woff2'),
+    url('lato/Lato-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-LightItalic.woff2') format('woff2'),
+    url('lato/Lato-LightItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-Regular.woff2') format('woff2'),
+    url('lato/Lato-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato Hairline';
+  src: url('lato/Lato-Hairline.woff2') format('woff2'),
+    url('lato/Lato-Hairline.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato Hairline';
+  src: url('lato/Lato-HairlineItalic.woff2') format('woff2'),
+    url('lato/Lato-HairlineItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('lato/Lato-Italic.woff2') format('woff2'),
+    url('lato/Lato-Italic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+body {
+  font-family: 'lato', sans-serif !important;
+}
+
 input {
   padding: 8px !important;
 }
