@@ -1,4 +1,5 @@
 function chooseInputType(buttonType) {
+  enableSubmit();
   if (buttonType !== 'text' || buttonType !== 'number')
     $('.minimum-err').text('');
 
@@ -145,7 +146,7 @@ $(document).ready(function () {
     if (choice_value.trim().length > 0) {
       $('.choices-list')
         .append(`<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
-    <input type="hidden" name="choices[]" value="${choice_value}"/>
+    <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
     <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
     </li>  
     `);

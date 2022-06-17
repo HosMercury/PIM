@@ -1,10 +1,10 @@
 <div
-  class='nex-modal w-5/6 max-h-[750px] fixed z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl
+  class='nex-modal w-5/6 max-h-[725px] absolute z-10 overflow-auto top-20 left-40 border-2 border-nex bg-white m-auto p-2 rounded drop-shadow-2xl
   <%= typeof errs !== 'undefined' ? 'block' : 'hidden' %> '
 >
-  <div>
+  <div class="my-3">
     <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
-    <button class='absolute right-4 top-2 close-nex-modal'>
+    <button class='absolute right-4 top-4 close-nex-modal'>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         class='h-8 w-8'
@@ -494,7 +494,8 @@
           </div>
 
           <div class='flex align-end justify-center h-100 w-100 mt-24'>
-            <button type='submit' onclick="return confirm('Are you sure?')"
+            <button type='submit' 
+            
               class='bg-nex px-3 py-1 text-white rounded-md w-40 h-12 hover:opacity-80 attr-button'
             >Save Attribute</button>
           </div>

@@ -451,10 +451,6 @@ input {
   padding-left: 10px;
 }
 
-.fixed {
-  position: fixed;
-}
-
 .absolute {
   position: absolute;
 }
@@ -483,8 +479,8 @@ input {
   right: 1rem;
 }
 
-.top-2 {
-  top: 0.5rem;
+.top-4 {
+  top: 1rem;
 }
 
 .bottom-1 {
@@ -507,6 +503,11 @@ input {
   margin: 0.5rem;
 }
 
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -515,11 +516,6 @@ input {
 .my-2 {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-}
-
-.my-3 {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
 }
 
 .mx-2 {
@@ -656,8 +652,8 @@ input {
   height: 4rem;
 }
 
-.max-h-\[750px\] {
-  max-height: 750px;
+.max-h-\[725px\] {
+  max-height: 725px;
 }
 
 .min-h-screen {
@@ -726,6 +722,18 @@ input {
 
 .w-\[22rem\] {
   width: 22rem;
+}
+
+.max-w-\[7000px\] {
+  max-width: 7000px;
+}
+
+.max-w-\[700px\] {
+  max-width: 700px;
+}
+
+.max-w-\[1000px\] {
+  max-width: 1000px;
 }
 
 .shrink-0 {
