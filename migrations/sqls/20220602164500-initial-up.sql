@@ -66,7 +66,7 @@ create table attributes (
 	updated_at timestamp default now()
 );
 
-create table attribute_options (
+create table attribute_choices (
 	id int unsigned primary key not null auto_increment,
 	name varchar(255) not null,
   attribute_id int unsigned  not null references attributes(id) on delete cascade,

@@ -79,17 +79,17 @@ async function validateAttribute(body) {
 
   ////////// Attribute Description //////////////
   if (typeof description !== 'undefined') {
-    if (description.length < 2)
+    if (description !== '' && description.length < 2)
       errs.push('Description field minimum length is 2 letters');
-    if (description.length > 250)
+    if (description !== '' && description.length > 250)
       errs.push('Description field maximum length is 250 letters');
   }
 
   ////////// Attribute Default //////////////
   if (typeof default_value !== 'undefined') {
-    if (default_value.length < 2)
+    if (default_value !== '' && default_value.length < 2)
       errs.push('Default value field minimum length is 2 letters');
-    if (default_value.length > 250)
+    if (default_value !== '' && default_value.length > 250)
       errs.push('Default value field maximum length is 250 letters');
   }
 
@@ -103,7 +103,8 @@ async function validateAttribute(body) {
       }
       if (typeof maximum !== 'undefined') {
         if (isNaN(maximum)) errs.push('Maximum field must be numeric');
-        if (maximum < 1) errs.push('Maximum field minimum value is 1');
+        if (parseInt(maximum) < parseInt(minimum))
+          errs.push('Maximum field must be greater than minimum value');
         if (maximum > 10000) errs.push('Maximum field maximum value is 10000');
       }
     }
@@ -111,17 +112,34 @@ async function validateAttribute(body) {
 
   ////////// Attribute Unit //////////////
   if (typeof unit !== 'undefined') {
-    if (unit.length < 2) errs.push('Unit field minimum length is 2 letters');
-    if (unit.length > 250)
+    if (unit !== '' && unit.length < 2)
+      errs.push('Unit field minimum length is 2 letters');
+    if (unit !== '' && unit.length > 250)
       errs.push('Unit field maximum length is 250 letters');
   }
 
   ////////// Attribute english label //////////////
   if (typeof labels !== 'undefined') {
-    if (labels.length > 0) {
+    if (
+      labels &&
+      Object.keys(labels).length > 0 &&
+      Object.getPrototypeOf(labels) === Object.prototype
+    ) {
+      // check labels that are not empty
+      let values = Object.values(labels);
+      values = values.filter((label) => label.trim().length > 0);
+
+      if (values.length < 1) errs.push('English label is required ');
+
       const posted_labels = [];
       for (let abbreviation in labels) {
         try {
+          if (
+            abbreviation === 'en-us' &&
+            labels[abbreviation].trim().length < 1
+          )
+            errs.push('English label  required ');
+
           const locals = await pool.query('select abbreviation from locals');
           const locals_abbrs = locals.map((local) => local.abbreviation); // coloct locals abbrs
           // check group ids are exist in locals  table
@@ -131,8 +149,8 @@ async function validateAttribute(body) {
           errs.push('DB error getting labels');
         }
       }
-    } else errs.push('At least one label is required');
-  } else errs.push('At least english label is required');
+    }
+  } else errs.push('English label is required');
 
   ////////// Attribute required checkbox label //////////////
   if (typeof required !== 'undefined')
@@ -140,9 +158,9 @@ async function validateAttribute(body) {
 
   ////////// Attribute Default //////////////
   if (typeof default_area !== 'undefined') {
-    if (default_area.length < 10)
+    if (default_area !== '' && default_area.length < 10)
       errs.push('Default textarea field minimum length is 10 letters');
-    if (default_area.length > 10000)
+    if (default_area !== '' && default_area.length > 10000)
       errs.push('Default textarea field maximum length is 10000 letters');
   }
 
@@ -210,7 +228,7 @@ async function postAttribute(body) {
     labels
   } = body;
 
-  const slug = name.replace(' ', '-') + '-' + new Date().getTime();
+  const slug = name.replace(/[^0-9a-z]/gi, '') + '-' + new Date().getTime();
   required = required == 'true';
   minimum = parseInt(minimum) || null;
   maximum = parseInt(maximum) || null;
@@ -237,51 +255,36 @@ async function postAttribute(body) {
     await conn.beginTransaction();
 
     const res = await conn.query(query, values);
-    const id = res.insertId;
+    const attr_id = res.insertId;
 
-    // options
-    if (typeof options !== 'undefined' && options.length >= 2) {
-      let splitted_options = options.split('\r\n');
-      splitted_options = splitted_options.filter(
-        (option) => option.trim() != '' || option == '\r'
-      );
-      const options_query = `insert into attribute_options (name, attribute_id) values(?,?)`;
-      const options_values = [];
-      splitted_options.forEach((option) => {
-        options_values.push([option, id]);
-      });
-      await conn.batch(options_query, options_values);
+    // Choices ---
+    if (typeof choices !== 'undefined' && choices.length > 0) {
+      const options_query = `insert into attribute_choices (name, attribute_id) values(?,${attr_id})`;
+      await conn.batch(options_query, choices);
     }
 
     // Locals - labels;
-    const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,?)`;
-
-    const posted_labels = [];
+    const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,${attr_id})`;
+    const lbels_array = [];
     for (let abbreviation in labels) {
-      if (
-        typeof abbreviation !== 'undefined' &&
-        labels[abbreviation].length > 1
-      ) {
-        const result = await pool.query(
-          'select id from locals where abbreviation = (?) limit 1',
-          [abbreviation]
-        );
-        const _id = result[0].id;
-        posted_labels.push([_id, labels[abbreviation], id]);
+      const results = await pool.query(
+        'select id from locals where abbreviation = ?',
+        [abbreviation]
+      );
+      const label_id = results[0].id;
+      if (labels[abbreviation].trim().length > 0) {
+        lbels_array.push([label_id, labels[abbreviation]]);
       }
     }
-    await conn.batch(labels_query, posted_labels);
+    await conn.batch(labels_query, lbels_array);
 
     //groups
-    if (typeof groups !== 'undefined') {
-      // may not choose groups
-      const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,?)`;
-      const groups_values = [];
-      groups.forEach((group_id) => {
-        groups_values.push([group_id, id]);
-      });
-
-      await conn.batch(groups_query, groups_values);
+    if (typeof groups !== 'undefined' && groups.length > 0) {
+      // remove empty groups items
+      groups = groups.filter((group) => group.trim().length > 0);
+      groups = groups.map((group) => parseInt(group));
+      const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,${attr_id})`;
+      await conn.batch(groups_query, groups);
     }
 
     await conn.commit();
@@ -293,16 +296,17 @@ async function postAttribute(body) {
 }
 
 router.post('/attributes', async (req, res) => {
+  console.log(req.body);
   // return res.json(req.body);
   const errs = await validateAttribute(req.body);
   if (errs.length > 0) {
     req.session.errs = errs;
     req.session.old = req.body;
-    return res.redirect('back');
+    return res.status(400).redirect('back');
   }
   postAttribute(req.body);
   req.session.msg = 'Attribute added successfully';
-  return res.redirect('back');
+  return res.status(200).redirect('back');
 });
 
 module.exports = router;
