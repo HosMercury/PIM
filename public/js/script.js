@@ -30,8 +30,8 @@ function chooseInputType(buttonType) {
     ); // label text
 
     if (buttonType === 'text') {
-      $('#maximum_label').text('Maximum length');
-      $('#minimum_label').text('Minimum length');
+      $('#maximum_label').text('Maximum Length');
+      $('#minimum_label').text('Minimum Length');
     }
     // show inputs
     $(
@@ -54,8 +54,8 @@ function chooseInputType(buttonType) {
     $('#default_area_control,#minimum_control , #maximum_control').removeClass(
       'hidden'
     );
-    $('#maximum_label').text('Maximum length');
-    $('#minimum_label').text('Minimum length');
+    $('#maximum_label').text('Maximum Length');
+    $('#minimum_label').text('Minimum Length');
   }
 
   if (buttonType === 'date' || buttonType === 'datetime') {
@@ -77,7 +77,13 @@ function chooseInputType(buttonType) {
     buttonType === 'single-select' ||
     buttonType === 'multiple-select'
   ) {
-    disableSubmit();
+    li_count = $('.choices-list').children().length;
+    if (li_count < 1) {
+      disableSubmit();
+      $('.please-add-choices').show(); // label text
+    } else {
+      enableSubmit();
+    }
     $('#choices_control').removeClass('hidden');
     $('#default_control').addClass('hidden');
     $('#maximum_label').text('Maximum length');
@@ -166,6 +172,8 @@ $(document).ready(function () {
     old_choices_list.forEach(function (choice_value) {
       $('.choices-list').append(generateAppendedChoices(choice_value));
     });
+    enableSubmit();
+    $('.please-add-choices').hide(); // label text
   }
 
   $('.add-choice').click(function (e) {
@@ -190,6 +198,8 @@ $(document).ready(function () {
     if (li_count < 1) {
       disableSubmit();
       $('.please-add-choices').show(); // label text
+    } else {
+      enableSubmit();
     }
   });
 });

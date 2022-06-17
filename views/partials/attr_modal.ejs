@@ -285,7 +285,7 @@
         method='post'
         class='flex w-100 space-x-4 '
       >
-        <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? old.type : 'text' %>' class='button-type' />
+        <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? locals.old.type : 'text' %>' class='button-type' />
         <div class='w-1/2'>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
@@ -305,7 +305,7 @@
               required
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? old.name : '' %>'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.name : '' %>'
             />
           </div>
 
@@ -322,7 +322,7 @@
               name='description'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? old.description : '' %>'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.description : '' %>'
             />
           </div>
 
@@ -333,7 +333,7 @@
           <div class='mx-2' id='required_control'>
             <input
               type='checkbox'
-              <%= typeof locals.old !== 'undefined' && old.required == 'true'  ? ' checked ' : '' %>
+              <%= typeof locals.old !== 'undefined' && locals.old.required == 'true'  ? ' checked ' : '' %>
               name='required'
               id="required"
               class='w-6 h-6'
@@ -355,7 +355,7 @@
               name='default_value'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? old.default_value : '' %>'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.default_value : '' %>'
             />
           </div>
 
@@ -376,7 +376,7 @@
               name='default_area'
               class='p-2 border border-gray-400 rounded w-80'
               minlength="10"
-            ><%= typeof locals.old !== 'undefined' ? old.default_area : '' %></textarea>
+            ><%= typeof locals.old !== 'undefined' ? locals.old.default_area : '' %></textarea>
           </div>
 
           <div class='my-3 flex align-items f-control' id='minimum_control'>
@@ -392,7 +392,7 @@
               class='h-12 px-2 border border-gray-400 rounded w-80'
               min="1"
               pattern='[0-9]'
-              value='<%= typeof locals.old !== 'undefined' ? old.minimum : '' %>'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.minimum : '' %>'
             />
           </div>
           <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
@@ -409,7 +409,7 @@
               class='h-12 px-2 border border-gray-400 rounded w-80'
               min="1"
               pattern='[0-9]' 
-              value='<%= typeof locals.old !== 'undefined' ? old.maximum : '10000' %>'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.maximum : '10000' %>'
             />
           </div>
 
@@ -422,7 +422,7 @@
               name='unit'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? old.unit: '' %>'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.unit: '' %>'
             />
           </div>
 
@@ -442,7 +442,7 @@
               <button type='button' class="border h-12 border-gray-400 rounded mx-4 w-16 bg-gray-50 add-choice">Add</button>
             </div>
             <p class="text-gray-700 mx-auto text-sm please-add-choices">Please add choices</p>
-             <input type="hidden" value="<%= typeof locals.old !== 'undefined' ? JSON.stringify(old.choices) : null %>" class="old-choices-list">
+             <input type="hidden" value="<%= typeof locals.old !== 'undefined' ? JSON.stringify(locals.old.choices) : null %>" class="old-choices-list">
             <ul class='my-4 ml-4 choices-list'></ul>
           </div>
         </div>
@@ -471,6 +471,7 @@
                 class='h-12 px-2 border border-gray-400 rounded w-80'
                 minlength="2"
                 <%= label.abbreviation === 'en-us' ? ' required' : '' %>
+                value='<%= typeof locals.old !== 'undefined' ? locals.old.labels[label.abbreviation] : '' %>'
               />
             </div>
             <% }) %>
@@ -486,9 +487,13 @@
               id='groups'
               name='groups[]'
             >
-            <% if (typeof locals.groups !== 'undefined') { %>
+            <% if (typeof groups !== 'undefined') { %>
             <% groups.forEach(group => { %>
-                <option value='<%= group.id %> ' class='my-1'><%= group.name %> </option>
+                <option value='<%= group.id %>' 
+                  <% if (typeof locals.old !== 'undefined' && typeof locals.old.groups !== 'undefined'&& locals.old.groups.includes(group.id.toString())) { %>
+                  <%= ' selected ' %> 
+                  <% } %>
+                  ><%= group.name %> </option>
             <% }) %>
             <% } %>
             </select>

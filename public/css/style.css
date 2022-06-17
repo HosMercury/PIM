@@ -524,15 +524,12 @@ input {
 }
 
 .search-field input[type='text'] {
-  padding: 10px !important;
+  padding: 5px !important;
   border: solid 1px rgb(156, 163, 175) !important;
 }
 
 .chosen-choices {
   border-radius: 0.25rem !important;
-  height: 45px !important;
-  line-height: 21px !important;
-  padding-top: 8px !important;
 }
 
 .chosen-results {
@@ -543,10 +540,6 @@ input {
 .choice-delete-button {
   color: red;
   padding-left: 10px;
-}
-
-.fixed {
-  position: fixed;
 }
 
 .absolute {
@@ -634,11 +627,6 @@ input {
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
-}
-
-.my-1 {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
 }
 
 .my-8 {
@@ -748,10 +736,6 @@ input {
 
 .h-\[4rem\] {
   height: 4rem;
-}
-
-.h-20 {
-  height: 5rem;
 }
 
 .max-h-\[725px\] {
