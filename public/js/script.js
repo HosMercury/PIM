@@ -19,9 +19,15 @@ function chooseInputType(buttonType) {
   ) {
     $('#default_value').prop('type', buttonType); // input type
     // labels
-    $('#default_label').text('Default ' + buttonType); // label text
-    $('#minimum_label').text('Minimum ' + buttonType); // label text
-    $('#maximum_label').text('Maximum ' + buttonType); // label text
+    $('#default_label').text(
+      'Default ' + buttonType.charAt(0).toUpperCase() + buttonType.slice(1)
+    ); // label text
+    $('#minimum_label').text(
+      'Minimum ' + buttonType.charAt(0).toUpperCase() + buttonType.slice(1)
+    ); // label text
+    $('#maximum_label').text(
+      'Maximum ' + buttonType.charAt(0).toUpperCase() + buttonType.slice(1)
+    ); // label text
 
     if (buttonType === 'text') {
       $('#maximum_label').text('Maximum length');
@@ -113,7 +119,12 @@ function enableSubmit() {
   $('.attr-button').removeClass('bg-gray-200');
 }
 
+// Document Ready
+// ---------------------------------------
 $(document).ready(function () {
+  const type = $('.button-type').val();
+  chooseInputType(type);
+
   // animate the attrs modal
   $('.create-attribute').click(function () {
     $('.nex-modal').slideDown(500);
@@ -140,16 +151,28 @@ $(document).ready(function () {
 
   let li_count = 0;
 
+  function generateAppendedChoices(choice_value) {
+    return `<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
+    <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
+    <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
+    </li>  
+    `;
+  }
+
+  let old_choices_list = $('.old-choices-list').val();
+  if (old_choices_list) {
+    old_choices_list = JSON.parse(old_choices_list);
+
+    old_choices_list.forEach(function (choice_value) {
+      $('.choices-list').append(generateAppendedChoices(choice_value));
+    });
+  }
+
   $('.add-choice').click(function (e) {
     const choice_value = $('#choice').val();
 
     if (choice_value.trim().length > 0) {
-      $('.choices-list')
-        .append(`<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
-    <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
-    <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
-    </li>  
-    `);
+      $('.choices-list').append(generateAppendedChoices(choice_value));
     }
 
     li_count = $('.choices-list').children().length;
@@ -166,7 +189,7 @@ $(document).ready(function () {
     li_count = $('.choices-list').children().length;
     if (li_count < 1) {
       disableSubmit();
-      $('.please-add-choices').show();
+      $('.please-add-choices').show(); // label text
     }
   });
 });

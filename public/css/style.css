@@ -545,6 +545,10 @@ input {
   padding-left: 10px;
 }
 
+.fixed {
+  position: fixed;
+}
+
 .absolute {
   position: absolute;
 }
@@ -744,6 +748,10 @@ input {
 
 .h-\[4rem\] {
   height: 4rem;
+}
+
+.h-20 {
+  height: 5rem;
 }
 
 .max-h-\[725px\] {

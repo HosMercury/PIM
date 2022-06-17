@@ -285,7 +285,7 @@
         method='post'
         class='flex w-100 space-x-4 '
       >
-        <input type='hidden' name='type' value='text' class='button-type' />
+        <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? old.type : 'text' %>' class='button-type' />
         <div class='w-1/2'>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
@@ -442,7 +442,8 @@
               <button type='button' class="border h-12 border-gray-400 rounded mx-4 w-16 bg-gray-50 add-choice">Add</button>
             </div>
             <p class="text-gray-700 mx-auto text-sm please-add-choices">Please add choices</p>
-            <ul class='my-4 ml-4 choices-list	'></ul>
+             <input type="hidden" value="<%= typeof locals.old !== 'undefined' ? JSON.stringify(old.choices) : null %>" class="old-choices-list">
+            <ul class='my-4 ml-4 choices-list'></ul>
           </div>
         </div>
 

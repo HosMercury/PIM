@@ -138,7 +138,7 @@ async function validateAttribute(body) {
             abbreviation === 'en-us' &&
             labels[abbreviation].trim().length < 1
           )
-            errs.push('English label  required ');
+            errs.push('English label is required ');
 
           const locals = await pool.query('select abbreviation from locals');
           const locals_abbrs = locals.map((local) => local.abbreviation); // coloct locals abbrs
