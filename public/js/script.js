@@ -205,5 +205,26 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-  $('#attr-table').DataTable();
+  $('#attr-table').DataTable({
+    ajax: {
+      url: '/api/attributes',
+      dataSrc: ''
+    },
+    order: [[0, 'desc']],
+    columns: [
+      { data: 'id' },
+      { data: 'name' },
+      { data: 'type' },
+      { data: 'slug' },
+      { data: 'created_at' }
+    ],
+    columnDefs: [
+      {
+        targets: [4],
+        render: function (data, type, row) {
+          return data ? moment(data).format('DD-MM-YYYY HH:MM') : null;
+        }
+      }
+    ]
+  });
 });

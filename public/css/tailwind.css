@@ -1,95 +1,8 @@
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-Bold.woff2') format('woff2'),
-    url('lato/Lato-Bold.woff') format('woff');
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-BoldItalic.woff2') format('woff2'),
-    url('lato/Lato-BoldItalic.woff') format('woff');
-  font-weight: bold;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-Black.woff2') format('woff2'),
-    url('lato/Lato-Black.woff') format('woff');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-BlackItalic.woff2') format('woff2'),
-    url('lato/Lato-BlackItalic.woff') format('woff');
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-Light.woff2') format('woff2'),
-    url('lato/Lato-Light.woff') format('woff');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-LightItalic.woff2') format('woff2'),
-    url('lato/Lato-LightItalic.woff') format('woff');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-Regular.woff2') format('woff2'),
-    url('lato/Lato-Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato Hairline';
-  src: url('lato/Lato-Hairline.woff2') format('woff2'),
-    url('lato/Lato-Hairline.woff') format('woff');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato Hairline';
-  src: url('lato/Lato-HairlineItalic.woff2') format('woff2'),
-    url('lato/Lato-HairlineItalic.woff') format('woff');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Lato';
-  src: url('lato/Lato-Italic.woff2') format('woff2'),
-    url('lato/Lato-Italic.woff') format('woff');
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
+@import './typeface.css';
 
 body {
   font-family: 'lato', sans-serif !important;
@@ -120,25 +33,48 @@ input {
   padding-left: 10px;
 }
 
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_processing,
+.dataTables_paginate {
+  margin: 0.7rem;
+}
+
+.dt-table {
+  width: 100% !important;
+}
+
+.paginate_button {
+  padding: 5px !important;
+  border-radius: 5px !important;
+}
+
 @layer components {
   .dt-table {
+    @apply mt-4 rounded;
     border-collapse: collapse;
     border-spacing: 0;
-    width: 100%;
     border: 1px solid rgb(156, 163, 175);
   }
 
-  /* .dt-table thead {
-    @apply font-semibold  my-4 p-4;
-  } */
+  .dt-table thead {
+    @apply my-4 p-4 bg-nex text-white h-12;
+  }
+
+  .dt-table tbody {
+    @apply my-4 p-4 bg-nex h-12 text-gray-800;
+  }
 
   .dt-table tr {
-    padding: 15px !important;
+    @apply h-12;
   }
 
-  .dt-table .dataTables_filter {
-    margin-bottom: 20px !important;
+  .dt-table select {
+    @apply border rounded;
+  }
+
+  .paginate_button {
+    @apply rounded;
   }
 }
-
-@tailwind utilities;

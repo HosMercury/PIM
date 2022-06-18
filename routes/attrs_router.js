@@ -11,6 +11,17 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/api/attributes', async (req, res) => {
+  try {
+    const attrs = await pool.query(
+      'select id,type,name, slug, created_at from attributes'
+    );
+
+    return res.json(attrs);
+  } catch (err) {
+    return res.status(400).render('error'); // error page
+  }
+});
 // Get -- Attributes home
 router.get('/attributes', async (req, res) => {
   try {
