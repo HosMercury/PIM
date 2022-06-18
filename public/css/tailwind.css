@@ -97,6 +97,8 @@ body {
 
 input {
   padding: 8px !important;
+  border: 1px solid rgb(156, 163, 175);
+  border-radius: 5px !important;
 }
 
 .search-field input[type='text'] {
@@ -116,6 +118,27 @@ input {
 .choice-delete-button {
   color: red;
   padding-left: 10px;
+}
+
+@layer components {
+  .dt-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid rgb(156, 163, 175);
+  }
+
+  /* .dt-table thead {
+    @apply font-semibold  my-4 p-4;
+  } */
+
+  .dt-table tr {
+    padding: 15px !important;
+  }
+
+  .dt-table .dataTables_filter {
+    margin-bottom: 20px !important;
+  }
 }
 
 @tailwind utilities;

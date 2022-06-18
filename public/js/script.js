@@ -203,3 +203,7 @@ $(document).ready(function () {
     }
   });
 });
+
+$(document).ready(function () {
+  $('#attr-table').DataTable();
+});
