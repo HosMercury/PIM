@@ -13,15 +13,36 @@ router.get('/', (req, res) => {
 
 router.get('/api/attributes', async (req, res) => {
   try {
-    const attrs = await pool.query(
-      'select id,type,name, slug, created_at from attributes'
+    const results = await pool.query(
+      `
+        select id, type, name, slug, created_at
+        from attributes 
+        where created_at > DATE_SUB(now(), INTERVAL 6 MONTH) 
+        order by id desc
+      `
     );
-
-    return res.json(attrs);
+    delete results.meta;
+    return res.json(results);
   } catch (err) {
-    return res.status(400).render('error'); // error page
+    // console.log(err);
+    return res.status(400).send('error'); // error page
   }
 });
+
+router.get('/api/attributes/:id', async (req, res) => {
+  if (isNaN(req.params.id)) return res.status(400).send('error');
+
+  try {
+    const results = await pool.query(`select * from attributes where id = ?`, [
+      req.params.id
+    ]);
+    res.json(results);
+  } catch (err) {
+    // console.log(err);
+    return res.status(400).send('error'); // error page
+  }
+});
+
 // Get -- Attributes home
 router.get('/attributes', async (req, res) => {
   try {

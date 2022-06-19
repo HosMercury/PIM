@@ -45,6 +45,13 @@ input {
   width: 100% !important;
 }
 
+.dt-table tr {
+  cursor: pointer;
+  border: 1px solid rgb(223, 223, 223);
+  border-collapse: collapse;
+  text-align: center;
+}
+
 .paginate_button {
   padding: 5px !important;
   border-radius: 5px !important;

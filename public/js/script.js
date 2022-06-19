@@ -141,6 +141,10 @@ $(document).ready(function () {
     $('.nex-modal').slideUp(500);
   });
 
+  $('.close-nex-modal-show').click(function () {
+    $('.nex-modal-show').slideUp(500);
+  });
+
   $('.close-errs-button').click(function () {
     $('.errs-box').slideUp(500);
   });
@@ -222,9 +226,23 @@ $(document).ready(function () {
       {
         targets: [4],
         render: function (data, type, row) {
-          return data ? moment(data).format('DD-MM-YYYY HH:MM') : null;
+          return data ? moment(data).format('DD-MM-YYYY HH:MM A') : null;
         }
       }
     ]
+  });
+
+  $('#attr-table tbody').on('click', 'tr', function () {
+    const table = $('#attr-table').DataTable();
+
+    const data = table.row(this).data();
+    $.get(`/api/attributes/${data.id}`, (data, status) => {
+      console.log('status', status);
+      console.log(data);
+
+      if (status === 'success') {
+        $('.nex-modal-show').slideDown(500);
+      }
+    });
   });
 });
