@@ -32,13 +32,16 @@ router.get('/api/attributes', async (req, res) => {
 router.get('/api/attributes/:id', async (req, res) => {
   if (isNaN(req.params.id)) return res.status(400).send('error');
 
+  const id = parseInt(req.params.id);
+
   try {
-    const results = await pool.query(`select * from attributes where id = ?`, [
-      req.params.id
-    ]);
+    const results = await pool.query(
+      `select a.id, a.type, a.name, a.slug, a.created_at, a.updated_at, ag.id from attributes as a join attribute_groups as ag on ag.attribute_id=a.id where a.id=?`,
+      [id]
+    );
     res.json(results);
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     return res.status(400).send('error'); // error page
   }
 });

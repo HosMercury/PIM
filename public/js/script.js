@@ -237,11 +237,24 @@ $(document).ready(function () {
 
     const data = table.row(this).data();
     $.get(`/api/attributes/${data.id}`, (data, status) => {
-      console.log('status', status);
       console.log(data);
-
-      if (status === 'success') {
+      if (status === 'success' && append) {
         $('.nex-modal-show').slideDown(500);
+        for (const key in data[0]) {
+          if (typeof data[0][key] !== 'undefined' && data[0][key].length > 0) {
+            $('.nex-modal-show table').append(`
+              <tr class="border border-gray-200" >
+                <td class="w-1/4 border p-3 text-nex font-bold">${key
+                  .toLocaleUpperCase()
+                  .replace('_', ' ')}
+                  </td>
+                  <td>${data[0][key]}</td>
+              </tr>
+          `);
+          }
+        }
+      } else {
+        alert('Error fetching data');
       }
     });
   });
