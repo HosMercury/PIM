@@ -15,13 +15,24 @@ router.get('/api/attributes', async (req, res) => {
   try {
     const results = await pool.query(
       `
-        select id, type, name, slug, created_at
-        from attributes 
-        where created_at > DATE_SUB(now(), INTERVAL 6 MONTH) 
-        order by id desc
+      select a.* ,
+      JSON_OBJECT("id", g.id, "name", g.name) as groups
+      ,JSON_OBJECT("id", l.id, "language", l.language) as locals
+      ,JSON_OBJECT("name", ac.name) as choices,
+      (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
+      (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
+      (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices_count
+      FROM attributes a
+      left join attribute_groups ag on a.id = ag.attribute_id
+      left join groups g on g.id = ag.group_id
+      left join attribute_labels al on a.id = al.attribute_id
+      left join locals l on l.id = al.local_id
+      left join attribute_choices ac on a.id = ac.attribute_id
+      where a.created_at > DATE_SUB(now(), INTERVAL 6 MONTH) 
+      group by a.id
+      order by a.id desc limit 100        
       `
     );
-    delete results.meta;
     return res.json(results);
   } catch (err) {
     // console.log(err);
@@ -29,22 +40,22 @@ router.get('/api/attributes', async (req, res) => {
   }
 });
 
-router.get('/api/attributes/:id', async (req, res) => {
-  if (isNaN(req.params.id)) return res.status(400).send('error');
+// router.get('/api/attributes/:id', async (req, res) => {
+//   if (isNaN(req.params.id)) return res.status(400).send('error');
 
-  const id = parseInt(req.params.id);
+//   const id = parseInt(req.params.id);
 
-  try {
-    const results = await pool.query(
-      `select a.id, a.type, a.name, a.slug, a.created_at, a.updated_at, ag.id from attributes as a join attribute_groups as ag on ag.attribute_id=a.id where a.id=?`,
-      [id]
-    );
-    res.json(results);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send('error'); // error page
-  }
-});
+//   try {
+//     const results = await pool.query(
+//       `select a.id, a.type, a.name, a.slug, a.created_at, a.updated_at, ag.id from attributes as a join attribute_groups as ag on ag.attribute_id=a.id where a.id=?`,
+//       [id]
+//     );
+//     res.json(results);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(400).send('error'); // error page
+//   }
+// });
 
 // Get -- Attributes home
 router.get('/attributes', async (req, res) => {

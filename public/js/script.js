@@ -220,11 +220,14 @@ $(document).ready(function () {
       { data: 'name' },
       { data: 'type' },
       { data: 'slug' },
+      { data: 'groups_count' },
+      { data: 'labels_count' },
+      { data: 'choices_count' },
       { data: 'created_at' }
     ],
     columnDefs: [
       {
-        targets: [4],
+        targets: [7],
         render: function (data, type, row) {
           return data ? moment(data).format('DD-MM-YYYY HH:MM A') : null;
         }
@@ -236,26 +239,19 @@ $(document).ready(function () {
     const table = $('#attr-table').DataTable();
 
     const data = table.row(this).data();
-    $.get(`/api/attributes/${data.id}`, (data, status) => {
-      console.log(data);
-      if (status === 'success' && append) {
+    for (const key in data) {
+      if (typeof data[key] !== 'undefined' && data[key].length > 0) {
         $('.nex-modal-show').slideDown(500);
-        for (const key in data[0]) {
-          if (typeof data[0][key] !== 'undefined' && data[0][key].length > 0) {
-            $('.nex-modal-show table').append(`
-              <tr class="border border-gray-200" >
-                <td class="w-1/4 border p-3 text-nex font-bold">${key
-                  .toLocaleUpperCase()
-                  .replace('_', ' ')}
-                  </td>
-                  <td>${data[0][key]}</td>
-              </tr>
-          `);
-          }
-        }
-      } else {
-        alert('Error fetching data');
+        $('.nex-modal-show table').append(`
+          <tr class="border border-gray-200">
+            <td class="w-1/4 border p-3 text-nex font-bold">${key
+              .toLocaleUpperCase()
+              .replace('_', ' ')}
+              </td>
+              <td>${data[key]}</td>
+          </tr>
+      `);
       }
-    });
+    }
   });
 });
