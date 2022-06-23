@@ -241,6 +241,7 @@ $(document).ready(function () {
     const table = $('#attr-table').DataTable();
 
     const data = table.row(this).data();
+    console.log(data);
     for (const key in data) {
       if (typeof data[key] !== 'undefined' && data[key].length > 0) {
         $('.nex-modal-show').slideDown(300);
@@ -257,11 +258,14 @@ $(document).ready(function () {
       }
     }
   });
+
+  //click outside modal
   $(document).mouseup(function (e) {
     var container = $('.nex-modal-show');
 
     // if the target of the click isn't the container nor a descendant of the container
     if (!container.is(e.target) && container.has(e.target).length === 0) {
+      $('.nex-modal-show table').empty();
       container.slideUp(300);
     }
   });
