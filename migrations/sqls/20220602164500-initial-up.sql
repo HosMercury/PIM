@@ -17,7 +17,7 @@ create table session (
 -- locals that set from settings
 create table locals (
 	id int unsigned primary key not null auto_increment,
-	language varchar(50) not null,
+	name varchar(50) not null,
 	abbreviation varchar(10) not null unique,
 	direction enum ('ltr','rtl') default 'ltr',
 	created_at timestamp default now(),

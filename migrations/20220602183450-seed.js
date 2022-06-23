@@ -25,12 +25,12 @@ exports.up = async function (db) {
   const values = ['Hossam', 'Maher', 'admin', password];
   await pool.query(user, values);
 
-  const en_lang = 'insert into locals(language, abbreviation) values(?, ?)';
+  const en_lang = 'insert into locals(name, abbreviation) values(?, ?)';
   const values2 = ['English USA', 'en-us'];
   await pool.query(en_lang, values2);
 
   const ar_lang =
-    'insert into locals(language, abbreviation, direction) values(?, ?, ?)';
+    'insert into locals(name, abbreviation, direction) values(?, ?, ?)';
   const values3 = ['Arabic EGY', 'ar-eg', 'rtl'];
   await pool.query(ar_lang, values3);
 

@@ -241,18 +241,37 @@ $(document).ready(function () {
     const table = $('#attr-table').DataTable();
 
     const data = table.row(this).data();
-    console.log(data);
+
+    const drawCell = (d) => {
+      console.log('data sent ', d);
+      if (typeof d === 'object') {
+        let output = '';
+        for (k in d) {
+          output += `
+          <div class="p-2">
+          <a href="/groups" class="bg-nex p-1 text-white rounded">${
+            d[k] || ''
+          }</a>
+          </div>
+        `;
+        }
+        return output;
+      } else {
+        return `${d || '-'}`;
+      }
+    };
+
     for (const key in data) {
-      if (typeof data[key] !== 'undefined' && data[key].length > 0) {
+      console.log('data', data);
+      if (typeof data[key] !== 'undefined' && data[key]) {
         $('.nex-modal-show').slideDown(300);
 
         $('.nex-modal-show table').append(`
           <tr class="border border-gray-200 px-4">
-            <td class="w-1/4 border h-12 text-nex font-bold">${key
-              .toLocaleUpperCase()
-              .replace('_', ' ')}
-              </td>
-              <td class="h-12">${data[key]}</td>
+            <td class="w-1/3 border h-12 text-nex font-bold">
+            ${key.toLocaleUpperCase().replace('_', ' ')}
+            </td>
+            <td class="h-12">${drawCell(data[key])}</td>
           </tr>
       `);
       }
