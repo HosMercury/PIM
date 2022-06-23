@@ -25,6 +25,12 @@ exports.up = async function (db) {
   const values = ['Hossam', 'Maher', 'admin', password];
   await pool.query(user, values);
 
+  const attr = 'insert into attributes(name,type, slug) values(?, ?, ?)';
+  const attr_values = ['test name', 'test type', 'test slug'];
+  for (let index = 0; index < 500; index++) {
+    await pool.query(attr, attr_values);
+  }
+
   const en_lang = 'insert into locals(name, abbreviation) values(?, ?)';
   const values2 = ['English USA', 'en-us'];
   await pool.query(en_lang, values2);

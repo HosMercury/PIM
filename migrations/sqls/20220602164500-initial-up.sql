@@ -1,3 +1,6 @@
+SET GLOBAL time_zone = 'Africa/Cairo';
+
+
 create table users (
 	id int unsigned primary key not null auto_increment,
 	firstname varchar(50) not null,

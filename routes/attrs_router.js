@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const { isEmail } = require('validator');
+const { uniqBy } = require('lodash');
 
 let conn;
 
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
 
 router.get('/api/attributes', async (req, res) => {
   try {
-    const results = await pool.query(
+    let results = await pool.query(
       `
       select a.* ,
       JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups
@@ -32,6 +33,9 @@ router.get('/api/attributes', async (req, res) => {
       order by a.id desc
       `
     );
+
+    delete results.meta;
+
     return res.json(results);
   } catch (err) {
     console.log(err);
