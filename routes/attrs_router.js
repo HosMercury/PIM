@@ -16,9 +16,9 @@ router.get('/api/attributes', async (req, res) => {
     const results = await pool.query(
       `
       select a.* ,
-      JSON_OBJECT("id", g.id, "name", g.name) as groups
-      ,JSON_OBJECT("id", l.id, "language", l.language) as locals
-      ,JSON_OBJECT("name", ac.name) as choices,
+      JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups
+      ,JSON_ARRAYAGG(JSON_OBJECT("id", l.id, "name", l.name)) as locals
+      ,JSON_ARRAYAGG(ac.name) as choices,
       (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
       (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
       (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices_count
@@ -28,14 +28,13 @@ router.get('/api/attributes', async (req, res) => {
       left join attribute_labels al on a.id = al.attribute_id
       left join locals l on l.id = al.local_id
       left join attribute_choices ac on a.id = ac.attribute_id
-      where a.created_at > DATE_SUB(now(), INTERVAL 6 MONTH) 
       group by a.id
-      order by a.id desc limit 100        
+      order by a.id desc
       `
     );
     return res.json(results);
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     return res.status(400).send('error'); // error page
   }
 });
@@ -61,7 +60,7 @@ router.get('/api/attributes', async (req, res) => {
 router.get('/attributes', async (req, res) => {
   try {
     const labels = await pool.query(
-      'select id, language, abbreviation, direction from locals'
+      'select id, name, abbreviation, direction from locals'
     );
 
     const groups = await pool.query(
