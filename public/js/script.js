@@ -238,13 +238,18 @@ $(document).ready(function () {
   $('#attr-table tbody').on('click', 'tr', function () {
     const table = $('#attr-table').DataTable();
 
+    $('#attr-table tbody').click(function (e) {
+      e.preventDefault();
+    });
+
     const data = table.row(this).data();
     for (const key in data) {
       if (typeof data[key] !== 'undefined' && data[key].length > 0) {
-        $('.nex-modal-show').slideDown(500);
+        $('.nex-modal-show').slideDown(300);
+
         $('.nex-modal-show table').append(`
-          <tr class="border border-gray-200">
-            <td class="w-1/4 border p-3 text-nex font-bold">${key
+          <tr class="border border-gray-200 p-2 px-3">
+            <td class="w-1/4 border p-2 text-nex font-bold">${key
               .toLocaleUpperCase()
               .replace('_', ' ')}
               </td>
