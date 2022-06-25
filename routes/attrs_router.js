@@ -71,7 +71,7 @@ router.get('/attributes', async (req, res) => {
       'select id, name from groups order by name'
     );
 
-    return res.render('attributes/attr_index', {
+    return res.render('attr_index', {
       title: 'Attributes',
       button: 'Create Attribute',
       buttonClass: 'create-attribute',
