@@ -231,7 +231,7 @@ $(document).ready(function () {
       {
         targets: [7],
         render: function (data, type, row) {
-          return data ? moment(data).format('DD-MM-YYYY HH:MM A') : null;
+          return data ? moment(data).format('DD-MM-YYYY h:mm A') : null;
         }
       }
     ]
@@ -242,23 +242,29 @@ $(document).ready(function () {
 
     const data = table.row(this).data();
 
-    const drawCell = (d) => {
-      console.log('data sent ', d);
-      if (typeof d === 'object') {
-        let output = '';
+    const drawCell = (k, d) => {
+      let output = '';
+      if (k === 'created_at' || k === 'updated_at') {
+        output += `
+            <div class="p-2">
+              ${moment(d[k]).format('DD-MM-YYYY h:mm A') || ''}
+            </div>
+          `;
+      } else if (typeof d === 'object') {
+        output = '';
         for (k in d) {
           output += `
           <div class="p-2">
-          <a href="/groups" class="bg-nex p-1 text-white rounded">${
-            d[k] || ''
-          }</a>
+            <a href="/groups" class="bg-nex p-1 text-white rounded">${
+              d[k] || ''
+            }</a>
           </div>
         `;
         }
-        return output;
       } else {
         return `${d || '-'}`;
       }
+      return output;
     };
 
     for (const key in data) {
@@ -266,14 +272,18 @@ $(document).ready(function () {
       if (typeof data[key] !== 'undefined' && data[key]) {
         $('.nex-modal-show').slideDown(300);
 
-        $('.nex-modal-show table').append(`
+        $('.nex-modal-show table').append(
+          `
           <tr class="border border-gray-200 px-4">
             <td class="w-1/3 border h-12 text-nex font-bold">
             ${key.toLocaleUpperCase().replace('_', ' ')}
             </td>
-            <td class="h-12">${drawCell(data[key])}</td>
+            <td class="h-12">
+              ${drawCell(key, data[key])}
+            </td>
           </tr>
-      `);
+      `
+        );
       }
     }
   });

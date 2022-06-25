@@ -612,6 +612,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .max-h-\[650px\] {
   max-height: 650px;
 }
+.max-h-\[700px\] {
+  max-height: 700px;
+}
 .min-h-screen {
   min-height: 100vh;
 }
@@ -1043,7 +1046,8 @@ input {
 }
 
 .nex-modal-show {
-  left: 50%;
+  left: 30%;
+  width: 40%;
 }
 
 .nex-modal-create {

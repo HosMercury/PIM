@@ -67,7 +67,8 @@ input {
 }
 
 .nex-modal-show {
-  left: 50%;
+  left: 30%;
+  width: 40%;
 }
 
 .nex-modal-create {
