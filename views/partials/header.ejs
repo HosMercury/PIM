@@ -10,7 +10,17 @@
     <link rel="stylesheet" href="/css/style.css" />
     <title>NEX Content | <%= title !== 'undefined' ? title : '' %> </title>
   </head>
-  <body class="relative min-h-screen	">
+  <body class="min-h-screen relative">
+    <!-- attr show -->
+    <div class="absolute z-100 ">
+      <%- include('./attr_show'); %>
+    </div>
+
+    <div class="absolute z-10 ">
+      <!-- create modal  -->
+      <%- include('./attr_create'); %>
+    </div>
+    
     <div class="flex h-fit min-h-screen	">
       <div 
         class="min-h-screen	 w-[6rem] bg-nex h-fit flex flex-col text-white text-center pb-6 shrink-0"
@@ -170,4 +180,5 @@
           </div>
           <%- include('./errs'); %>
           <%- include('./msg'); %>
+
 
