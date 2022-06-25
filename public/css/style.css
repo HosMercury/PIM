@@ -598,19 +598,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .h-12 {
   height: 3rem;
 }
-.h-fit {
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
-}
 .h-\[4rem\] {
   height: 4rem;
 }
 .max-h-\[725px\] {
   max-height: 725px;
-}
-.max-h-\[650px\] {
-  max-height: 650px;
 }
 .max-h-\[700px\] {
   max-height: 700px;
@@ -1047,11 +1039,15 @@ input {
 
 .nex-modal-show {
   left: 30%;
-  width: 40%;
+  width: 50%;
 }
 
 .nex-modal-create {
   left: 10%;
+}
+
+body {
+  min-height: 100vh;
 }
 
 .hover\:border-l-4:hover {

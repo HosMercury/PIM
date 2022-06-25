@@ -19,7 +19,7 @@ router.get('/api/attributes', async (req, res) => {
       select a.* ,
       JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups
       ,JSON_ARRAYAGG(JSON_OBJECT("id", l.id, "name", l.name)) as locals
-      ,JSON_ARRAYAGG(ac.name) as choices,
+      ,JSON_ARRAYAGG(JSON_OBJECT("name", ac.name)) as choices,
       (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
       (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
       (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices_count

@@ -1,3 +1,13 @@
+function uniqArray(arr) {
+  const ar = arr.filter(
+    (value, index, self) =>
+      index ===
+      self.findIndex((t) => t.place === value.place && t.name === value.name)
+  );
+
+  return ar;
+}
+
 function chooseInputType(buttonType) {
   enableSubmit();
   if (buttonType !== 'text' || buttonType !== 'number')
@@ -246,29 +256,34 @@ $(document).ready(function () {
       let output = '';
       if (k === 'created_at' || k === 'updated_at') {
         output += `
-            <div class="p-2">
-              ${moment(d[k]).format('DD-MM-YYYY h:mm A') || ''}
-            </div>
-          `;
+              <div class="p-2">
+                ${moment(d[k]).format('DD-MM-YYYY h:mm A') || 'No Data'}
+              </div>
+            `;
       } else if (typeof d === 'object') {
+        d = uniqArray(d);
+        console.log('d', d);
         output = '';
-        for (k in d) {
-          output += `
-          <div class="p-2">
-            <a href="/groups" class="bg-nex p-1 text-white rounded">${
-              d[k] || ''
-            }</a>
-          </div>
-        `;
+        if (k) {
+          d.forEach((dt) => {
+            console.log('dt', dt);
+            if (typeof dt === 'object' && dt) {
+              output += `
+                  <div class="p-2">
+                    <a href="/groups" class="bg-nex p-1 text-white rounded">${dt.name}</a>
+                  </div>
+                `;
+            }
+          });
         }
       } else {
-        return `${d || '-'}`;
+        return `${d || 'No Data'}`;
       }
-      return output;
+      return output || '---';
     };
 
     for (const key in data) {
-      console.log('data', data);
+      // console.log('data', data);
       if (typeof data[key] !== 'undefined' && data[key]) {
         $('.nex-modal-show').slideDown(300);
 

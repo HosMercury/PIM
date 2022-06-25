@@ -10,15 +10,15 @@
     <link rel="stylesheet" href="/css/style.css" />
     <title>NEX Content | <%= title !== 'undefined' ? title : '' %> </title>
   </head>
-  <body class="min-h-screen relative">
+  <body class="min-h-screen  relative">
     <!-- attr show -->
     <%- include('./attr_show'); %>
     <!-- create modal  -->
     <%- include('./attr_create'); %>
     
-    <div class="flex h-fit min-h-screen	">
+    <div class="flex min-h-screen	">
       <div 
-        class="min-h-screen	 w-[6rem] bg-nex h-fit flex flex-col text-white text-center pb-6 shrink-0"
+        class="min-h-screen	 w-[6rem] bg-nex flex flex-col text-white text-center pb-6 shrink-0"
       >
         <a href="/">
           <img class="object-contain mt-4" src="/img/nex.png" />
@@ -118,7 +118,7 @@
       </div>
 
       <div
-        class=" min-h-screen	w-[22rem] shrink-0 h-fit  flex flex-col text-left bg-gray-200 px-12 py-8 border-l-2 border-r-2 border-gray-200"
+        class=" min-h-screen	w-[22rem] shrink-0 flex flex-col text-left bg-gray-200 px-12 py-8 border-l-2 border-r-2 border-gray-200"
       >
         <h2 class="text-xl text-gray-400 my-4">ATTRIBUTES</h2>
         <ul class="text-gray-700 text-xl">

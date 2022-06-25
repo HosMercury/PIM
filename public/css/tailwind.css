@@ -68,11 +68,15 @@ input {
 
 .nex-modal-show {
   left: 30%;
-  width: 40%;
+  width: 50%;
 }
 
 .nex-modal-create {
   left: 10%;
+}
+
+body {
+  min-height: 100vh;
 }
 
 @layer components {
