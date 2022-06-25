@@ -135,12 +135,12 @@ $(document).ready(function () {
 
   // animate the attrs modal
   $('.create-attribute').click(function () {
-    $('.nex-modal').slideDown(500);
+    $('.nex-modal-create').slideDown(500);
   });
 
   $('.close-nex-modal').click(function () {
     $('.attrs').slideUp(500);
-    $('.nex-modal').slideUp(500);
+    $('.nex-modal-create').slideUp(500);
   });
 
   $('.close-nex-modal-show').click(function () {
@@ -290,7 +290,7 @@ $(document).ready(function () {
   });
 
   $(document).mouseup(function (e) {
-    var container = $('.nex-modal');
+    var container = $('.nex-modal-create');
 
     // if the target of the click isn't the container nor a descendant of the container
     if (!container.is(e.target) && container.has(e.target).length === 0) {

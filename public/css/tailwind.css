@@ -57,6 +57,23 @@ input {
   border-radius: 5px !important;
 }
 
+.dataTables_wrapper {
+  position: static !important;
+}
+
+.nex-modal-show,
+.nex-modal-create {
+  top: 90px;
+}
+
+.nex-modal-show {
+  left: 50%;
+}
+
+.nex-modal-create {
+  left: 10%;
+}
+
 @layer components {
   .dt-table {
     @apply mt-4 rounded;
