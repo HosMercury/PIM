@@ -263,28 +263,27 @@ $(document).ready(function () {
       } else if (typeof d === 'object') {
         d = uniqArray(d);
         output = '';
-        if (k) {
-          d.forEach((dt) => {
-            console.log('dt', dt);
-            if (typeof dt === 'object' && dt) {
-              if (k === 'groups') {
-                output += `
+        d.forEach((dt) => {
+          console.log('dt', dt);
+          if (typeof dt === 'object' && dt.id > 0) {
+            if (k === 'groups') {
+              output += `
                 <div class="p-2">
                   <a href="/groups/${dt.id}" class="bg-nex p-1 text-white rounded">${dt.name}</a>
                 </div>
               `;
-              } else {
-                output += `
+            } else {
+              output += `
                   <div class="p-2">${dt.name}</div>
                 `;
-              }
             }
-          });
-        }
+          } else output += '-';
+        });
       } else {
         return `${d || 'No Data'}`;
       }
-      return output || '---';
+
+      return output;
     };
 
     for (const key in data) {

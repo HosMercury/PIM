@@ -30,7 +30,7 @@ router.get('/api/attributes', async (req, res) => {
       left join locals l on l.id = al.local_id
       left join attribute_choices ac on a.id = ac.attribute_id
       group by a.id
-      order by a.id desc
+      order by a.id desc limit 10000
       `
     );
 
