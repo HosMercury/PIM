@@ -262,17 +262,22 @@ $(document).ready(function () {
             `;
       } else if (typeof d === 'object') {
         d = uniqArray(d);
-        console.log('d', d);
         output = '';
         if (k) {
           d.forEach((dt) => {
             console.log('dt', dt);
             if (typeof dt === 'object' && dt) {
-              output += `
-                  <div class="p-2">
-                    <a href="/groups" class="bg-nex p-1 text-white rounded">${dt.name}</a>
-                  </div>
+              if (k === 'groups') {
+                output += `
+                <div class="p-2">
+                  <a href="/groups/${dt.id}" class="bg-nex p-1 text-white rounded">${dt.name}</a>
+                </div>
+              `;
+              } else {
+                output += `
+                  <div class="p-2">${dt.name}</div>
                 `;
+              }
             }
           });
         }
@@ -283,14 +288,13 @@ $(document).ready(function () {
     };
 
     for (const key in data) {
-      // console.log('data', data);
       if (typeof data[key] !== 'undefined' && data[key]) {
         $('.nex-modal-show').slideDown(300);
 
         $('.nex-modal-show table').append(
           `
-          <tr class="border border-gray-200 px-4">
-            <td class="w-1/3 border h-12 text-nex font-bold">
+          <tr class="border border-gray-700 px-4">
+            <td class="w-1/3 border border-gray-700 h-12 text-nex font-bold">
             ${key.toLocaleUpperCase().replace('_', ' ')}
             </td>
             <td class="h-12">
