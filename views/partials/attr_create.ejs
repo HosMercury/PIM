@@ -489,7 +489,7 @@
             >
             <% if (typeof groups !== 'undefined') { %>
             <% groups.forEach(group => { %>
-                <option value='<%= group.id %>' 
+                <option value='<%= group.id %>' id="<%= group.id +'-'+ group.name %>"
                   <% if (typeof locals.old !== 'undefined' && typeof locals.old.groups !== 'undefined'&& locals.old.groups.includes(group.id.toString())) { %>
                   <%= ' selected ' %> 
                   <% } %>

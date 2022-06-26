@@ -2,10 +2,18 @@ function uniqArray(arr) {
   const ar = arr.filter(
     (value, index, self) =>
       index ===
-      self.findIndex((t) => t.place === value.place && t.name === value.name)
+      self.findIndex((t) => t.id === value.id && t.name === value.name)
   );
 
   return ar;
+}
+
+function generateAppendedChoices(choice_value) {
+  return `<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
+  <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
+  <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
+  </li>  
+  `;
 }
 
 function chooseInputType(buttonType) {
@@ -171,40 +179,35 @@ $(document).ready(function () {
 
   $('.chosen-select').chosen({ width: '400px' });
 
-  let li_count = 0;
+  function drawChoices() {
+    let li_count = 0;
 
-  function generateAppendedChoices(choice_value) {
-    return `<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
-    <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
-    <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
-    </li>  
-    `;
-  }
+    let old_choices_list = $('.old-choices-list').val();
+    if (old_choices_list) {
+      old_choices_list = JSON.parse(old_choices_list);
 
-  let old_choices_list = $('.old-choices-list').val();
-  if (old_choices_list) {
-    old_choices_list = JSON.parse(old_choices_list);
-
-    old_choices_list.forEach(function (choice_value) {
-      $('.choices-list').append(generateAppendedChoices(choice_value));
-    });
-    enableSubmit();
-    $('.please-add-choices').hide(); // label text
-  }
-
-  $('.add-choice').click(function (e) {
-    const choice_value = $('#choice').val();
-
-    if (choice_value.trim().length > 0) {
-      $('.choices-list').append(generateAppendedChoices(choice_value));
-    }
-
-    li_count = $('.choices-list').children().length;
-    if (li_count > 0) {
-      $('.please-add-choices').hide();
+      old_choices_list.forEach(function (choice_value) {
+        $('.choices-list').append(generateAppendedChoices(choice_value));
+      });
       enableSubmit();
+      $('.please-add-choices').hide(); // label text
     }
-  });
+
+    $('.add-choice').click(function (e) {
+      const choice_value = $('#choice').val();
+
+      if (choice_value.trim().length > 0) {
+        $('.choices-list').append(generateAppendedChoices(choice_value));
+      }
+
+      li_count = $('.choices-list').children().length;
+      if (li_count > 0) {
+        $('.please-add-choices').hide();
+        enableSubmit();
+      }
+    });
+  }
+  drawChoices();
 
   $(document).on('click', '.choice-delete-button', function (e) {
     const _id = $(this).attr('id');
@@ -218,9 +221,7 @@ $(document).ready(function () {
       enableSubmit();
     }
   });
-});
 
-$(document).ready(function () {
   $('#attr-table').DataTable({
     ajax: {
       url: '/api/attributes',
@@ -247,9 +248,21 @@ $(document).ready(function () {
     ]
   });
 
+  $('.nex-modal-show').append(
+    `
+    <div class="table-actions flex justify-end">
+      <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
+        Edit
+      </button>
+      <button class="bg-red-500 p-2 w-16 text-white mr-20 m-2 rounded-md delete-attr-button">
+        Delete
+      </button>
+    </div>
+  `
+  );
+
   $('#attr-table tbody').on('click', 'tr', function () {
     const table = $('#attr-table').DataTable();
-
     const data = table.row(this).data();
 
     const drawCell = (k, d) => {
@@ -264,7 +277,7 @@ $(document).ready(function () {
         d = uniqArray(d);
         output = '';
         d.forEach((dt) => {
-          console.log('dt', dt);
+          // console.log('dt', dt);
           if (typeof dt === 'object' && dt.id > 0) {
             if (k === 'groups') {
               output += `
@@ -273,9 +286,10 @@ $(document).ready(function () {
                 </div>
               `;
             } else {
-              output += `
-                  <div class="p-2">${dt.name}</div>
-                `;
+              output += `<div class="p-2 block ">`;
+              if (dt.abbreviation)
+                output += `<span class="font-bold">${dt.abbreviation.toUpperCase()}</span> : `;
+              output += `${dt.name}</div>`;
             }
           } else output += '-';
         });
@@ -304,25 +318,62 @@ $(document).ready(function () {
         );
       }
     }
-  });
 
-  //click outside modal
-  $(document).mouseup(function (e) {
-    var container = $('.nex-modal-show');
+    // Attr EDIT modal -- fill data
+    $('body').on('click', '.edit-attr-button', function () {
+      console.log('data', data);
+      $('.choices-list').empty();
+      chooseInputType(data.type);
+      $('.nex-modal-show ').slideUp(500);
+      $('.nex-modal-create').slideDown(500);
+      $('.attrs').slideDown(500);
+      $('#name').val(data.name);
+      $('#description').val(data.description);
+      $('#default_value').val(data.default_value);
+      $('#minimum').val(data.min);
+      $('#maximum').val(data.max);
+      $('#unit').val(data.unit);
+      $('#default_area').val(data.default_area);
+      if (data.required == '1') $('#required').prop('checked', true);
+      if (typeof data.locals !== 'undefined' && Array.isArray(data.locals)) {
+        data.locals.forEach(function (local) {
+          $(`#${local.abbreviation}_label`).val(local.name);
+        });
+      }
 
-    // if the target of the click isn't the container nor a descendant of the container
-    if (!container.is(e.target) && container.has(e.target).length === 0) {
-      $('.nex-modal-show table').empty();
-      container.slideUp(300);
-    }
-  });
+      if (typeof data.groups !== 'undefined' && Array.isArray(data.groups)) {
+        data.groups.forEach(function (group) {
+          $(`#${group.id}-${group.name}`).attr('selected', 'selected');
+        });
+        $('.chosen-select').trigger('chosen:updated');
+      }
 
-  $(document).mouseup(function (e) {
-    var container = $('.nex-modal-create');
+      if (typeof data.choices !== 'undefined' && Array.isArray(data.choices)) {
+        const ch = uniqArray(data.choices);
+        ch.forEach(function (choice) {
+          $('.choices-list').append(generateAppendedChoices(choice.name));
+        });
+      }
+    });
 
-    // if the target of the click isn't the container nor a descendant of the container
-    if (!container.is(e.target) && container.has(e.target).length === 0) {
-      container.slideUp(300);
-    }
+    //click outside modal
+    $(document).mouseup(function (e) {
+      var container = $('.nex-modal-show');
+
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        $('.nex-modal-show table').empty();
+        container.slideUp(300);
+      }
+    });
+
+    $(document).mouseup(function (e) {
+      var container = $('.nex-modal-create');
+
+      // if the target of the click isn't the container nor a descendant of the container
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.slideUp(300);
+      }
+    });
   });
 });

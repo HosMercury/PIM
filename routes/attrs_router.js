@@ -16,21 +16,21 @@ router.get('/api/attributes', async (req, res) => {
   try {
     let results = await pool.query(
       `
-      select a.* ,
-      JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups
-      ,JSON_ARRAYAGG(JSON_OBJECT("id", l.id, "name", l.name)) as locals
-      ,JSON_ARRAYAGG(JSON_OBJECT("name", ac.name)) as choices,
-      (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
-      (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
-      (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices_count
-      FROM attributes a
-      left join attribute_groups ag on a.id = ag.attribute_id
-      left join groups g on g.id = ag.group_id
-      left join attribute_labels al on a.id = al.attribute_id
-      left join locals l on l.id = al.local_id
-      left join attribute_choices ac on a.id = ac.attribute_id
-      group by a.id
-      order by a.id desc limit 10000
+        select a.* ,
+        JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups
+        ,JSON_ARRAYAGG(JSON_OBJECT("id", al.local_id, "abbreviation",l.abbreviation,"name", al.label)) as locals
+        ,JSON_ARRAYAGG(JSON_OBJECT('id', ac.id,"name", ac.name)) as choices,
+        (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
+        (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
+        (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices_count
+        FROM attributes a
+        left join attribute_groups ag on a.id = ag.attribute_id
+        left join groups g on g.id = ag.group_id
+        left join attribute_labels al on a.id = al.attribute_id
+        left join locals l on l.id = al.local_id
+        left join attribute_choices ac on a.id = ac.attribute_id
+        group by a.id
+        order by a.id desc limit 10000
       `
     );
 
@@ -136,10 +136,17 @@ async function validateAttribute(body) {
 
   ////////// Attribute Default //////////////
   if (typeof default_value !== 'undefined') {
-    if (default_value !== '' && default_value.length < 2)
-      errs.push('Default value field minimum length is 2 letters');
-    if (default_value !== '' && default_value.length > 250)
-      errs.push('Default value field maximum length is 250 letters');
+    if (type === 'number') {
+      if (default_value !== '' && default_value.length < 1)
+        errs.push('Default value field minimum value is 1');
+      if (default_value !== '' && default_value.length > 10000000000)
+        errs.push('Default value field maximum value is 10000000000');
+    } else {
+      if (default_value !== '' && default_value.length < 2)
+        errs.push('Default value field minimum length is 2 letters');
+      if (default_value !== '' && default_value.length > 250)
+        errs.push('Default value field maximum length is 250 letters');
+    }
   }
 
   ///////// Attribute Min -- Attribute Max ////
