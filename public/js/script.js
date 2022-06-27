@@ -153,6 +153,13 @@ $(document).ready(function () {
 
   // animate the attrs modal
   $('.create-attribute').click(function () {
+    // clear the form from edit values
+    $(':input', '.attr-form')
+      .not(':button, :submit, :reset, :hidden')
+      .val('')
+      .prop('checked', false)
+      .prop('selected', false);
+
     $('.nex-modal-create').slideDown(500);
   });
 
@@ -377,3 +384,5 @@ $(document).ready(function () {
     });
   });
 });
+
+// لما اجي اعمل كريت اتربيوت بيانات الاديت بتفضل موجوده
