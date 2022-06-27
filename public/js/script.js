@@ -57,15 +57,18 @@ function chooseInputType(buttonType) {
     ).removeClass('hidden');
   }
 
-  if (
-    buttonType === 'text' ||
-    buttonType === 'number' ||
-    buttonType === 'textarea'
-  ) {
-    $('#minimum').prop('type', 'number');
-    $('#maximum').prop('type', 'number');
+  if (buttonType === 'text' || buttonType === 'textarea') {
+    $('#minimum').prop('type', 'Length');
+    $('#maximum').prop('type', 'Length');
     $('#minimum').prop('min', '2');
     $('#minimum').prop('value', '2');
+  }
+
+  if (buttonType === 'number') {
+    $('#minimum').prop('type', 'Number');
+    $('#maximum').prop('type', 'Number');
+    $('#minimum').prop('min', '');
+    $('#minimum').prop('value', '');
   }
 
   if (buttonType === 'textarea') {
@@ -85,7 +88,7 @@ function chooseInputType(buttonType) {
 
   if (buttonType === 'email') {
     $('#default_value').prop('type', buttonType);
-    $('#default_label').text('Default ' + buttonType); // label text
+    $('#default_label').text('Default ' + 'Email'); // label text
     $('#default_control').removeClass('hidden');
   }
 
@@ -143,23 +146,21 @@ function enableSubmit() {
   $('.attr-button').removeClass('bg-gray-200');
 }
 
-// Document Ready
-// ---------------------------------------
 $(document).ready(function () {
   // show- modal is active to enable / disable click on table
-
   const type = $('.button-type').val();
   chooseInputType(type);
 
   // animate the attrs modal
   $('.create-attribute').click(function () {
-    // clear the form from edit values
-    $(':input', '.attr-form')
-      .not(':button, :submit, :reset, :hidden')
-      .val('')
-      .prop('checked', false)
-      .prop('selected', false);
+    $('.attr-form').trigger('reset');
+    $('.attr-form option').each(function (option) {
+      console.log($(this));
+      $(this).attr('selected', false);
+      $('.chosen-select').trigger('chosen:updated');
+    });
 
+    $('.choices-list').empty();
     $('.nex-modal-create').slideDown(500);
   });
 
@@ -329,6 +330,7 @@ $(document).ready(function () {
     // Attr EDIT modal -- fill data
     $('body').on('click', '.edit-attr-button', function () {
       console.log('data', data);
+
       $('.choices-list').empty();
       chooseInputType(data.type);
       $('.nex-modal-show ').slideUp(500);
@@ -384,5 +386,3 @@ $(document).ready(function () {
     });
   });
 });
-
-// لما اجي اعمل كريت اتربيوت بيانات الاديت بتفضل موجوده
