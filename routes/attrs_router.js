@@ -97,7 +97,8 @@ async function validateAttribute(body) {
     unit,
     choices,
     labels,
-    groups
+    groups,
+    edit
   } = body;
 
   const types = [
@@ -114,6 +115,13 @@ async function validateAttribute(body) {
     'single-select',
     'multiple-select'
   ];
+
+  // edit hidden input
+  if (typeof edit === 'undefined') errs.push('Edit field is invalid');
+
+  if (edit === 'edit') {
+    // get the attr id
+  }
 
   ////////// Attribute Type //////////////
   if (typeof type === 'undefined' || !types.includes(type))

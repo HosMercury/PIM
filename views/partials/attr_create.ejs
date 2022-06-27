@@ -30,7 +30,7 @@
         justify-items-center border rounded border-gray-400 p-1 my-2 mx-auto'
       >
         <button
-          class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md text-button <%= typeof locals.old !== 'undefined' && old.type === 'text' ? ' border-nex ' : '' %>'
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md text-button <%= typeof locals.old !== 'undefined' && old.type === 'text' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("text")'
         >
           <svg
@@ -51,7 +51,7 @@
         </button>
 
         <button
-          class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md number-button <%= typeof locals.old !== "undefined" && old.type === 'number' ? " border-nex " : "" %> '
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md number-button <%= typeof locals.old !== "undefined" && old.type === 'number' ? " border-nex " : "" %> '
           onclick='chooseInputType("number")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -71,7 +71,7 @@
         </button>
 
         <button
-          class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md date-button          
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md date-button          
            <%= typeof locals.old !== 'undefined' && old.type === 'date' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("date")'
         >
@@ -93,7 +93,7 @@
         </button>
 
         <button
-          class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md datetime-button 
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md datetime-button 
           <%= typeof locals.old !== 'undefined' && old.type === 'datetime' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("datetime")'
         >
@@ -115,7 +115,7 @@
         </button>
 
         <button
-          class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md email-button <%= typeof locals.old !== 'undefined' && old.type === 'email' ? ' border-nex ' : '' %>'
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md email-button <%= typeof locals.old !== 'undefined' && old.type === 'email' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("email")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -135,7 +135,7 @@
         </button>
 
         <button
-        class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md textarea-button  <%= typeof locals.old !== 'undefined' && old.type === 'textarea' ? ' border-nex ' : '' %>'
+        class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md textarea-button  <%= typeof locals.old !== 'undefined' && old.type === 'textarea' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("textarea")'
         >
           <svg
@@ -154,8 +154,9 @@
           </svg>
           <span class='mx-auto text-sm'>Text Area</span>
         </button>
+
         <button
-          class='w-32 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md switch-button  <%= typeof locals.old !== 'undefined' && old.type === 'switch' ? ' border-nex ' : '' %>'
+          class='type-button w-32 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md switch-button  <%= typeof locals.old !== 'undefined' && old.type === 'switch' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("switch")'
         >
           <svg
@@ -176,7 +177,7 @@
         
         </button>
         <button
-          class='w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md images-button  <%= typeof locals.old !== 'undefined' && old.type === 'images' ? ' border-nex ' : '' %>'
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md images-button  <%= typeof locals.old !== 'undefined' && old.type === 'images' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("images")'
         >
           <svg
@@ -195,8 +196,9 @@
           </svg>
           <span class='mx-auto  text-sm'>Images</span>
         </button>
+
         <button
-          class='w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md check-boxes-button  <%= typeof locals.old !== 'undefined' && old.type === 'check-boxes' ? ' border-nex ' : '' %>'
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md check-boxes-button  <%= typeof locals.old !== 'undefined' && old.type === 'check-boxes' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("check-boxes")'
         >
           <svg
@@ -215,8 +217,9 @@
           </svg>
           <span class='mx-auto  text-sm'>Check Boxes</span>
         </button>
+        
         <button
-          class='w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md radio-buttons-button  <%= typeof locals.old !== 'undefined' && old.type === 'radio-buttons' ? ' border-nex ' : '' %>'
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md radio-buttons-button  <%= typeof locals.old !== 'undefined' && old.type === 'radio-buttons' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("radio-buttons")'
         >
           <svg
@@ -237,7 +240,7 @@
         </button>
 
         <button
-          class='w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md single-select-button  <%= typeof locals.old !== 'undefined' && old.type === 'single-select' ? ' border-nex ' : '' %>'
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md single-select-button  <%= typeof locals.old !== 'undefined' && old.type === 'single-select' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("single-select")'
         >
           <svg
@@ -258,7 +261,7 @@
         </button>
 
         <button
-          class='w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md multiple-select-button  <%= typeof locals.old !== 'undefined' && old.type === 'multiple-select' ? ' border-nex ' : '' %>'
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md multiple-select-button  <%= typeof locals.old !== 'undefined' && old.type === 'multiple-select' ? ' border-nex ' : '' %>'
           onclick='chooseInputType("multiple-select")'
         ><svg
             xmlns='http://www.w3.org/2000/svg'
@@ -285,8 +288,9 @@
         method='post'
         class='flex w-100 space-x-4 attr-form'
       >
-        <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? locals.old.type : 'text' %>' class='button-type' />
-        <div class='w-1/2'>
+      <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? locals.old.type : 'text' %>' class='button-type' />
+      <input type='hidden' name='edit' value='<%= typeof locals.old !== 'undefined' ? locals.old.edit : '' %>' class='edit-type' />
+      <div class='w-1/2'>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
           >Properties</h3>

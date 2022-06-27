@@ -23,7 +23,6 @@ function chooseInputType(buttonType) {
 
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
-
   $('.f-control').addClass('hidden');
 
   $('button.border-nex').removeClass('border-nex');
@@ -153,6 +152,9 @@ $(document).ready(function () {
 
   // animate the attrs modal
   $('.create-attribute').click(function () {
+    $('.edit-type').val('');
+    $('.type-button').show();
+
     $('.attr-form').trigger('reset');
     $('.attr-form option').each(function (option) {
       console.log($(this));
@@ -167,6 +169,7 @@ $(document).ready(function () {
   $('.close-nex-modal').click(function () {
     $('.attrs').slideUp(500);
     $('.nex-modal-create').slideUp(500);
+    $('.edit-type').val('');
   });
 
   $('.close-nex-modal-show').click(function () {
@@ -330,7 +333,7 @@ $(document).ready(function () {
     // Attr EDIT modal -- fill data
     $('body').on('click', '.edit-attr-button', function () {
       console.log('data', data);
-
+      $('.edit-type').val('edit');
       $('.choices-list').empty();
       chooseInputType(data.type);
       $('.nex-modal-show ').slideUp(500);
@@ -362,6 +365,24 @@ $(document).ready(function () {
         ch.forEach(function (choice) {
           $('.choices-list').append(generateAppendedChoices(choice.name));
         });
+      }
+
+      $('.type-button').hide();
+      $(`.${data.type}-button`).show();
+      if (
+        data.type === 'check-boxes' ||
+        data.type === 'radio-buttons' ||
+        data.type === 'single-select' ||
+        data.type === 'multiple-select'
+      ) {
+        $('.check-boxes-button').show();
+        $('.radio-buttons-button').show();
+        $('.single-select-button').show();
+        $('.multiple-select-button').show();
+      }
+      if (data.type === 'date' || data.type === 'datetime') {
+        $('.date-button').show();
+        $('.datetime-button').show();
       }
     });
 
