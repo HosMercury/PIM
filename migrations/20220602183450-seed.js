@@ -26,7 +26,7 @@ exports.up = async function (db) {
   await pool.query(user, values);
 
   const attr = 'insert into attributes(name,type, slug) values(?, ?, ?)';
-  const attr_values = ['test name', 'test type', 'test slug'];
+  const attr_values = ['test name', 'text', 'test slug'];
   for (let index = 0; index < 500; index++) {
     await pool.query(attr, attr_values);
   }

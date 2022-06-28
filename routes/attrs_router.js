@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const { isEmail } = require('validator');
+const { app } = require('tailwind');
 
 let conn;
 
@@ -9,6 +10,35 @@ router.get('/', (req, res) => {
   return res.render('index', {
     title: 'Dashboard'
   });
+});
+
+// delete attr
+router.post('/api/attributes/:id/delete', async (req, res) => {
+  try {
+    conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    const id = parseInt(req.params.id);
+
+    const delete_attr = `delete from attributes where id = ?`;
+    await conn.batch(delete_attr, [id]);
+
+    const attr_choices_query = `delete from attribute_choices where attribute_id = ?`;
+    await conn.batch(attr_choices_query, [id]);
+
+    const attr_gps_query = `delete from attribute_groups where attribute_id = ?`;
+    await conn.batch(attr_gps_query, [id]);
+
+    const attr_lbs_query = `delete from attribute_labels where attribute_id = ?`;
+    await conn.batch(attr_lbs_query, [id]);
+
+    await conn.commit();
+    res.send('ok');
+  } catch (err) {
+    console.log(err);
+    await conn.rollback();
+    return false;
+  }
 });
 
 router.get('/api/attributes', async (req, res) => {
@@ -355,38 +385,84 @@ async function postAttribute(body) {
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
-    // --- Edit existing attribute
+    ////////////////////////////////////////////////////////////////
+    // --------------- Edit existing attribute -------------------//
+    ////////////////////////////////////////////////////////////////
     if (typeof id !== undefined && typeof id !== 'blank' && !isNaN(id)) {
       const editQuery = `
         update attributes set 
+          type = ? ,
           name = ? ,
-          description = ? ,
           slug = ? ,
+          description = ? ,
           required = ? ,
           default_value = ? ,
           min = ? ,
           max = ? ,
           unit = ? ,
           default_area = ? 
-          type = ?
         where id = ?
       `;
-      values.id = body.id;
-      values.type = body.type;
 
-      const res = await conn.query(query, values);
-      const attr_id = res.insertId;
+      const editValues = [
+        type,
+        name,
+        slug,
+        description,
+        required,
+        default_value,
+        minimum,
+        maximum,
+        unit,
+        default_area,
+        id
+      ];
+
+      await conn.query(editQuery, editValues);
 
       // Choices ---
       if (typeof choices !== 'undefined' && choices.length > 0) {
-        const options_query = `selete from table attribute_choices where id = ?)`;
-        await conn.batch(options_query, [attr_id]);
+        const options_query = `delete from attribute_choices where attribute_id = ?`;
+        await conn.batch(options_query, [id]);
 
-        const _options_query = `insert into attribute_choices (name, attribute_id) values(?,${attr_id})`;
+        const _options_query = `insert into attribute_choices (name, attribute_id) values(?,${id})`;
         await conn.batch(_options_query, choices);
       }
+
+      // labels
+      // tremove labels
+      const lb_query = `delete from attribute_labels where attribute_id = ?`;
+      await conn.batch(lb_query, [id]);
+
+      const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,${id})`;
+      const lbels_array = [];
+      for (let abbreviation in labels) {
+        const results = await pool.query(
+          'select id from locals where abbreviation = ?',
+          [abbreviation]
+        );
+        const label_id = results[0].id;
+        if (labels[abbreviation].trim().length > 0) {
+          lbels_array.push([label_id, labels[abbreviation]]);
+        }
+      }
+      await conn.batch(labels_query, lbels_array);
+
+      // groups --
+      // remove old groups from
+      const gp_query = `delete from attribute_groups where attribute_id = ?`;
+      await conn.batch(gp_query, [id]);
+      if (typeof groups !== 'undefined' && groups.length > 0) {
+        // remove empty groups items
+        groups = groups.filter((group) => group.trim().length > 0);
+        groups = groups.map((group) => parseInt(group));
+        const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,${id})`;
+        await conn.batch(groups_query, groups);
+      }
     } else {
-      // create new attribute
+      ////////////////////////////////////////////////////////////////
+      // --------------- Create new attribute -------------------////
+      ////////////////////////////////////////////////////////////////
       const res = await conn.query(query, values);
       const attr_id = res.insertId;
 
@@ -423,7 +499,7 @@ async function postAttribute(body) {
 
     await conn.commit();
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await conn.rollback();
     return false;
   }
@@ -438,8 +514,13 @@ router.post('/attributes', async (req, res) => {
     req.session.old = req.body;
     return res.status(400).redirect('back');
   }
-  postAttribute(req.body);
-  req.session.msg = 'Attribute added successfully';
+  const success = postAttribute(req.body);
+
+  if (success) {
+    req.session.msg = 'Attribute saved successfully';
+  } else {
+    req.session.msg = 'Error while saving the attribute';
+  }
   return res.status(200).redirect('back');
 });
 

@@ -153,11 +153,11 @@ $(document).ready(function () {
   // animate the attrs modal
   $('.create-attribute').click(function () {
     $('.edit-type').val('');
+    $('.id').val('blank');
     $('.type-button').show();
 
     $('.attr-form').trigger('reset');
     $('.attr-form option').each(function (option) {
-      console.log($(this));
       $(this).attr('selected', false);
       $('.chosen-select').trigger('chosen:updated');
     });
@@ -259,22 +259,26 @@ $(document).ready(function () {
     ]
   });
 
-  $('.nex-modal-show').append(
-    `
-    <div class="table-actions flex justify-end">
-      <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
-        Edit
-      </button>
-      <button class="bg-red-500 p-2 w-16 text-white mr-20 m-2 rounded-md delete-attr-button">
-        Delete
-      </button>
-    </div>
-  `
-  );
-
   $('#attr-table tbody').on('click', 'tr', function () {
     const table = $('#attr-table').DataTable();
     const data = table.row(this).data();
+
+    const delete_url = `/api/attributes/${data.id}/delete`;
+
+    $('.nex-modal-show').append(
+      `
+      <div class="table-actions flex justify-end">
+        <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
+          Edit
+        </button>
+        <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mr-20 m-2 rounded-md delete-attr-button">
+          <button type="submit" onclick="return confirm('are you sure ?')">
+            Delete
+          </button>
+        </form>
+      </div>
+    `
+    );
 
     const drawCell = (k, d) => {
       let output = '';
@@ -288,8 +292,7 @@ $(document).ready(function () {
         d = uniqArray(d);
         output = '';
         d.forEach((dt) => {
-          // console.log('dt', dt);
-          if (typeof dt === 'object' && dt.id > 0) {
+          if (typeof dt === 'object' && parseInt(dt.id) > 0) {
             if (k === 'groups') {
               output += `
                 <div class="p-2">
@@ -298,9 +301,10 @@ $(document).ready(function () {
               `;
             } else {
               output += `<div class="p-2 block ">`;
-              if (dt.abbreviation)
+              if (dt.abbreviation) {
                 output += `<span class="font-bold">${dt.abbreviation.toUpperCase()}</span> : `;
-              output += `${dt.name}</div>`;
+              }
+              output += `${dt.name || '-'}</div>`;
             }
           } else output += '-';
         });
@@ -332,7 +336,6 @@ $(document).ready(function () {
 
     // Attr EDIT modal -- fill data
     $('body').on('click', '.edit-attr-button', function () {
-      console.log('data', data);
       $('.id').val(data.id);
       $('.choices-list').empty();
       chooseInputType(data.type);
@@ -383,6 +386,14 @@ $(document).ready(function () {
       if (data.type === 'date' || data.type === 'datetime') {
         $('.date-button').show();
         $('.datetime-button').show();
+      }
+
+      li_count = $('.choices-list').children().length;
+      if (li_count < 1) {
+        disableSubmit();
+        $('.please-add-choices').show(); // label text
+      } else {
+        enableSubmit();
       }
     });
 
