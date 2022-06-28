@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const { isEmail } = require('validator');
-const { uniqBy } = require('lodash');
 
 let conn;
 
@@ -98,7 +97,7 @@ async function validateAttribute(body) {
     choices,
     labels,
     groups,
-    edit
+    id
   } = body;
 
   const types = [
@@ -116,15 +115,52 @@ async function validateAttribute(body) {
     'multiple-select'
   ];
 
-  // edit hidden input
-  if (typeof edit === 'undefined') errs.push('Edit field is invalid');
+  // Edit Attribue
+  if (typeof id !== undefined && typeof id !== 'blank' && !isNaN(id)) {
+    // edit attribute
+    try {
+      const q = `select * from attributes where id = ?`;
+      const results = await pool.query(q, [id]);
+      let attr;
+      if (typeof results !== 'undefined') {
+        attr = results[0];
+      }
+      switch (attr.type) {
+        case 'text':
+        case 'number':
+        case 'email':
+        case 'textarea':
+        case 'switch':
+        case 'images':
+          if (attr.type !== type) errs.push('Attribute type field is invalid');
+          break;
 
-  if (edit === 'edit') {
-    // get the attr id
+        case 'check-boxes':
+        case 'radio-buttons':
+        case 'single-select':
+        case 'multiple-select':
+          if (
+            attr.type !== 'check-boxes' &&
+            attr.type !== 'radio-buttons' &&
+            attr.type !== 'single-select' &&
+            attr.type !== 'multiple-select'
+          )
+            errs.push('Attribute type field is invalid');
+          break;
+        case 'date':
+        case 'datetime':
+          if (attr.type !== 'date' && attr.type !== 'datetime')
+            errs.push('Attribute type field is invalid');
+          break;
+      }
+    } catch (err) {
+      errs.push('Attribute id is invalid');
+    }
   }
 
-  ////////// Attribute Type //////////////
+  /// save create attr
   if (typeof type === 'undefined' || !types.includes(type))
+    ////////// Attribute Type //////////////
     errs.push('Attribute type field is invalid');
 
   ////////// Attribute Name //////////////
@@ -162,14 +198,14 @@ async function validateAttribute(body) {
     if (type == 'text' || type == 'textarea' || type == 'number') {
       if (typeof minimum !== 'undefined') {
         if (isNaN(minimum)) errs.push('Minimum field must be numeric');
-        if (minimum < 1) errs.push('Minimum field value is 1');
-        if (minimum > 10000) errs.push('Minimum field maximum value is 10000');
+        // if (minimum < 1) errs.push('Minimum field value is 1');
+        // if (minimum > 10000) errs.push('Minimum field maximum value is 10000');
       }
       if (typeof maximum !== 'undefined') {
         if (isNaN(maximum)) errs.push('Maximum field must be numeric');
         if (parseInt(maximum) < parseInt(minimum))
           errs.push('Maximum field must be greater than minimum value');
-        if (maximum > 10000) errs.push('Maximum field maximum value is 10000');
+        // if (maximum > 10000) errs.push('Maximum field maximum value is 10000');
       }
     }
   }
@@ -289,7 +325,8 @@ async function postAttribute(body) {
     unit,
     choices,
     groups,
-    labels
+    labels,
+    id
   } = body;
 
   const slug = name.replace(/[^0-9a-z]/gi, '') + '-' + new Date().getTime();
@@ -298,10 +335,6 @@ async function postAttribute(body) {
   maximum = parseInt(maximum) || null;
 
   try {
-    const query = `insert into attributes ( 
-      type, name ,slug, description, required, default_value, min, max, unit, default_area
-    ) values(?,?,?,?,?,?,?,?,?,?)`;
-
     const values = [
       type,
       name,
@@ -315,40 +348,77 @@ async function postAttribute(body) {
       default_area
     ];
 
+    const query = `insert into attributes ( 
+      type, name ,slug, description, required, default_value, min, max, unit, default_area
+    ) values(?,?,?,?,?,?,?,?,?,?)`;
+
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
-    const res = await conn.query(query, values);
-    const attr_id = res.insertId;
+    // --- Edit existing attribute
+    if (typeof id !== undefined && typeof id !== 'blank' && !isNaN(id)) {
+      const editQuery = `
+        update attributes set 
+          name = ? ,
+          description = ? ,
+          slug = ? ,
+          required = ? ,
+          default_value = ? ,
+          min = ? ,
+          max = ? ,
+          unit = ? ,
+          default_area = ? 
+          type = ?
+        where id = ?
+      `;
+      values.id = body.id;
+      values.type = body.type;
 
-    // Choices ---
-    if (typeof choices !== 'undefined' && choices.length > 0) {
-      const options_query = `insert into attribute_choices (name, attribute_id) values(?,${attr_id})`;
-      await conn.batch(options_query, choices);
-    }
+      const res = await conn.query(query, values);
+      const attr_id = res.insertId;
 
-    // Locals - labels;
-    const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,${attr_id})`;
-    const lbels_array = [];
-    for (let abbreviation in labels) {
-      const results = await pool.query(
-        'select id from locals where abbreviation = ?',
-        [abbreviation]
-      );
-      const label_id = results[0].id;
-      if (labels[abbreviation].trim().length > 0) {
-        lbels_array.push([label_id, labels[abbreviation]]);
+      // Choices ---
+      if (typeof choices !== 'undefined' && choices.length > 0) {
+        const options_query = `selete from table attribute_choices where id = ?)`;
+        await conn.batch(options_query, [attr_id]);
+
+        const _options_query = `insert into attribute_choices (name, attribute_id) values(?,${attr_id})`;
+        await conn.batch(_options_query, choices);
       }
-    }
-    await conn.batch(labels_query, lbels_array);
+    } else {
+      // create new attribute
+      const res = await conn.query(query, values);
+      const attr_id = res.insertId;
 
-    //groups
-    if (typeof groups !== 'undefined' && groups.length > 0) {
-      // remove empty groups items
-      groups = groups.filter((group) => group.trim().length > 0);
-      groups = groups.map((group) => parseInt(group));
-      const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,${attr_id})`;
-      await conn.batch(groups_query, groups);
+      // Choices ---
+      if (typeof choices !== 'undefined' && choices.length > 0) {
+        const options_query = `insert into attribute_choices (name, attribute_id) values(?,${attr_id})`;
+        await conn.batch(options_query, choices);
+      }
+
+      // Locals - labels;
+      const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,${attr_id})`;
+      const lbels_array = [];
+      for (let abbreviation in labels) {
+        const results = await pool.query(
+          'select id from locals where abbreviation = ?',
+          [abbreviation]
+        );
+        const label_id = results[0].id;
+        if (labels[abbreviation].trim().length > 0) {
+          lbels_array.push([label_id, labels[abbreviation]]);
+        }
+      }
+      await conn.batch(labels_query, lbels_array);
+
+      //groups
+      if (typeof groups !== 'undefined' && groups.length > 0) {
+        // remove empty groups items
+        groups = groups.filter((group) => group.trim().length > 0);
+        groups = groups.map((group) => parseInt(group));
+        const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,${attr_id})`;
+        await conn.batch(groups_query, groups);
+      }
     }
 
     await conn.commit();

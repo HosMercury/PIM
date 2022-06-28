@@ -23,7 +23,7 @@
   </div>
 
   <div>
-    <span%- include('./errs'); %> 
+    <%- include('./errs'); %> 
     <div class='mx-auto'>
       <div
         class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center 
@@ -289,7 +289,7 @@
         class='flex w-100 space-x-4 attr-form'
       >
       <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? locals.old.type : 'text' %>' class='button-type' />
-      <input type='hidden' name='edit' value='<%= typeof locals.old !== 'undefined' ? locals.old.edit : '' %>' class='edit-type' />
+      <input type='hidden' name='id' value='<%= typeof locals.old !== 'undefined' ? locals.old.id : 'blank' %>' class='id' />
       <div class='w-1/2'>
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'

@@ -333,7 +333,7 @@ $(document).ready(function () {
     // Attr EDIT modal -- fill data
     $('body').on('click', '.edit-attr-button', function () {
       console.log('data', data);
-      $('.edit-type').val('edit');
+      $('.id').val(data.id);
       $('.choices-list').empty();
       chooseInputType(data.type);
       $('.nex-modal-show ').slideUp(500);
