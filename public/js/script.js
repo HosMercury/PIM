@@ -235,7 +235,7 @@ $(document).ready(function () {
 
   $('#attr-table').DataTable({
     ajax: {
-      url: '/all_attributes',
+      url: '/api/attributes',
       dataSrc: ''
     },
     order: [[0, 'desc']],

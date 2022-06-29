@@ -36,7 +36,7 @@ async function deleteAttribute(req) {
 
     return true;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await conn.rollback();
     return false;
   }
@@ -53,7 +53,8 @@ router.post('/attributes/:id/delete', async (req, res) => {
   }
 });
 
-router.get('/all_attributes', async (req, res) => {
+// Get all atrrs by json or api
+router.get('/api/attributes', async (req, res) => {
   try {
     let results = await pool.query(
       `
@@ -76,12 +77,12 @@ router.get('/all_attributes', async (req, res) => {
     );
     return res.json(results);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(400).send('error'); // error page
   }
 });
 
-// Get -- Attributes home
+// Get -- Attributes home page
 router.get('/attributes', async (req, res) => {
   try {
     const labels = await pool.query(
@@ -333,7 +334,7 @@ async function validateAttribute(body) {
   return errs;
 }
 
-// post a new attribute
+// post a new attribute or edit existing one
 async function postAttribute(body) {
   let {
     type,
