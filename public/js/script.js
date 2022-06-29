@@ -153,7 +153,7 @@ $(document).ready(function () {
   // animate the attrs modal
   $('.create-attribute').click(function () {
     $('.edit-type').val('');
-    $('.id').val('blank');
+    $('.id').val('');
     $('.type-button').show();
 
     $('.attr-form').trigger('reset');

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
-const { isEmail } = require('validator');
+const { isEmail, isNumeric } = require('validator');
 const { app } = require('tailwind');
 
+const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
 let conn;
 
 router.get('/', (req, res) => {
@@ -139,7 +140,7 @@ async function validateAttribute(body) {
   ];
 
   // Edit Attribue
-  if (typeof id !== undefined && typeof id !== 'blank' && !isNaN(id)) {
+  if (typeof id !== undefined && isNumeric(id)) {
     // edit attribute
     try {
       const q = `select * from attributes where id = ?`;
@@ -191,6 +192,10 @@ async function validateAttribute(body) {
     if (name.length < 2) errs.push('Name field minimum length is 2 letters');
     if (name.length > 250)
       errs.push('Name field maximum length is 250 letters');
+    if (name.search(alphaDashNumeric) === -1)
+      errs.push(
+        'Name field must contains only letters, numbers, space, dash or underscore'
+      );
   } else errs.push('Name field is required');
 
   ////////// Attribute Description //////////////
@@ -219,13 +224,13 @@ async function validateAttribute(body) {
   ///////// Attribute Min -- Attribute Max ////
   if (typeof type !== 'undefined') {
     if (type == 'text' || type == 'textarea' || type == 'number') {
-      if (typeof minimum !== 'undefined') {
-        if (isNaN(minimum)) errs.push('Minimum field must be numeric');
+      if (typeof minimum !== 'undefined' && minimum !== '') {
+        if (!isNumeric(minimum)) errs.push('Minimum field must be numeric');
         // if (minimum < 1) errs.push('Minimum field value is 1');
         // if (minimum > 10000) errs.push('Minimum field maximum value is 10000');
       }
-      if (typeof maximum !== 'undefined') {
-        if (isNaN(maximum)) errs.push('Maximum field must be numeric');
+      if (typeof maximum !== 'undefined' && maximum !== '') {
+        if (!isNumeric(maximum)) errs.push('Maximum field must be numeric');
         if (parseInt(maximum) < parseInt(minimum))
           errs.push('Maximum field must be greater than minimum value');
         // if (maximum > 10000) errs.push('Maximum field maximum value is 10000');
@@ -239,6 +244,10 @@ async function validateAttribute(body) {
       errs.push('Unit field minimum length is 2 letters');
     if (unit !== '' && unit.length > 250)
       errs.push('Unit field maximum length is 250 letters');
+    if (unit.trim().lenghth > 0 && unit.search(alphaDashNumeric) === -1)
+      errs.push(
+        'Unit field must contains only letters, numbers, space, dash or underscore'
+      );
   }
 
   ////////// Attribute english label //////////////
@@ -257,11 +266,18 @@ async function validateAttribute(body) {
       const posted_labels = [];
       for (let abbreviation in labels) {
         try {
-          if (
-            abbreviation === 'en-us' &&
-            labels[abbreviation].trim().length < 1
-          )
-            errs.push('English label is required ');
+          if (abbreviation === 'en-us') {
+            if (labels[abbreviation].trim().length < 1)
+              errs.push('English label is required ');
+
+            if (
+              labels[abbreviation].trim().length &&
+              labels[abbreviation].search(alphaDashNumeric) === -1
+            )
+              errs.push(
+                'English label must contains only letters, numbers, space, dash or underscore'
+              );
+          }
 
           const locals = await pool.query('select abbreviation from locals');
           const locals_abbrs = locals.map((local) => local.abbreviation); // coloct locals abbrs
@@ -334,7 +350,7 @@ async function validateAttribute(body) {
   return errs;
 }
 
-// post a new attribute or edit existing one
+// post  attribute or edit existing one
 async function postAttribute(body) {
   let {
     type,
@@ -381,7 +397,7 @@ async function postAttribute(body) {
     ////////////////////////////////////////////////////////////////
     // --------------- Edit existing attribute -------------------//
     ////////////////////////////////////////////////////////////////
-    if (typeof id !== undefined && typeof id !== 'blank' && !isNaN(id)) {
+    if (typeof id !== undefined && isNumeric(id)) {
       const editQuery = `
         update attributes set 
           type = ? ,
@@ -418,8 +434,10 @@ async function postAttribute(body) {
         const options_query = `delete from attribute_choices where attribute_id = ?`;
         await conn.batch(options_query, [id]);
 
-        const _options_query = `insert into attribute_choices (name, attribute_id) values(?,${id})`;
-        await conn.batch(_options_query, choices);
+        choices.forEach(async (choice) => {
+          let _options_query = `insert into attribute_choices (name, attribute_id) values(?,${id})`;
+          await conn.batch(_options_query, choice);
+        });
       }
 
       // labels
@@ -454,15 +472,20 @@ async function postAttribute(body) {
       }
     } else {
       ////////////////////////////////////////////////////////////////
-      // --------------- Create new attribute -------------------////
+      // --------------- Create new attribute -------------------/////
       ////////////////////////////////////////////////////////////////
       const res = await conn.query(query, values);
       const attr_id = res.insertId;
 
       // Choices ---
+
       if (typeof choices !== 'undefined' && choices.length > 0) {
-        const options_query = `insert into attribute_choices (name, attribute_id) values(?,${attr_id})`;
-        await conn.batch(options_query, choices);
+        const chcs_array = [];
+        choices.forEach((choice) => {
+          chcs_array.push([choice, attr_id]);
+        });
+        const options_query = `insert into attribute_choices (name, attribute_id) values(?,?)`;
+        await conn.batch(options_query, chcs_array);
       }
 
       // Locals - labels;
@@ -491,6 +514,7 @@ async function postAttribute(body) {
     }
 
     await conn.commit();
+    return true;
   } catch (err) {
     // console.log(err);
     await conn.rollback();
@@ -499,22 +523,21 @@ async function postAttribute(body) {
 }
 
 router.post('/attributes', async (req, res) => {
-  // console.log(req.body);
-  // return res.json(req.body);
   const errs = await validateAttribute(req.body);
   if (errs.length > 0) {
     req.session.errs = errs;
     req.session.old = req.body;
     return res.status(400).redirect('back');
   }
+
   const success = await postAttribute(req.body);
 
-  if (success) {
-    req.session.msg = 'Attribute saved successfully';
-    return res.status(200).redirect('back');
-  } else {
+  if (!success) {
     req.session.err = 'Error while saving the attribute';
     return res.status(400).redirect('back');
+  } else {
+    req.session.msg = 'Attribute saved successfully';
+    return res.status(200).redirect('back');
   }
 });
 
