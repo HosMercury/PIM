@@ -12,16 +12,13 @@ router.get('/', (req, res) => {
   });
 });
 
-// delete attr
-router.post('/api/attributes/:id/delete', async (req, res) => {
+// post req
+async function deleteAttribute(req) {
   try {
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
     const id = parseInt(req.params.id);
-
-    const delete_attr = `delete from attributes where id = ?`;
-    await conn.batch(delete_attr, [id]);
 
     const attr_choices_query = `delete from attribute_choices where attribute_id = ?`;
     await conn.batch(attr_choices_query, [id]);
@@ -32,16 +29,31 @@ router.post('/api/attributes/:id/delete', async (req, res) => {
     const attr_lbs_query = `delete from attribute_labels where attribute_id = ?`;
     await conn.batch(attr_lbs_query, [id]);
 
+    const delete_attr = `delete from attributes where id = ?`;
+    await conn.batch(delete_attr, [id]);
+
     await conn.commit();
-    res.send('ok');
+
+    return true;
   } catch (err) {
     console.log(err);
     await conn.rollback();
     return false;
   }
+}
+
+// delete attr
+router.post('/attributes/:id/delete', async (req, res) => {
+  if (await deleteAttribute(req)) {
+    req.session.msg = 'Attribute deleted successfully';
+    return res.status(200).redirect('back');
+  } else {
+    req.session.err = 'Error while deleting the attribute';
+    return res.status(400).redirect('back');
+  }
 });
 
-router.get('/api/attributes', async (req, res) => {
+router.get('/all_attributes', async (req, res) => {
   try {
     let results = await pool.query(
       `
@@ -62,32 +74,12 @@ router.get('/api/attributes', async (req, res) => {
         order by a.id desc limit 10000
       `
     );
-
-    delete results.meta;
-
     return res.json(results);
   } catch (err) {
     console.log(err);
     return res.status(400).send('error'); // error page
   }
 });
-
-// router.get('/api/attributes/:id', async (req, res) => {
-//   if (isNaN(req.params.id)) return res.status(400).send('error');
-
-//   const id = parseInt(req.params.id);
-
-//   try {
-//     const results = await pool.query(
-//       `select a.id, a.type, a.name, a.slug, a.created_at, a.updated_at, ag.id from attributes as a join attribute_groups as ag on ag.attribute_id=a.id where a.id=?`,
-//       [id]
-//     );
-//     res.json(results);
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(400).send('error'); // error page
-//   }
-// });
 
 // Get -- Attributes home
 router.get('/attributes', async (req, res) => {
@@ -514,14 +506,15 @@ router.post('/attributes', async (req, res) => {
     req.session.old = req.body;
     return res.status(400).redirect('back');
   }
-  const success = postAttribute(req.body);
+  const success = await postAttribute(req.body);
 
   if (success) {
     req.session.msg = 'Attribute saved successfully';
+    return res.status(200).redirect('back');
   } else {
-    req.session.msg = 'Error while saving the attribute';
+    req.session.err = 'Error while saving the attribute';
+    return res.status(400).redirect('back');
   }
-  return res.status(200).redirect('back');
 });
 
 module.exports = router;

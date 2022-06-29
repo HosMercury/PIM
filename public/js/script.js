@@ -235,7 +235,7 @@ $(document).ready(function () {
 
   $('#attr-table').DataTable({
     ajax: {
-      url: '/api/attributes',
+      url: '/all_attributes',
       dataSrc: ''
     },
     order: [[0, 'desc']],
@@ -263,10 +263,12 @@ $(document).ready(function () {
     const table = $('#attr-table').DataTable();
     const data = table.row(this).data();
 
-    const delete_url = `/api/attributes/${data.id}/delete`;
+    const delete_url = `/attributes/${data.id}/delete`;
 
-    $('.nex-modal-show').append(
-      `
+    $('.edit-delete-btn')
+      .empty()
+      .append(
+        `
       <div class="table-actions flex justify-end">
         <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
           Edit
@@ -278,7 +280,7 @@ $(document).ready(function () {
         </form>
       </div>
     `
-    );
+      );
 
     const drawCell = (k, d) => {
       let output = '';
