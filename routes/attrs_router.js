@@ -524,6 +524,7 @@ async function postAttribute(body) {
 router.post('/attributes', async (req, res) => {
   const errs = await validateAttribute(req.body);
   if (errs.length > 0) {
+    req.session.redirector = 'attribute';
     req.session.errs = errs;
     req.session.old = req.body;
     return res.status(400).redirect('back');

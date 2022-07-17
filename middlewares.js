@@ -39,6 +39,7 @@ module.exports = {
     res.locals.old = req.session.old;
     res.locals.msg = req.session.msg;
     res.locals.user = req.session.user;
+    res.locals.redirector = req.session.redirector;
 
     // console.log(res.locals);
 
@@ -46,6 +47,7 @@ module.exports = {
     delete req.session.err;
     delete req.session.old;
     delete req.session.msg;
+    delete req.session.redirector;
 
     next();
   }

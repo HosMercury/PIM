@@ -442,6 +442,10 @@ $(document).ready(function () {
   });
 
   $('#groups-table tbody').on('click', 'tr', function () {
+    $('.nex-modal-show').slideUp(300);
+    $('.nex-modal-create-group').slideUp(500);
+    $('.nex-modal-show table').empty();
+
     const table = $('#groups-table').DataTable();
     const data = table.row(this).data();
     $('.show-table-header').text('Group : ' + data.name);
@@ -461,8 +465,7 @@ $(document).ready(function () {
           Delete
         </button>
       </form>
-    </div>
-  `
+    </div>`
       );
 
     for (const key in data) {
@@ -483,9 +486,15 @@ $(document).ready(function () {
         );
       }
     }
+  });
 
-    $('body').on('click', '.edit-attr-button', function () {
-      //
-    });
+  $('.create-group').click(function () {
+    $('.nex-modal-show').slideUp(500);
+    $('.nex-modal-create-group').slideDown(500);
+  });
+
+  $('body').on('click', '.edit-attr-button', function () {
+    $('.nex-modal-show').slideUp(500);
+    $('.nex-modal-create-group').slideDown(500);
   });
 });
