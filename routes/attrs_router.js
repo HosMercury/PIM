@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const { isEmail, isNumeric } = require('validator');
-const { app } = require('tailwind');
 
 const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
 let conn;

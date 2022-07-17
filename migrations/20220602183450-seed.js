@@ -32,12 +32,12 @@ exports.up = async function (db) {
   }
 
   const en_lang = 'insert into locals(name, abbreviation) values(?, ?)';
-  const values2 = ['English USA', 'en-us'];
+  const values2 = ['English USA', 'en-US'];
   await pool.query(en_lang, values2);
 
   const ar_lang =
     'insert into locals(name, abbreviation, direction) values(?, ?, ?)';
-  const values3 = ['Arabic EGY', 'ar-eg', 'rtl'];
+  const values3 = ['Arabic EGY', 'ar-EG', 'rtl'];
   await pool.query(ar_lang, values3);
 
   const g1 = 'insert into groups(name) values(?)';

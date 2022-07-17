@@ -233,6 +233,7 @@ $(document).ready(function () {
     }
   });
 
+  // Attributes table
   $('#attr-table').DataTable({
     ajax: {
       url: '/api/attributes',
@@ -263,6 +264,8 @@ $(document).ready(function () {
     const table = $('#attr-table').DataTable();
     const data = table.row(this).data();
 
+    $('.show-table-header').text('Attribute : ' + data.name);
+
     const delete_url = `/attributes/${data.id}/delete`;
 
     $('.edit-delete-btn')
@@ -273,7 +276,7 @@ $(document).ready(function () {
         <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
           Edit
         </button>
-        <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mr-20 m-2 rounded-md delete-attr-button">
+        <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mx-auto my-2 rounded-md delete-attr-button">
           <button type="submit" onclick="return confirm('are you sure ?')">
             Delete
           </button>
@@ -417,6 +420,72 @@ $(document).ready(function () {
       if (!container.is(e.target) && container.has(e.target).length === 0) {
         container.slideUp(300);
       }
+    });
+  });
+
+  // Groups table
+  $('#groups-table').DataTable({
+    ajax: {
+      url: '/api/groups',
+      dataSrc: ''
+    },
+    order: [[0, 'desc']],
+    columns: [{ data: 'id' }, { data: 'name' }, { data: 'created_at' }],
+    columnDefs: [
+      {
+        targets: [2],
+        render: function (data, type, row) {
+          return data ? moment(data).format('DD-MM-YYYY h:mm A') : null;
+        }
+      }
+    ]
+  });
+
+  $('#groups-table tbody').on('click', 'tr', function () {
+    const table = $('#groups-table').DataTable();
+    const data = table.row(this).data();
+    $('.show-table-header').text('Group : ' + data.name);
+
+    const delete_url = `/groups/${data.id}/delete`;
+
+    $('.edit-delete-btn')
+      .empty()
+      .append(
+        `
+    <div class="table-actions flex justify-end">
+      <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
+        Edit
+      </button>
+      <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mx-auto my-2 rounded-md delete-attr-button">
+        <button type="submit" onclick="return confirm('are you sure ?')">
+          Delete
+        </button>
+      </form>
+    </div>
+  `
+      );
+
+    for (const key in data) {
+      if (typeof data[key] !== 'undefined' && data[key]) {
+        $('.nex-modal-show').slideDown(300);
+
+        $('.nex-modal-show table').append(
+          `
+            <tr class="border border-gray-700 px-4">
+              <td class="w-1/3 border border-gray-700 h-12 text-nex font-bold">
+              ${key.toLocaleUpperCase().replace('_', ' ')}
+              </td>
+              <td class="h-24">
+                ${data[key]}
+              </td>
+            </tr>
+        `
+        );
+      }
+    }
+
+    $('body').on('click', '.edit-attr-button', function () {
+      //
     });
   });
 });
