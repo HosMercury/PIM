@@ -147,6 +147,7 @@ function enableSubmit() {
 
 $(document).ready(function () {
   // show- modal is active to enable / disable click on table
+
   const type = $('.button-type').val();
   chooseInputType(type);
 
@@ -273,7 +274,7 @@ $(document).ready(function () {
       .append(
         `
       <div class="table-actions flex justify-end">
-        <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
+        <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-button">
           Edit
         </button>
         <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mx-auto my-2 rounded-md delete-attr-button">
@@ -328,7 +329,7 @@ $(document).ready(function () {
           `
           <tr class="border border-gray-700 px-4">
             <td class="w-1/3 border border-gray-700 h-12 text-nex font-bold">
-            ${key.toLocaleUpperCase().replace('_', ' ')}
+            <strong>${key.toLocaleUpperCase().replace('_', ' ')}</strong>
             </td>
             <td class="h-12">
               ${drawCell(key, data[key])}
@@ -340,7 +341,7 @@ $(document).ready(function () {
     }
 
     // Attr EDIT modal -- fill data
-    $('body').on('click', '.edit-attr-button', function () {
+    $('body').on('click', '.edit-button', function () {
       $('.id').val(data.id);
       $('.choices-list').empty();
       chooseInputType(data.type);
@@ -430,10 +431,15 @@ $(document).ready(function () {
       dataSrc: ''
     },
     order: [[0, 'desc']],
-    columns: [{ data: 'id' }, { data: 'name' }, { data: 'created_at' }],
+    columns: [
+      { data: 'id' },
+      { data: 'name' },
+      { data: 'attributes_count' },
+      { data: 'created_at' }
+    ],
     columnDefs: [
       {
-        targets: [2],
+        targets: [3],
         render: function (data, type, row) {
           return data ? moment(data).format('DD-MM-YYYY h:mm A') : null;
         }
@@ -443,7 +449,7 @@ $(document).ready(function () {
 
   $('#groups-table tbody').on('click', 'tr', function () {
     $('.nex-modal-show').slideUp(300);
-    $('.nex-modal-create-group').slideUp(500);
+    $('#nex-modal-create-group').slideUp(500);
     $('.nex-modal-show table').empty();
 
     const table = $('#groups-table').DataTable();
@@ -457,7 +463,7 @@ $(document).ready(function () {
       .append(
         `
     <div class="table-actions flex justify-end">
-      <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-attr-button">
+      <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-button">
         Edit
       </button>
       <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mx-auto my-2 rounded-md delete-attr-button">
@@ -472,29 +478,40 @@ $(document).ready(function () {
       if (typeof data[key] !== 'undefined' && data[key]) {
         $('.nex-modal-show').slideDown(300);
 
-        $('.nex-modal-show table').append(
-          `
-            <tr class="border border-gray-700 px-4">
-              <td class="w-1/3 border border-gray-700 h-12 text-nex font-bold">
-              ${key.toLocaleUpperCase().replace('_', ' ')}
+        if (key !== 'attributes') {
+          $('.nex-modal-show table').append(
+            `
+            <tr class="border border-gray-700 px-4 h-24">
+              <td class="w-1/3 border border-gray-700 text-nex font-bold">
+              <strong>${key.toLocaleUpperCase().replace('_', ' ')}</strong>
               </td>
-              <td class="h-24">
-                ${data[key]}
+              <td class="">
+              ${
+                key === 'created_at' || key === 'updated_at'
+                  ? moment(data[key]).format('DD-MM-YYYY h:mm A')
+                  : data[key]
+              }
               </td>
             </tr>
         `
-        );
+          );
+        }
       }
     }
-  });
 
-  $('.create-group').click(function () {
-    $('.nex-modal-show').slideUp(500);
-    $('.nex-modal-create-group').slideDown(500);
+    $('body').on('click', '.edit-button', function () {
+      $('.nex-modal-show').slideUp(300);
+      $('#nex-modal-create-group').slideDown(300);
+      $('#group_id').val(data.id);
+      $('#group_name').val(data.name);
+      $('#group_description').val(data.description);
+    });
   });
-
-  $('body').on('click', '.edit-attr-button', function () {
-    $('.nex-modal-show').slideUp(500);
-    $('.nex-modal-create-group').slideDown(500);
+  $('body').on('click', '#close-nex-modal-group', function () {
+    $('#nex-modal-create-group').slideUp(300);
+  });
+  $('body').on('click', '.create-group', function () {
+    $('.nex-modal-show').slideUp(300);
+    $('#nex-modal-create-group').slideDown(300);
   });
 });
