@@ -456,6 +456,23 @@ $(document).ready(function () {
     const data = table.row(this).data();
     $('.show-table-header').text('Group : ' + data.name);
 
+    // $('.nex-modal-show').append(`
+    // <table>
+    //   <thead>
+    //     <tr>
+    //       <th>Attribute id</th>
+    //       <th>Attribute Name</th>
+    //     </tr>
+    //   </thead>
+    //   <tbody>
+    //     <tr>
+    //       <th>Attribute id</th>
+    //       <th>Attribute Name</th>
+    //     </tr>
+    //   </tbody>
+    // </table>
+    // `);
+
     const delete_url = `/groups/${data.id}/delete`;
 
     $('.edit-delete-btn')
@@ -491,6 +508,26 @@ $(document).ready(function () {
                   ? moment(data[key]).format('DD-MM-YYYY h:mm A')
                   : data[key]
               }
+              </td>
+            </tr>
+        `
+          );
+        }
+
+        if (key === 'attributes') {
+          $('.nex-modal-show table').append(
+            `
+            <tr class="border border-gray-700 px-4 h-24">
+              <td class="w-1/3 border border-gray-700 text-nex font-bold">
+              <strong>${key.toLocaleUpperCase().replace('_', ' ')}</strong>
+              </td>
+              <td class="">
+              ${data[key].map((attribute) => {
+                if (attribute.id) {
+                  return `<a class="bg-nex rounded text-white p-2" href="/attributes/${attribute.id}">${attribute.name}</a>`;
+                }
+                return '-';
+              })}
               </td>
             </tr>
         `

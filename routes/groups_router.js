@@ -26,8 +26,6 @@ router.get('/api/groups', async (req, res) => {
 // Get -- Attributes home page
 router.get('/groups', async (req, res) => {
   try {
-    // const groups = await pool.query('select * from groups order by id desc');
-
     return res.render('groups_index', {
       title: 'Groups',
       button: 'Create Group',
@@ -53,10 +51,10 @@ function validateGroup(name, description) {
   } else errs.push('Name field is required');
 
   //////////  Description //////////////
-  if (typeof description !== 'undefined') {
-    if (description !== '' && description.length < 2)
+  if (description !== '') {
+    if (description.length < 2)
       errs.push('Description field minimum length is 2 letters');
-    if (description !== '' && description.length > 250)
+    if (description.length > 250)
       errs.push('Description field maximum length is 250 letters');
   }
 
@@ -68,7 +66,7 @@ router.post('/groups', async (req, res) => {
   let { id, name, description } = req.body;
   const errs = validateGroup(name, description);
 
-  if (typeof id !== 'undefined' && !isNumeric(id)) {
+  if (id !== '' && !isNumeric(id)) {
     errs.push('Invalid id');
   }
 
@@ -81,7 +79,7 @@ router.post('/groups', async (req, res) => {
 
   /// Edit group ////
   try {
-    if (typeof id !== 'undefined' && isNumeric(id)) {
+    if (isNumeric(id)) {
       const editQuery = `update groups set name = ?,description = ? where id = ?`;
       await pool.query(editQuery, [name, description, id]);
     } else {
@@ -97,7 +95,7 @@ router.post('/groups', async (req, res) => {
     req.session.redirector = 'group';
     req.session.errs = ['Error happened while saving the group'];
     req.session.old = req.body;
-    return res.status(400).redirect('back'); // error page
+    return res.status(400).redirect('back');
   }
 });
 
