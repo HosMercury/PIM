@@ -2,19 +2,18 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const { isNumeric } = require('validator');
-
-const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
+const validateGroup = require('./validation/group');
 
 router.get('/api/groups', async (req, res) => {
   try {
     let results = await pool.query(`
-    select g.* ,
-    JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
-    (select cast(count(*) as char) from attribute_groups ag where ag.group_id = g.id) attributes_count
-    from groups g
-    left join attribute_groups ag on g.id = ag.group_id
-    left join attributes a on a.id = ag.attribute_id
-    group by g.id order by g.id desc
+      select g.* ,
+      JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
+      (select cast(count(*) as char) from attribute_groups ag where ag.group_id = g.id) attributes_count
+      from groups g
+      left join attribute_groups ag on g.id = ag.group_id
+      left join attributes a on a.id = ag.attribute_id
+      group by g.id order by g.id desc
     `);
     return res.json(results);
   } catch (err) {
@@ -26,40 +25,17 @@ router.get('/api/groups', async (req, res) => {
 // Get -- Attributes home page
 router.get('/groups', async (req, res) => {
   try {
-    return res.render('groups_index', {
+    return res.render('groups/index', {
       title: 'Groups',
       button: 'Create Group',
       buttonClass: 'create-group'
       // groups
     });
   } catch (err) {
-    return res.status(400).render('error'); // error page
+    req.session.err = 'Error happened while fetching the groups';
+    return res.status(400).redirect('back');
   }
 });
-
-function validateGroup(name, description) {
-  const errs = [];
-  ///////////////// Name validation ////////////////////
-  if (typeof name !== 'undefined') {
-    if (name.length < 2) errs.push('Name field minimum length is 2 letters');
-    if (name.length > 250)
-      errs.push('Name field maximum length is 250 letters');
-    if (name.search(alphaDashNumeric) === -1)
-      errs.push(
-        'Name field must contains only letters, numbers, space, dash or underscore'
-      );
-  } else errs.push('Name field is required');
-
-  //////////  Description //////////////
-  if (description !== '') {
-    if (description.length < 2)
-      errs.push('Description field minimum length is 2 letters');
-    if (description.length > 250)
-      errs.push('Description field maximum length is 250 letters');
-  }
-
-  return errs;
-}
 
 // Get -- Attributes home page
 router.post('/groups', async (req, res) => {

@@ -11,10 +11,8 @@
     <title>NEX Content | <%= title !== 'undefined' ? title : '' %> </title>
   </head>
   <body class="min-h-screen  relative">
-    <!-- attr show -->
-    <%- include('./attr_show'); %>
     <!-- create modal  -->
-    <%- include('./attr_create'); %>
+    <%- include('../attrs/create'); %>
     
     <div class="flex min-h-screen	">
       <div 
@@ -27,7 +25,7 @@
 
         <div class="bg-nex flex flex-col text-white text-center shrink-0">
           <a
-            class="mt-6 border-l-4 border-nex hover:border-l-4 hover:border-white cursor-pointer box-border"
+            class="attributes-trigger mt-6 border-l-4 border-nex hover:border-l-4 hover:border-white cursor-pointer box-border"
             href="/"
           >
             <svg
@@ -118,15 +116,15 @@
       </div>
 
       <div
-        class=" min-h-screen	w-[22rem] shrink-0 flex flex-col text-left bg-gray-200 px-12 py-8 border-l-2 border-r-2 border-gray-200"
+        class="attributes-menu hidden shadow-2xl absolute z-20 flex flex-col text-left bg-white p-2 px-3 border border-nex rounded "
       >
-        <h2 class="text-xl text-gray-400 my-4">ATTRIBUTES</h2>
+        <!-- <h2 class="text-xl text-gray-400 my-4">ATTRIBUTES</h2> -->
         <ul class="text-gray-700 text-xl">
           <li class="my-4">
-            <a href="/attributes" class="block w-100">Attributes</a>
+            <a href="/attributes" class="block w-100 hover:bg-nex hover:text-white p-2 px-4 rounded cursor-pointer">Attributes</a>
           </li>
           <li class="my-4">
-            <a href="/groups" class="block w-100">Attributes groups</a>
+            <a href="/groups" class="block w-100 hover:bg-nex hover:text-white p-2 px-4 rounded cursor-pointer">Groups</a>
           </li>
         </ul>
       </div>
@@ -162,9 +160,8 @@
           <p class="mx-2"><%= typeof user !== 'undefined' ? user.firstname :  '' %></p>
         </div>
         <div class="p-8 w-100 text-xl relative">
-          <div class="flex justify-between mb-8">
-            
-            <h2 class="text-3xl text-nex"><% title %></h2>
+          <div class="flex justify-between mb-8 border-b-2 p-3 shadow	 ">
+            <h2 class="text-3xl text-nex"><%= title %></h2>
             <% if (typeof button !== 'undefined') { %>
             <button
               class="bg-nex text-white rounded-md py-2 px-3 justify-self-end hover:opacity-90 <%= typeof buttonClass !== 'undefined' ? buttonClass :  '' %>"

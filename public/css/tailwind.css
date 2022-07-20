@@ -61,22 +61,25 @@ input {
   position: static !important;
 }
 
-.nex-modal-show,
 .nex-modal-create {
-  top: 90px;
-}
-
-.nex-modal-show {
-  left: 30%;
-  width: 50%;
-}
-
-.nex-modal-create {
-  left: 10%;
+  top: 30px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 body {
   min-height: 100vh;
+}
+
+.attributes-menu {
+  left: 5.5rem;
+  top: 150px;
+  width: 180px;
+}
+
+.show-table {
 }
 
 @layer components {
