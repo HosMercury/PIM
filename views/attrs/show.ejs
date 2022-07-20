@@ -1,0 +1,176 @@
+<%- include('../partials/header'); %>
+<!-- show attribute details -->
+<table id="attr-show" class="w-1/2 mx-auto shadow show-table">
+  <tbody>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        ID
+      </td>
+      <td class="border border-nex p-3 text-center"><%= attribute.id %></td>
+    </tr>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Type
+      </td>
+      <td class="border border-nex p-3 text-center"><%= attribute.type %></td>
+    </tr>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Slug
+      </td>
+      <td class="border border-nex p-3 text-center"><%= attribute.slug %></td>
+    </tr>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Required
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= attribute.required ? 'Yes' : 'No' %>
+      </td>
+    </tr>
+
+    <!-- Description -->
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Description
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= attribute.description || '-' %>
+      </td>
+    </tr>
+
+    <!-- Default value -->
+    <% if ([ 'text', 'number', 'email'].includes(attribute.type)) { %>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Default <%= attribute.type.slice(0,1).toUpperCase() +
+        attribute.type.slice(1) %> Value
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= attribute.default_value || '-' %>
+      </td>
+    </tr>
+    <% } %>
+
+    <!-- Default area -->
+    <% if ([ 'textarea'].includes(attribute.type)) { %>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Default Text Area Value
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= attribute.default_area || '-' %>
+      </td>
+    </tr>
+    <% } %>
+
+    <!-- Min -->
+    <% if (attribute.min) { %>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Description
+      </td>
+      <td class="border border-nex p-3 text-center"><%= attribute.min %></td>
+    </tr>
+    <% } %>
+
+    <!-- Max -->
+    <% if (attribute.max) { %>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Description
+      </td>
+      <td class="border border-nex p-3 text-center"><%= attribute.max %></td>
+    </tr>
+    <% } %>
+
+    <!-- Unit -->
+    <% if ([ 'text', 'number'].includes(attribute.type)) { %>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Suffix (Unit)
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= attribute.unit || '-' %>
+      </td>
+    </tr>
+    <% } %>
+
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Created At
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= moment(attribute.created_at).format('DD-MM-YYYY h:mm A') %>
+      </td>
+    </tr>
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Updated_at
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <%= moment(attribute.created_at).format('DD-MM-YYYY h:mm A') %>
+      </td>
+    </tr>
+
+    <tr>
+      <td
+        class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold"
+      >
+        Labels
+      </td>
+      <td class="border border-nex p-3 text-center">
+        <% labels.forEach(label => { %>
+        <strong class="text-nex"> <%= label.name %></strong> : <%= label.label
+        %> <% }) %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="w-1/2 mx-auto">
+  <h2
+    class="border border-nex p-3 bg-gray-100 text-nex text-center font-bold mt-6"
+  >
+    Groups
+  </h2>
+  <div class="border border-nex p-3 text-center">
+    <% if (groups.length > 0) { %> <% groups.forEach(group => { %>
+    <p>
+      <span> <%= group.name %></span>
+      <button
+        class="btn bg-red-500 rounded p-1 text-white border text-sm mx-5 my-1"
+      >
+        Unlink
+      </button>
+    </p>
+    <% }) %> <% } else { %> No data <% } %>
+  </div>
+</div>
+<div class="edit-delete-btn mt-4 ml-56 w-100"></div>
+
+<%- include('../partials/footer'); %>

@@ -1,0 +1,511 @@
+<div
+  class='nex-modal-create absolute z-10 w-5/6 max-h-[750px] overflow-auto border-2 border-nex bg-white p-2 py-1 rounded drop-shadow-2xl
+  <%= typeof redirector !== 'undefined' && redirector == 'attribute'? 'block' : 'hidden' %> '
+>
+  <div class="my-3">
+    <h2 class='text-2xl text-nex font-bold'>Attributes</h2>
+    <button class='absolute right-4 top-4 close-nex-modal'>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        class='h-8 w-8'
+        fill='none'
+        viewBox='0 0 24 24'
+        stroke='currentColor'
+        stroke-width='2'
+      >
+        <path
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          d='M6 18L18 6M6 6l12 12'
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div>
+    <%- include('../partials/errs'); %> 
+    <div class='mx-auto'>
+      <div
+        class='text-base space-x-4 drop-shadow-md overflow-auto flex items-center 
+        justify-items-center border rounded border-gray-400 p-1 my-2 mx-auto'
+      >
+        <button
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md text-button <%= typeof locals.old !== 'undefined' && old.type === 'text' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("text")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Text Input</span>
+        </button>
+
+        <button
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md number-button <%= typeof locals.old !== "undefined" && old.type === 'number' ? " border-nex " : "" %> '
+          onclick='chooseInputType("number")'
+        ><svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Number</span>
+        </button>
+
+        <button
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md date-button          
+           <%= typeof locals.old !== 'undefined' && old.type === 'date' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("date")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Date</span>
+        </button>
+
+        <button
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md datetime-button 
+          <%= typeof locals.old !== 'undefined' && old.type === 'datetime' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("datetime")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Date Time</span>
+        </button>
+
+        <button
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md email-button <%= typeof locals.old !== 'undefined' && old.type === 'email' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("email")'
+        ><svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Email</span>
+        </button>
+
+        <button
+        class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md textarea-button  <%= typeof locals.old !== 'undefined' && old.type === 'textarea' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("textarea")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Text Area</span>
+        </button>
+
+        <button
+          class='type-button w-32 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md switch-button  <%= typeof locals.old !== 'undefined' && old.type === 'switch' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("switch")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M5 13l4 4L19 7'
+            ></path>
+          </svg>
+          <span class='mx-auto  text-sm'>Switch (Y/N)</span>
+        
+        </button>
+        <button
+          class='type-button w-28 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md images-button  <%= typeof locals.old !== 'undefined' && old.type === 'images' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("images")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+            ></path>
+          </svg>
+          <span class='mx-auto  text-sm'>Images</span>
+        </button>
+
+        <button
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md check-boxes-button  <%= typeof locals.old !== 'undefined' && old.type === 'check-boxes' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("check-boxes")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'
+            ></path>
+          </svg>
+          <span class='mx-auto  text-sm'>Check Boxes</span>
+        </button>
+        
+        <button
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md radio-buttons-button  <%= typeof locals.old !== 'undefined' && old.type === 'radio-buttons' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("radio-buttons")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+            ></path>
+          </svg>
+          <span class='mx-auto  text-sm'>Radio Buttons</span>
+        </button>
+
+        <button
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md single-select-button  <%= typeof locals.old !== 'undefined' && old.type === 'single-select' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("single-select")'
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M4 6h16M4 12h16m-7 6h7'
+            ></path>
+          </svg>
+          <span class='mx-auto  text-sm'>Single Select</span>
+        </button>
+
+        <button
+          class='type-button w-36 h-24 m-2 border-2 p-1 hover:bg-gray-200 rounded-md multiple-select-button  <%= typeof locals.old !== 'undefined' && old.type === 'multiple-select' ? ' border-nex ' : '' %>'
+          onclick='chooseInputType("multiple-select")'
+        ><svg
+            xmlns='http://www.w3.org/2000/svg'
+            class='h-10 w-10 m-auto mb-1'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            stroke-width='1'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M4 6h16M4 10h16M4 14h16M4 18h16'
+            ></path>
+          </svg>
+          <span class='mx-auto text-sm'>Multiple Select</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="attrs <%= typeof locals.errs !== 'undefined' ? ' block ' : ' hidden '%> ">
+      <form
+        action='/attributes'
+        method='post'
+        class='flex w-100 space-x-4 attr-form'
+      >
+      <input type='hidden' name='type' value='<%= typeof locals.old !== 'undefined' ? locals.old.type : 'text' %>' class='button-type' />
+      <input type='hidden' name='id' value='<%= typeof locals.old !== 'undefined' ? locals.old.id : '' %>' class='id' />
+      <div class='w-1/2'>
+          <h3
+            class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
+          >Properties</h3>
+
+          <div class='my-3 flex align-items' id='name_control'>
+            <label
+              id='name_label'
+              for='name'
+              class='mx-2 w-1/4 py-2'
+            >Name<span class=''>*</span>
+            </label>
+            <input
+              id='name'
+              type='text'
+              name='name'
+              required
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.name : '' %>'
+            />
+          </div>
+
+          <div class='my-3 flex align-items' id='description_control'>
+            <label
+              id='description_label'
+              for='description'
+              class='mx-2 w-1/4 py-2'
+            >Description
+            </label>
+            <input
+              id='description'
+              type='text'
+              name='description'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.description : '' %>'
+            />
+          </div>
+
+          <h3
+            class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex field-options'
+          >Field Options</h3>
+
+          <div class='mx-2' id='required_control'>
+            <input
+              type='checkbox'
+              <%= typeof locals.old !== 'undefined' && locals.old.required == 'true'  ? ' checked ' : '' %>
+              name='required'
+              id="required"
+              class='w-6 h-6'
+              value="true"
+            />
+            <label for='required' class='mx-2 relative bottom-1'>Required Field</label>
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='default_control'>
+            <label
+              id='default_label'
+              for='default_value'
+              class='mx-2 w-1/4 py-2'
+            >Default value
+            </label>
+            <input
+              id='default_value'
+              type='text'
+              name='default_value'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.default_value : '' %>'
+            />
+          </div>
+
+          <div
+            class='my-3 flex align-items f-control'
+            id='default_area_control'
+          >
+            <label
+              id='default_area_label'
+              for='default_area'
+              class='mx-2 w-1/4 py-2'
+            >Default text
+            </label>
+            <textarea
+              id='default_area'
+              type='text'
+              rows='2'
+              name='default_area'
+              class='p-2 border border-gray-400 rounded w-80'
+              minlength="10"
+            ><%= typeof locals.old !== 'undefined' ? locals.old.default_area : '' %></textarea>
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='minimum_control'>
+            <label
+              id='minimum_label'
+              for='minimum'
+              class='mx-2 w-1/4 py-2'
+            >Minimum value</label>
+            <input
+              id='minimum'
+              type='number'
+              name='minimum'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.minimum : '' %>'
+            />
+          </div>
+          <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
+          <div class='my-3 flex align-items f-control' id='maximum_control'>
+            <label
+              id='maximum_label'
+              for='maximum'
+              class='mx-2 w-1/4 py-2'
+            >Maximum value</label>
+            <input
+              type='number'
+              name='maximum'
+              id='maximum'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.maximum : '' %>'
+            />
+          </div>
+
+          <div class='my-3 flex align-items f-control' id='unit_control'>
+            <label id='unit_label' for='unit' class='mx-2 w-1/4 py-2'>Suffix
+              (units)</label>
+            <input
+              id='unit'
+              type='text'
+              name='unit'
+              class='h-12 px-2 border border-gray-400 rounded w-80'
+              minlength="2"
+              value='<%= typeof locals.old !== 'undefined' ? locals.old.unit: '' %>'
+            />
+          </div>
+
+          <div class='my-4 f-control' id='choices_control'>
+            <h3 class=' text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex field-options'
+            >Choices</h3>
+            <div class=' flex align-items'>
+              <label id='unit_label' for='unit' class='mx-2 w-1/4 py-2'>New Choice<span class=' text-gray-700 inline-block'>*</span>
+              <p class="text-gray-700 text-sm please-add-choices"><i>Please add choices</i></p>
+              </label>
+              <input
+              id='choice'
+              type='text'
+              name='choice'
+              class='h-12 px-2 border border-gray-400 rounded w-56'
+              minlength="2"
+              />
+              <button type='button' class="border h-12 border-gray-400 rounded mx-4 w-16 bg-gray-50 add-choice">Add</button>
+            </div>
+             <input type="hidden" value="<%= typeof locals.old !== 'undefined' ? JSON.stringify(locals.old.choices) : null %>" class="old-choices-list">
+            <ul class='my-4 ml-4 choices-list'></ul>
+          </div>
+        </div>
+
+        <div class='w-1/2 border-l pl-4'>
+          <h3 class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'>Local
+            Labels</h3>
+          
+            <% if (locals.labels) { %>
+            <% labels.forEach(label => { %>
+            <div class='my-3 flex align-middle'>
+              <label
+                for='<%= label.abbreviation %>_label'
+                class='mx-2 w-1/4 py-2'
+              ><%= label.name %> 
+                <span
+                  class='text-sm text-gray-700 inline-block'
+                >(<%= label.abbreviation %>)</span><%= label.abbreviation === 'en' ? '*': '' %> 
+                </label>
+              <input
+                id='<%= label.abbreviation %>_label'
+                lang='<%= label.abbreviation %>'
+                dir='<%= label.direction %>'
+                type='text'
+                name='labels[<%= label.abbreviation %>]'
+                class='h-12 px-2 border border-gray-400 rounded w-80'
+                minlength="2"
+                <%= label.abbreviation === 'en-us' ? ' required' : '' %>
+                value='<%= typeof locals.old !== 'undefined' ? locals.old.labels[label.abbreviation] : '' %>'
+              />
+            </div>
+            <% }) %>
+            <% } %>
+
+          <h3
+            class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
+          >Groups</h3>
+          <div class='my-3 ml-28'>
+            <select data-placeholder="Choose groups..." 
+              class="chosen-select"
+              multiple
+              id='groups'
+              name='groups[]'
+            >
+            <% if (typeof groups !== 'undefined') { %>
+            <% groups.forEach(group => { %>
+                <option value='<%= group.id %>' id="<%= group.id +'-'+ group.name %>"
+                  <% if (typeof locals.old !== 'undefined' && typeof locals.old.groups !== 'undefined'&& locals.old.groups.includes(group.id.toString())) { %>
+                  <%= ' selected ' %> 
+                  <% } %>
+                  ><%= group.name %> </option>
+            <% }) %>
+            <% } %>
+            </select>
+          </div>
+
+          <div class='flex align-end justify-center h-100 w-100 mt-24'>
+            <button type='submit' 
+              class='bg-nex px-3 py-1 text-white rounded-md w-40 h-12 hover:opacity-80 attr-button'
+            >Save Attribute</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
