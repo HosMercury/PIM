@@ -49,18 +49,22 @@ router.get('/attributes/:id', async (req, res) => {
     const results = await pool.query('select * from attributes where id = ?', [
       id
     ]);
-    if (!results[0]) throw new Error('invalid groups');
+
+    if (results.length < 1) throw new Error('invalid attribute');
     const attribute = results[0];
 
-    const groups = await pool.query(
+    const attr_groups = await pool.query(
       `
-        select g.* from groups g
+        select g.id, g.name from groups g
         left join attribute_groups ag on g.id = ag.group_id
         left join attributes a on a.id = ag.attribute_id 
         where a.id = ?
     `,
       [id]
     );
+    const attr_groups_ids = attr_groups.map((g) => g.id);
+
+    const groups = await pool.query(`select id, name from groups`, [id]);
 
     const labels = await pool.query(
       `
@@ -72,11 +76,20 @@ router.get('/attributes/:id', async (req, res) => {
       [id]
     );
 
+    const choices_results = await pool.query(
+      `select name from attribute_choices where attribute_id = ?`,
+      [id]
+    );
+    const choices = choices_results.map((choice) => choice.name);
+
     return res.status(200).render('attrs/show', {
       title: 'Attribute : ' + attribute.name,
       attribute,
-      groups,
+      attr_groups,
+      attr_groups_ids,
       labels,
+      choices,
+      groups,
       moment
     });
   } catch (err) {
@@ -90,7 +103,7 @@ router.get('/attributes/:id', async (req, res) => {
 router.post('/attributes/:id/delete', async (req, res) => {
   if (await deleteAttribute(req)) {
     req.session.msg = 'Attribute deleted successfully';
-    return res.status(200).redirect('back');
+    return res.status(200).redirect('/attributes');
   } else {
     req.session.err = 'Error while deleting the attribute';
     return res.status(400).redirect('back');

@@ -78,8 +78,30 @@ body {
   top: 150px;
   width: 180px;
 }
+.show-page,
+.show-page td {
+  font-size: 1.2rem;
+}
 
-.show-table {
+#item-show {
+  border-collapse: collapse !important;
+  border-radius: 10px;
+}
+
+#item-show,
+td {
+  border-collapse: collapse !important;
+}
+
+#item-show td {
+  padding: 0.7rem;
+}
+
+.show-key {
+  padding: 0.5rem;
+  /* background-color: hsl(0, 0%, 88%); */
+  font-weight: bold;
+  width: 200px;
 }
 
 @layer components {

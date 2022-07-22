@@ -309,7 +309,7 @@
               required
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? locals.old.name : '' %>'
+              value='<% if (typeof locals.old!== 'undefined') { %><%= locals.old.name %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.name %><% } else ""%>'
             />
           </div>
 
@@ -326,7 +326,7 @@
               name='description'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? locals.old.description : '' %>'
+              value='<% if (typeof locals.old!== 'undefined') { %><%= locals.old.description %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.description %><% } else ""%>'
             />
           </div>
 
@@ -337,7 +337,11 @@
           <div class='mx-2' id='required_control'>
             <input
               type='checkbox'
-              <%= typeof locals.old !== 'undefined' && locals.old.required == 'true'  ? ' checked ' : '' %>
+              <% if(typeof locals.old !== 'undefined' && locals.old.required == 'true') { %>
+              <%= ' checked ' %> 
+              <% } else if(typeof attribute !== 'undefined' && attribute.required) { %> 
+              <%= ' checked ' %> 
+              <% } else "" %> 
               name='required'
               id="required"
               class='w-6 h-6'
@@ -359,7 +363,7 @@
               name='default_value'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? locals.old.default_value : '' %>'
+              value='<% if (typeof locals.old!== 'undefined') { %><%= locals.old.default_value %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.default_value %><% } else ""%>'
             />
           </div>
 
@@ -380,7 +384,7 @@
               name='default_area'
               class='p-2 border border-gray-400 rounded w-80'
               minlength="10"
-            ><%= typeof locals.old !== 'undefined' ? locals.old.default_area : '' %></textarea>
+            ><% if (typeof locals.old!== 'undefined') { %><%= locals.old.default_area %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.default_area %><% } else ""%></textarea>
           </div>
 
           <div class='my-3 flex align-items f-control' id='minimum_control'>
@@ -394,7 +398,7 @@
               type='number'
               name='minimum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
-              value='<%= typeof locals.old !== 'undefined' ? locals.old.minimum : '' %>'
+              value='<% if (typeof locals.old!== 'undefined') { %><%= locals.old.minimum %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.minimum %><% } else "2"%>'
             />
           </div>
           <div class='w-100 mx-12 block text-red-500 text-sm minimum-err'></div>
@@ -409,7 +413,7 @@
               name='maximum'
               id='maximum'
               class='h-12 px-2 border border-gray-400 rounded w-80'
-              value='<%= typeof locals.old !== 'undefined' ? locals.old.maximum : '' %>'
+              value='<% if (typeof locals.old!== 'undefined') { %><%= locals.old.maximum %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.maximum %><% } else ""%>'
             />
           </div>
 
@@ -422,7 +426,7 @@
               name='unit'
               class='h-12 px-2 border border-gray-400 rounded w-80'
               minlength="2"
-              value='<%= typeof locals.old !== 'undefined' ? locals.old.unit: '' %>'
+              value='<% if (typeof locals.old!== 'undefined') { %><%= locals.old.unit %><% } else if(typeof attribute !== 'undefined') { %><%= attribute.unit %><% } else ""%>'
             />
           </div>
 
@@ -442,15 +446,20 @@
               />
               <button type='button' class="border h-12 border-gray-400 rounded mx-4 w-16 bg-gray-50 add-choice">Add</button>
             </div>
-             <input type="hidden" value="<%= typeof locals.old !== 'undefined' ? JSON.stringify(locals.old.choices) : null %>" class="old-choices-list">
+
+             <input type="hidden" 
+             value='<% if (typeof locals.old !== 'undefined') { %><%= JSON.stringify(locals.old.choices) %><% } else if(typeof choices !== 'undefined') { %><%=  JSON.stringify(choices) %><% } else null%>'
+
+             class="old-choices-list">
             <ul class='my-4 ml-4 choices-list'></ul>
           </div>
         </div>
 
+        
+
         <div class='w-1/2 border-l pl-4'>
           <h3 class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'>Local
             Labels</h3>
-          
             <% if (locals.labels) { %>
             <% labels.forEach(label => { %>
             <div class='my-3 flex align-middle'>
@@ -487,15 +496,25 @@
               id='groups'
               name='groups[]'
             >
-            <% if (typeof groups !== 'undefined') { %>
+            <%= JSON.stringify(groups) %> 
+
+            <% if (typeof groups !== 'undefined') { %>             
+              
+
             <% groups.forEach(group => { %>
                 <option value='<%= group.id %>' id="<%= group.id +'-'+ group.name %>"
-                  <% if (typeof locals.old !== 'undefined' && typeof locals.old.groups !== 'undefined'&& locals.old.groups.includes(group.id.toString())) { %>
+                  <% 
+                    if (typeof locals.old !== 'undefined' && typeof locals.old.groups !== 'undefined'&& locals.old.groups.includes(group.id.toString())) { 
+                  %>
                   <%= ' selected ' %> 
+                  <% } else if (typeof locals.old === 'undefined' && attr_groups_ids.includes(group.id)) {%>
+                    <%= ' selected ' %> 
                   <% } %>
-                  ><%= group.name %> </option>
-            <% }) %>
-            <% } %>
+                >
+                  <%= group.name %> 
+                </option>
+                <% }) %>
+                <% } %>
             </select>
           </div>
 

@@ -282,151 +282,68 @@ $(document).ready(function () {
     const table = $('#attr-table').DataTable();
     const data = table.row(this).data();
     window.location.href = '/attributes/' + data.id;
+  });
 
-    // const table = $('#attr-table').DataTable();
+  //Attr EDIT modal -- fill data
+  $('body').on('click', '.edit-attr', function () {
+    $('.nex-modal-create').slideDown(500);
+
     // const data = table.row(this).data();
-    // $('.show-table-header').text('Attribute : ' + data.name);
-    // const delete_url = `/attributes/${data.id}/delete`;
-    // $('.edit-delete-btn')
-    //   .empty()
-    //   .append(
-    //     `
-    //   <div class="table-actions flex justify-end">
-    //     <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-button">
-    //       Edit
-    //     </button>
-    //     <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mx-auto my-2 rounded-md delete-attr-button">
-    //       <button type="submit" onclick="return confirm('are you sure ?')">
-    //         Delete
-    //       </button>
-    //     </form>
-    //   </div>
-    // `
-    //   );
-    // const drawCell = (k, d) => {
-    //   let output = '';
-    //   if (k === 'created_at' || k === 'updated_at') {
-    //     output += `
-    //           <div class="p-2">
-    //             ${moment(d[k]).format('DD-MM-YYYY h:mm A') || 'No Data'}
-    //           </div>
-    //         `;
-    //   } else if (typeof d === 'object') {
-    //     d = uniqArray(d);
-    //     output = '';
-    //     d.forEach((dt) => {
-    //       if (typeof dt === 'object' && parseInt(dt.id) > 0) {
-    //         if (k === 'groups') {
-    //           output += `
-    //             <div class="p-2">
-    //               <a href="/groups/${dt.id}" class="bg-nex p-1 text-white rounded">${dt.name}</a>
-    //             </div>
-    //           `;
-    //         } else {
-    //           output += `<div class="p-2 block ">`;
-    //           if (dt.abbreviation) {
-    //             output += `<span class="font-bold">${dt.abbreviation.toUpperCase()}</span> : `;
-    //           }
-    //           output += `${dt.name || '-'}</div>`;
-    //         }
-    //       } else output += '-';
-    //     });
-    //   } else {
-    //     return `${d || 'No Data'}`;
-    //   }
-    //   return output;
-    // };
-    // for (const key in data) {
-    //   if (typeof data[key] !== 'undefined' && data[key]) {
-    //     $('.nex-modal-show').slideDown(300);
-    //     $('.nex-modal-show table').append(
-    //       `
-    //       <tr class="border border-gray-700 px-4">
-    //         <td class="w-1/3 border border-gray-700 h-12 text-nex font-bold">
-    //         <strong>${key.toLocaleUpperCase().replace('_', ' ')}</strong>
-    //         </td>
-    //         <td class="h-12">
-    //           ${drawCell(key, data[key])}
-    //         </td>
-    //       </tr>
-    //   `
-    //     );
-    //   }
+    // $('.id').val(data.id);
+    // $('.choices-list').empty();
+    // chooseInputType(data.type);
+    // $('.nex-modal-show ').slideUp(500);
+    // $('.nex-modal-create').slideDown(500);
+    // $('.attrs').slideDown(500);
+    // $('#name').val(data.name);
+    // $('#description').val(data.description);
+    // $('#default_value').val(data.default_value);
+    // $('#minimum').val(data.min);
+    // $('#maximum').val(data.max);
+    // $('#unit').val(data.unit);
+    // $('#default_area').val(data.default_area);
+    // if (data.required == '1') $('#required').prop('checked', true);
+    // if (typeof data.locals !== 'undefined' && Array.isArray(data.locals)) {
+    //   data.locals.forEach(function (local) {
+    //     $(`#${local.abbreviation}_label`).val(local.name);
+    //   });
     // }
-    // // Attr EDIT modal -- fill data
-    // $('body').on('click', '.edit-button', function () {
-    //   $('.id').val(data.id);
-    //   $('.choices-list').empty();
-    //   chooseInputType(data.type);
-    //   $('.nex-modal-show ').slideUp(500);
-    //   $('.nex-modal-create').slideDown(500);
-    //   $('.attrs').slideDown(500);
-    //   $('#name').val(data.name);
-    //   $('#description').val(data.description);
-    //   $('#default_value').val(data.default_value);
-    //   $('#minimum').val(data.min);
-    //   $('#maximum').val(data.max);
-    //   $('#unit').val(data.unit);
-    //   $('#default_area').val(data.default_area);
-    //   if (data.required == '1') $('#required').prop('checked', true);
-    //   if (typeof data.locals !== 'undefined' && Array.isArray(data.locals)) {
-    //     data.locals.forEach(function (local) {
-    //       $(`#${local.abbreviation}_label`).val(local.name);
-    //     });
-    //   }
-    //   if (typeof data.groups !== 'undefined' && Array.isArray(data.groups)) {
-    //     data.groups.forEach(function (group) {
-    //       $(`#${group.id}-${group.name}`).attr('selected', 'selected');
-    //     });
-    //     $('.chosen-select').trigger('chosen:updated');
-    //   }
-    //   if (typeof data.choices !== 'undefined' && Array.isArray(data.choices)) {
-    //     const ch = uniqArray(data.choices);
-    //     ch.forEach(function (choice) {
-    //       $('.choices-list').append(generateAppendedChoices(choice.name));
-    //     });
-    //   }
-    //   $('.type-button').hide();
-    //   $(`.${data.type}-button`).show();
-    //   if (
-    //     data.type === 'check-boxes' ||
-    //     data.type === 'radio-buttons' ||
-    //     data.type === 'single-select' ||
-    //     data.type === 'multiple-select'
-    //   ) {
-    //     $('.check-boxes-button').show();
-    //     $('.radio-buttons-button').show();
-    //     $('.single-select-button').show();
-    //     $('.multiple-select-button').show();
-    //   }
-    //   if (data.type === 'date' || data.type === 'datetime') {
-    //     $('.date-button').show();
-    //     $('.datetime-button').show();
-    //   }
-    //   li_count = $('.choices-list').children().length;
-    //   if (li_count < 1) {
-    //     disableSubmit();
-    //     $('.please-add-choices').show(); // label text
-    //   } else {
-    //     enableSubmit();
-    //   }
-    // });
-    // //click outside modal
-    // $(document).mouseup(function (e) {
-    //   var container = $('.nex-modal-show');
-    //   // if the target of the click isn't the container nor a descendant of the container
-    //   if (!container.is(e.target) && container.has(e.target).length === 0) {
-    //     $('.nex-modal-show table').empty();
-    //     container.slideUp(300);
-    //   }
-    // });
-    // $(document).mouseup(function (e) {
-    //   var container = $('.nex-modal-create');
-    //   // if the target of the click isn't the container nor a descendant of the container
-    //   if (!container.is(e.target) && container.has(e.target).length === 0) {
-    //     container.slideUp(300);
-    //   }
-    // });
+    // if (typeof data.groups !== 'undefined' && Array.isArray(data.groups)) {
+    //   data.groups.forEach(function (group) {
+    //     $(`#${group.id}-${group.name}`).attr('selected', 'selected');
+    //   });
+    //   $('.chosen-select').trigger('chosen:updated');
+    // }
+    // if (typeof data.choices !== 'undefined' && Array.isArray(data.choices)) {
+    //   const ch = uniqArray(data.choices);
+    //   ch.forEach(function (choice) {
+    //     $('.choices-list').append(generateAppendedChoices(choice.name));
+    //   });
+    // }
+    // $('.type-button').hide();
+    // $(`.${data.type}-button`).show();
+    // if (
+    //   data.type === 'check-boxes' ||
+    //   data.type === 'radio-buttons' ||
+    //   data.type === 'single-select' ||
+    //   data.type === 'multiple-select'
+    // ) {
+    //   $('.check-boxes-button').show();
+    //   $('.radio-buttons-button').show();
+    //   $('.single-select-button').show();
+    //   $('.multiple-select-button').show();
+    // }
+    // if (data.type === 'date' || data.type === 'datetime') {
+    //   $('.date-button').show();
+    //   $('.datetime-button').show();
+    // }
+    // li_count = $('.choices-list').children().length;
+    // if (li_count < 1) {
+    //   disableSubmit();
+    //   $('.please-add-choices').show(); // label text
+    // } else {
+    //   enableSubmit();
+    // }
   });
 
   // Groups table
@@ -453,97 +370,15 @@ $(document).ready(function () {
   });
 
   $('#groups-table tbody').on('click', 'tr', function () {
-    // $('.nex-modal-show').slideUp(300);
-    // $('#nex-modal-create-group').slideUp(500);
-    // $('.nex-modal-show table').empty();
-    // const table = $('#groups-table').DataTable();
-    // const data = table.row(this).data();
-    // $('.show-table-header').text('Group : ' + data.name);
-    // $('.nex-modal-show').append(`
-    // <table>
-    //   <thead>
-    //     <tr>
-    //       <th>Attribute id</th>
-    //       <th>Attribute Name</th>
-    //     </tr>
-    //   </thead>
-    //   <tbody>
-    //     <tr>
-    //       <th>Attribute id</th>
-    //       <th>Attribute Name</th>
-    //     </tr>
-    //   </tbody>
-    // </table>
-    // `);
-    // const delete_url = `/groups/${data.id}/delete`;
-    // $('.edit-delete-btn')
-    //   .empty()
-    //   .append(
-    //     `
-    // <div class="table-actions flex justify-end">
-    //   <button class="bg-nex p-2 w-16 text-white m-2 rounded-md edit-button">
-    //     Edit
-    //   </button>
-    //   <form action="${delete_url}" method="post" class="bg-red-500 p-2 w-16 text-white mx-auto my-2 rounded-md delete-attr-button">
-    //     <button type="submit" onclick="return confirm('are you sure ?')">
-    //       Delete
-    //     </button>
-    //   </form>
-    // </div>`
-    //   );
-    // for (const key in data) {
-    //   if (typeof data[key] !== 'undefined' && data[key]) {
-    //     $('.nex-modal-show').slideDown(300);
-    // if (key !== 'attributes') {
-    //   $('.nex-modal-show table').append(
-    //     `
-    //     <tr class="border border-gray-700 px-4 h-24">
-    //       <td class="w-1/3 border border-gray-700 text-nex font-bold">
-    //       <strong>${key.toLocaleUpperCase().replace('_', ' ')}</strong>
-    //       </td>
-    //       <td class="">
-    //       ${
-    //         key === 'created_at' || key === 'updated_at'
-    //           ? moment(data[key]).format('DD-MM-YYYY h:mm A')
-    //           : data[key]
-    //       }
-    //       </td>
-    //     </tr>
-    // `
-    //   );
-    // }
-    //     if (key === 'attributes') {
-    //       $('.nex-modal-show table').append(
-    //         `
-    //         <tr class="border border-gray-700 px-4 h-24">
-    //           <td class="w-1/3 border border-gray-700 text-nex font-bold">
-    //           <strong>${key.toLocaleUpperCase().replace('_', ' ')}</strong>
-    //           </td>
-    //           <td class="">
-    //           ${data[key].map((attribute) => {
-    //             if (attribute.id) {
-    //               return `<button class="bg-nex rounded text-white p-2 m-2" id="show-attribute-from-group">${attribute.name}</button>`;
-    //             }
-    //             return '-';
-    //           })}
-    //           </td>
-    //         </tr>
-    //     `
-    //       );
-    //     }
-    //   }
-    // }
-    // $('body').on('click', '.edit-button', function () {
-    //   $('.nex-modal-show').slideUp(300);
-    //   $('#nex-modal-create-group').slideDown(300);
-    //   $('#group_id').val(data.id);
-    //   $('#group_name').val(data.name);
-    //   $('#group_description').val(data.description);
-    // });
+    const table = $('#groups-table').DataTable();
+    const data = table.row(this).data();
+    window.location.href = '/groups/' + data.id;
   });
+
   $('body').on('click', '#close-nex-modal-group', function () {
     $('#nex-modal-create-group').slideUp(300);
   });
+
   $('body').on('click', '.create-group', function () {
     $('.nex-modal-show').slideUp(300);
     $('#nex-modal-create-group').slideDown(300);
