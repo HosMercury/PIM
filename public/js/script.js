@@ -1,22 +1,5 @@
-function uniqArray(arr) {
-  const ar = arr.filter(
-    (value, index, self) =>
-      index ===
-      self.findIndex((t) => t.id === value.id && t.name === value.name)
-  );
-
-  return ar;
-}
-
-function generateAppendedChoices(choice_value) {
-  return `<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
-  <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
-  <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
-  </li>  
-  `;
-}
-
 function chooseInputType(buttonType) {
+  buttonType = buttonType.trim();
   enableSubmit();
   if (buttonType !== 'text' || buttonType !== 'number')
     $('.minimum-err').text('');
@@ -24,9 +7,8 @@ function chooseInputType(buttonType) {
   $('.attrs').slideDown(500);
   $('.button-type').prop('value', buttonType);
   $('.f-control').addClass('hidden');
-
   $('button.border-nex').removeClass('border-nex');
-  $('.' + buttonType + '-button').addClass('border-nex');
+  $('.' + buttonType.trim() + '-button').addClass('border-nex');
 
   if (
     buttonType === 'text' ||
@@ -71,7 +53,7 @@ function chooseInputType(buttonType) {
   }
 
   if (buttonType === 'textarea') {
-    $('#default_area_control,#minimum_control , #maximum_control').removeClass(
+    $('#default_area_control,#minimum_control ,#maximum_control').removeClass(
       'hidden'
     );
     $('#maximum_label').text('Maximum Length');
@@ -137,7 +119,7 @@ function chooseInputType(buttonType) {
 
 function disableSubmit() {
   $('.attr-button').prop('disabled', true);
-  $('.attr-button').addClass('bg-gray-200');
+  $('.attr-button').addClass('bg-gray-500');
 }
 
 function enableSubmit() {
@@ -146,8 +128,17 @@ function enableSubmit() {
 }
 
 $(document).ready(function () {
-  // show- modal is active to enable / disable click on table
+  const type = $('.button-type').val();
+  chooseInputType(type);
 
+  function generateAppendedChoices(choice_value) {
+    return `<li class="my-1 inline-block p-2 py-1 border border-gray-50 rounded-md bg-gray-50" id="li-${new Date().getTime()}">${choice_value} 
+  <input type="hidden" name="choices[]" value="${choice_value}" minlength="2"/>
+  <button type="button" class="inline-block choice-delete-button" id="${new Date().getTime()}">X</button>
+  </li>  
+  `;
+  }
+  // show- modal is active to enable / disable click on table
   $('.attributes-trigger').mouseover(function () {
     $('.attributes-menu').show();
   });
@@ -164,13 +155,10 @@ $(document).ready(function () {
     $('.attributes-menu').hide();
   });
 
-  const type = $('.button-type').val();
-  chooseInputType(type);
-
   // animate the attrs modal
   $('.create-attribute').click(function () {
-    $('.edit-type').val('');
-    $('.id').val('');
+    // $('.edit-type').val('');
+    // $('.id').val('');
     $('.type-button').show();
 
     $('.attr-form').trigger('reset');
@@ -186,7 +174,7 @@ $(document).ready(function () {
   $('.close-nex-modal').click(function () {
     $('.attrs').slideUp(500);
     $('.nex-modal-create').slideUp(500);
-    $('.edit-type').val('');
+    // $('.edit-type').val('');
   });
 
   $('.close-nex-modal-show').click(function () {
@@ -287,63 +275,6 @@ $(document).ready(function () {
   //Attr EDIT modal -- fill data
   $('body').on('click', '.edit-attr', function () {
     $('.nex-modal-create').slideDown(500);
-
-    // const data = table.row(this).data();
-    // $('.id').val(data.id);
-    // $('.choices-list').empty();
-    // chooseInputType(data.type);
-    // $('.nex-modal-show ').slideUp(500);
-    // $('.nex-modal-create').slideDown(500);
-    // $('.attrs').slideDown(500);
-    // $('#name').val(data.name);
-    // $('#description').val(data.description);
-    // $('#default_value').val(data.default_value);
-    // $('#minimum').val(data.min);
-    // $('#maximum').val(data.max);
-    // $('#unit').val(data.unit);
-    // $('#default_area').val(data.default_area);
-    // if (data.required == '1') $('#required').prop('checked', true);
-    // if (typeof data.locals !== 'undefined' && Array.isArray(data.locals)) {
-    //   data.locals.forEach(function (local) {
-    //     $(`#${local.abbreviation}_label`).val(local.name);
-    //   });
-    // }
-    // if (typeof data.groups !== 'undefined' && Array.isArray(data.groups)) {
-    //   data.groups.forEach(function (group) {
-    //     $(`#${group.id}-${group.name}`).attr('selected', 'selected');
-    //   });
-    //   $('.chosen-select').trigger('chosen:updated');
-    // }
-    // if (typeof data.choices !== 'undefined' && Array.isArray(data.choices)) {
-    //   const ch = uniqArray(data.choices);
-    //   ch.forEach(function (choice) {
-    //     $('.choices-list').append(generateAppendedChoices(choice.name));
-    //   });
-    // }
-    // $('.type-button').hide();
-    // $(`.${data.type}-button`).show();
-    // if (
-    //   data.type === 'check-boxes' ||
-    //   data.type === 'radio-buttons' ||
-    //   data.type === 'single-select' ||
-    //   data.type === 'multiple-select'
-    // ) {
-    //   $('.check-boxes-button').show();
-    //   $('.radio-buttons-button').show();
-    //   $('.single-select-button').show();
-    //   $('.multiple-select-button').show();
-    // }
-    // if (data.type === 'date' || data.type === 'datetime') {
-    //   $('.date-button').show();
-    //   $('.datetime-button').show();
-    // }
-    // li_count = $('.choices-list').children().length;
-    // if (li_count < 1) {
-    //   disableSubmit();
-    //   $('.please-add-choices').show(); // label text
-    // } else {
-    //   enableSubmit();
-    // }
   });
 
   // Groups table
@@ -384,3 +315,70 @@ $(document).ready(function () {
     $('#nex-modal-create-group').slideDown(300);
   });
 });
+
+// function uniqArray(arr) {
+//   const ar = arr.filter(
+//     (value, index, self) =>
+//       index ===
+//       self.findIndex((t) => t.id === value.id && t.name === value.name)
+//   );
+
+//   return ar;
+// }
+
+// const data = table.row(this).data();
+// $('.id').val(data.id);
+// $('.choices-list').empty();
+// chooseInputType(data.type);
+// $('.nex-modal-show ').slideUp(500);
+// $('.nex-modal-create').slideDown(500);
+// $('.attrs').slideDown(500);
+// $('#name').val(data.name);
+// $('#description').val(data.description);
+// $('#default_value').val(data.default_value);
+// $('#minimum').val(data.min);
+// $('#maximum').val(data.max);
+// $('#unit').val(data.unit);
+// $('#default_area').val(data.default_area);
+// if (data.required == '1') $('#required').prop('checked', true);
+// if (typeof data.locals !== 'undefined' && Array.isArray(data.locals)) {
+//   data.locals.forEach(function (local) {
+//     $(`#${local.abbreviation}_label`).val(local.name);
+//   });
+// }
+// if (typeof data.groups !== 'undefined' && Array.isArray(data.groups)) {
+//   data.groups.forEach(function (group) {
+//     $(`#${group.id}-${group.name}`).attr('selected', 'selected');
+//   });
+//   $('.chosen-select').trigger('chosen:updated');
+// }
+// if (typeof data.choices !== 'undefined' && Array.isArray(data.choices)) {
+//   const ch = uniqArray(data.choices);
+//   ch.forEach(function (choice) {
+//     $('.choices-list').append(generateAppendedChoices(choice.name));
+//   });
+// }
+// $('.type-button').hide();
+// $(`.${data.type}-button`).show();
+// if (
+//   data.type === 'check-boxes' ||
+//   data.type === 'radio-buttons' ||
+//   data.type === 'single-select' ||
+//   data.type === 'multiple-select'
+// ) {
+//   $('.check-boxes-button').show();
+//   $('.radio-buttons-button').show();
+//   $('.single-select-button').show();
+//   $('.multiple-select-button').show();
+// }
+// if (data.type === 'date' || data.type === 'datetime') {
+//   $('.date-button').show();
+//   $('.datetime-button').show();
+// }
+// li_count = $('.choices-list').children().length;
+// if (li_count < 1) {
+//   disableSubmit();
+//   $('.please-add-choices').show(); // label text
+// } else {
+//   enableSubmit();
+// }

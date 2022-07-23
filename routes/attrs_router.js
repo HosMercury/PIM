@@ -65,15 +65,23 @@ router.get('/attributes/:id', async (req, res) => {
     const attr_groups_ids = attr_groups.map((g) => g.id);
 
     const groups = await pool.query(`select id, name from groups`, [id]);
-
     const labels = await pool.query(
+      'select id, name, abbreviation, direction from locals'
+    );
+
+    const attr_labels = await pool.query(
       `
-        select l.* , al.label from locals l
+        select l.abbreviation, al.label 
+        from locals l
         left join attribute_labels al on l.id = al.local_id
         left join attributes a on a.id = al.attribute_id 
         where a.id = ?
     `,
       [id]
+    );
+
+    const remapped_labels = Object.fromEntries(
+      attr_labels.map(({ abbreviation, label }) => [abbreviation, label])
     );
 
     const choices_results = await pool.query(
@@ -88,6 +96,7 @@ router.get('/attributes/:id', async (req, res) => {
       attr_groups,
       attr_groups_ids,
       labels,
+      remapped_labels,
       choices,
       groups,
       moment

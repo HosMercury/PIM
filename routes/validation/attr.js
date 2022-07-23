@@ -80,7 +80,7 @@ async function validateAttribute(body) {
   }
 
   /// save create attr
-  if (typeof type === 'undefined' || !types.includes(type))
+  if (type !== 'undefined' && !types.includes(type))
     ////////// Attribute Type //////////////
     errs.push('Attribute type field is invalid');
 

@@ -33,6 +33,11 @@ input {
   padding-left: 10px;
 }
 
+.search-choice-close {
+  height: 11px;
+  background-image: url('./chosen-sprite.png') !important;
+}
+
 .dataTables_length,
 .dataTables_filter,
 .dataTables_info,
@@ -62,7 +67,7 @@ input {
 }
 
 .nex-modal-create {
-  top: 30px;
+  top: 50px !important;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -102,6 +107,14 @@ td {
   /* background-color: hsl(0, 0%, 88%); */
   font-weight: bold;
   width: 200px;
+}
+
+.attr-button:disabled {
+  background-color: rgb(188, 187, 187);
+}
+
+.search-choice-close {
+  background-image: url('./chosen-sprite.png') !important;
 }
 
 @layer components {

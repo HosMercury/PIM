@@ -6,19 +6,23 @@
     class="w-1/2 mx-auto shadow show-table text-center -collapse rounded"
   >
     <tbody>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">ID</td>
         <td class="show-value border border-nex"><%= attribute.id %></td>
       </tr>
-      <tr class="">
+      <tr>
+        <td class="show-key border border-nex">Name</td>
+        <td class="show-value border border-nex"><%= attribute.name %></td>
+      </tr>
+      <tr>
         <td class="show-key border border-nex">Type</td>
         <td class="show-value border border-nex"><%= attribute.type %></td>
       </tr>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Slug</td>
         <td class="show-value border border-nex"><%= attribute.slug %></td>
       </tr>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Required</td>
         <td class="show-value border border-nex">
           <%= attribute.required ? 'Yes' : 'No' %>
@@ -26,7 +30,7 @@
       </tr>
 
       <!-- Description -->
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Description</td>
         <td class="show-value border border-nex">
           <%= attribute.description || '-' %>
@@ -35,7 +39,7 @@
 
       <!-- Default value -->
       <% if ([ 'text', 'number', 'email'].includes(attribute.type)) { %>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">
           Default <%= attribute.type.slice(0,1).toUpperCase() +
           attribute.type.slice(1) %> Value
@@ -48,7 +52,7 @@
 
       <!-- Default area -->
       <% if ([ 'textarea'].includes(attribute.type)) { %>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Default Text Area Value</td>
         <td class="show-value border border-nex">
           <%= attribute.default_area || '-' %>
@@ -58,7 +62,7 @@
 
       <!-- Min -->
       <% if (attribute.min) { %>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Description</td>
         <td class="show-value border border-nex"><%= attribute.min %></td>
       </tr>
@@ -66,7 +70,7 @@
 
       <!-- Max -->
       <% if (attribute.max) { %>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Description</td>
         <td class="show-value border border-nex"><%= attribute.max %></td>
       </tr>
@@ -74,7 +78,7 @@
 
       <!-- Unit -->
       <% if ([ 'text', 'number'].includes(attribute.type)) { %>
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Suffix (Unit)</td>
         <td class="show-value border border-nex">
           <%= attribute.unit || '-' %>
@@ -82,26 +86,28 @@
       </tr>
       <% } %>
 
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Created At</td>
         <td class="show-value border border-nex">
           <%= moment(attribute.created_at).format('DD-MM-YYYY h:mm A') %>
         </td>
       </tr>
 
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Updated_at</td>
         <td class="show-value border border-nex">
           <%= moment(attribute.created_at).format('DD-MM-YYYY h:mm A') %>
         </td>
       </tr>
 
-      <tr class="">
+      <tr>
         <td class="show-key border border-nex">Labels</td>
         <td class="show-value border border-nex">
-          <% labels.forEach(label => { %>
-          <strong class="text-nex"> <%= label.name %></strong> : <%= label.label
-          %> <% }) %>
+          <% Object.keys(remapped_labels).forEach(key => { %>
+          <p class="p-1 m-1 border bg-gray-100">
+            <strong class="text-nex"> <%= key %> : </strong><%=
+            remapped_labels[key] %> <% }) %>
+          </p>
         </td>
       </tr>
     </tbody>
@@ -112,7 +118,7 @@
       <% if (attr_groups.length > 0) { %> <% attr_groups.forEach(group => { %>
       <a
         href="groups/<%= group.id %> "
-        class="rounded-lg bg-nex m-1 p-1 px-2 text-white"
+        class="rounded bg-nex m-1 p-1 px-2 text-white text-sm"
       >
         <%= group.name %></a
       >
@@ -126,7 +132,7 @@
     <h2 class="p-1 bg-nex text-white font-bold">Choices</h2>
     <div class="show-value border border-nex p-5">
       <% if (choices.length > 0) { %> <% choices.forEach(choice => { %>
-      <p class="rounded-lg border m-1 p-1 bg-gray-50 text-md"><%= choice %></p>
+      <p class="rounded-lg border m-1 p-1 bg-gray-100 text-md"><%= choice %></p>
       <% }) %> <% } else { %> No data <% } %>
     </div>
   </div>
