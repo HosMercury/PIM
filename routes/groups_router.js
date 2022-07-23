@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require('../config/db_pool');
 const { isNumeric } = require('validator');
 const validateGroup = require('./validation/group');
+const moment = require('moment');
 
 router.get('/api/groups', async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.get('/api/groups', async (req, res) => {
   }
 });
 
-// Get -- Attributes home page
+// Get -- Group show
 router.get('/groups', async (req, res) => {
   try {
     return res.render('groups/index', {
@@ -37,7 +38,56 @@ router.get('/groups', async (req, res) => {
   }
 });
 
-// Get -- Attributes home page
+// DElete -- group
+router.get('/groups/:id/delete', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await pool.query(`delete from groups where g.id = ?`, [id]);
+
+    req.session.msg = 'Group deleted successfully';
+    return res.redirect('back');
+  } catch (err) {
+    console.log(err);
+    req.session.err = 'Error happened while deleting the group';
+    return res.status(400).redirect('back');
+  }
+});
+// Get -- groups home page
+router.get('/groups/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const results = await pool.query(
+      `
+      select g.* ,
+      JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes
+      from groups g 
+      left join attribute_groups ag on g.id = ag.group_id 
+      left join attributes a on a.id = ag.attribute_id 
+      where g.id = ? 
+    `,
+      [id]
+    );
+
+    if (results.length < 1) throw new Error('invalid group');
+    const group = results[0];
+
+    return res.render('groups/show', {
+      title: 'Group : ' + group.name,
+      button: 'Create Group',
+      buttonClass: 'create-group',
+      group,
+      moment
+    });
+  } catch (err) {
+    // console.log(err);
+    req.session.err = 'Error happened while fetching the group';
+    return res.status(400).redirect('back');
+  }
+});
+
+// Get -- groups home page
 router.post('/groups', async (req, res) => {
   let { id, name, description } = req.body;
   const errs = validateGroup(name, description);

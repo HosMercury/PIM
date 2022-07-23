@@ -74,6 +74,11 @@ input {
   margin-right: auto;
 }
 
+#nex-modal-create-group {
+  left: 25%;
+  top: 20%;
+}
+
 body {
   min-height: 100vh;
 }

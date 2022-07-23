@@ -1,0 +1,73 @@
+<%- include('../partials/header'); %>
+<!-- show group details -->
+<div class="show-page">
+  <table
+    id="item-show "
+    class="w-1/2 mx-auto shadow show-table text-center -collapse rounded"
+  >
+    <tbody>
+      <tr>
+        <td class="show-key border border-nex">ID</td>
+        <td class="show-value border border-nex"><%= group.id %></td>
+      </tr>
+      <tr>
+        <td class="show-key border border-nex">Name</td>
+        <td class="show-value border border-nex"><%= group.name %></td>
+      </tr>
+
+      <!-- Description -->
+      <tr>
+        <td class="show-key border border-nex">Description</td>
+        <td class="show-value border border-nex">
+          <%= group.description || '-' %>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="show-key border border-nex">Created At</td>
+        <td class="show-value border border-nex">
+          <%= moment(group.created_at).format('DD-MM-YYYY h:mm A') %>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="show-key border border-nex">Updated_at</td>
+        <td class="show-value border border-nex">
+          <%= moment(group.created_at).format('DD-MM-YYYY h:mm A') %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="w-1/2 mx-auto text-center">
+    <h2 class="p-1 bg-nex text-white font-bold">Attributes</h2>
+    <%= group.attributes.length %>
+    <div class="border border-nex p-5">
+      <% if (typeof group.attributes !== 'undefined' > 0 ) { %> <%
+      group.attributes.forEach(attribute => { %>
+      <a
+        href="/attributes/<%= attribute.id %>"
+        class="w-1/4 border p-2 inline m-3 bg-nex text-white rounded-md"
+        ><%= attribute.name %>
+      </a>
+      <% }) %> <% } %>
+    </div>
+
+    <div class="w-1/2 mx-auto text-center flex justify-between p-3">
+      <button
+        class="edit-attr rounded-lg border m-1 p-1 px-3 text-sm bg-nex text-white h-8"
+      >
+        Edit
+      </button>
+      <form action="/groups/<%= group.id %>/delete" method="post">
+        <button
+          type="submit"
+          class="rounded-lg border m-1 p-1 px-3 text-sm bg-red-500 text-white h-8"
+          onclick="return confirm('Are you sure?')"
+        >
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
+  <%- include('../partials/footer'); %>
+</div>

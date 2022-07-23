@@ -1,7 +1,7 @@
-<div id="nex-modal-create-group" class=' absolute top-10 z-10 pb-8 w-5/6
-max-h-[725px] overflow-auto border-2 border-nex bg-white p-2 rounded
-drop-shadow-2xl <%= typeof redirector !== 'undefined' && redirector == 'group' ?
-'block' : 'hidden' %> ' >
+<div id="nex-modal-create-group" class='absolute top-10 z-10 pb-8 w-1/2
+max-h-[725px] overflow-auto border-2 border-nex bg-white p-4 rounded
+drop-shadow-2xl shadow-2xl <%= typeof redirector !== 'undefined' && redirector
+== 'group' ? 'block' : 'hidden' %> ' >
 <div class="my-3">
   <h2 class="text-2xl text-nex font-bold">Groups</h2>
   <button class="absolute right-4 top-4" id="close-nex-modal-group">
@@ -22,43 +22,40 @@ drop-shadow-2xl <%= typeof redirector !== 'undefined' && redirector == 'group' ?
   </button>
 </div>
 
-<div class="mx-auto my-12 p-4">
-  <%- include('../partials/errs'); %>
-  <form action="/groups" method="post" class="flex w-100 space-x-4 groups-form">
-    <input type='hidden' name='id' id="group_id" value='<%= typeof locals.old
-    !== 'undefined' ? locals.old.id : '' %>' />
+<%- include('../partials/errs'); %>
+<form action="/groups" method="post" class="flexspace-x-4 groups-form">
+  <input type='hidden' name='id' id="group_id" value='<%= typeof locals.old !==
+  'undefined' ? locals.old.id : '' %>' />
 
-    <div class="block">
-      <div class="my-3 flex align-items" id="name_control">
-        <label id="name_label" for="group_name" class="mx-2 w-1/4 py-2"
-          >Name<span class="">*</span>
-        </label>
-        <input id='group_name' type='text' name='name' required autofocus
-        class='h-12 px-2 border border-gray-400 rounded w-80' minlength="2"
-        value=' <%= typeof locals.old !== 'undefined' ? locals.old.name : '' %>'
-        />
-      </div>
+  <div class="flex flex-col w-100 align-middle">
+    <div class="mt-5" id="name_control">
+      <label id="name_label" for="group_name" class="mx-4 w-24 py-2"
+        >Name<span class="">*</span>
+      </label>
+      <input id='group_name' type='text' name='name' required autofocus
+      class='h-12 px-2 border border-gray-400 rounded w-1/2' minlength="2"
+      value=' <%= typeof locals.old !== 'undefined' ? locals.old.name : '' %>'
+      />
     </div>
-    <div class="block">
-      <div class="my-3 flex align-items" id="description_control">
-        <label
-          id="description_label"
-          for="group_description"
-          class="mx-2 w-1/4 py-2"
-          >Description
-        </label>
-        <input id='group_description' type='text' name='description' class='
-        h-12 px-2 border border-gray-400 rounded w-80' minlength="2" value='<%=
-        typeof locals.old !== 'undefined' ? locals.old.description : '' %>' />
-      </div>
+
+    <div class="my-5 flex align-items" id="description_control">
+      <label
+        id="description_label"
+        for="group_description"
+        class="mx-4 w-24 py-2"
+        >Description
+      </label>
+      <input id='group_description' type='text' name='description' class=' h-12
+      px-2 border border-gray-400 rounded w-1/2' minlength="2" value='<%= typeof
+      locals.old !== 'undefined' ? locals.old.description : '' %>' />
     </div>
-    <div class="flex align-end justify-center h-100 w-100 mt-4">
+    <div class="flex justify-end mx-5 px-5">
       <button
         type="submit"
-        class="bg-nex px-3 py-1 text-white rounded-md w-40 h-12 hover:opacity-80 attr-button"
+        class="mt-5 bg-nex px-3 py-1 text-white rounded-md w-48 h-12 hover:opacity-80"
       >
-        Save Group
+        Create Group
       </button>
     </div>
-  </form>
-</div>
+  </div>
+</form>

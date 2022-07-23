@@ -1,5 +1,5 @@
 <div
-  class='nex-modal-create absolute z-10 w-5/6 max-h-[750px] overflow-auto border-2 border-nex bg-white p-2 py-1 rounded drop-shadow-2xl
+  class='nex-modal-create absolute z-10 w-5/6 max-h-[750px] overflow-auto border-2 border-nex bg-white p-2 py-1 rounded drop-shadow-2xl shadow-2xl
   <%= typeof redirector !== 'undefined' && redirector == 'attribute'? 'block' : 'hidden' %> '
 >
   <div class="my-3">
@@ -540,10 +540,10 @@
             </select>
           </div>
 
-          <div class='flex align-end justify-center h-100 w-100 mt-24'>
+          <div class='flex  justify-center h-100 w-100 mt-24 justify-self-end'>
             <button type='submit' 
               class='bg-nex px-3 py-1 text-white rounded-md w-40 h-12 hover:opacity-80 attr-button'
-            >Save Attribute</button>
+            >Create Attribute</button>
           </div>
         </div>
       </form>
