@@ -23,10 +23,7 @@ drop-shadow-2xl shadow-2xl <%= typeof redirector !== 'undefined' && redirector
 </div>
 
 <%- include('../partials/errs'); %>
-<form action="/groups" method="post" class="flexspace-x-4 groups-form">
-  <input type='hidden' name='id' id="group_id" value='<%= typeof locals.old !==
-  'undefined' ? locals.old.id : '' %>' />
-
+<form action="/groups" method="post" class="flex space-x-4 groups-form">
   <div class="flex flex-col w-100 align-middle">
     <div class="mt-5" id="name_control">
       <label id="name_label" for="group_name" class="mx-4 w-24 py-2"

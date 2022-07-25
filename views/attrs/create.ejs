@@ -514,12 +514,13 @@
           <h3
             class='text-2xl mb-4 p-1 border-b border-nex pb-3 text-nex'
           >Groups</h3>
-          <div class='my-3 ml-28'>
+          <div class='my-3 text-center'>
             <select data-placeholder="Choose groups..." 
               class="chosen-select"
               multiple
               id='groups'
               name='groups[]'
+              class='text-left'
             >
 
             <% if (typeof groups !== 'undefined') { %>
@@ -543,7 +544,7 @@
           <div class='flex  justify-center h-100 w-100 mt-24 justify-self-end'>
             <button type='submit' 
               class='bg-nex px-3 py-1 text-white rounded-md w-40 h-12 hover:opacity-80 attr-button'
-            >Create Attribute</button>
+            >Save Attribute</button>
           </div>
         </div>
       </form>

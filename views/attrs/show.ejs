@@ -11,13 +11,16 @@
         <td class="show-value border border-nex"><%= attribute.id %></td>
       </tr>
       <tr>
+        <td class="show-key border border-nex">Type</td>
+        <td class="show-value border border-nex font-bold">
+          <%= attribute.type.replace('-', ' ').toUpperCase() %></td>
+        </td>
+      </tr>
+      <tr>
         <td class="show-key border border-nex">Name</td>
         <td class="show-value border border-nex"><%= attribute.name %></td>
       </tr>
-      <tr>
-        <td class="show-key border border-nex">Type</td>
-        <td class="show-value border border-nex"><%= attribute.type %></td>
-      </tr>
+
       <tr>
         <td class="show-key border border-nex">Slug</td>
         <td class="show-value border border-nex"><%= attribute.slug %></td>
@@ -122,7 +125,9 @@
       >
         <%= group.name %></a
       >
-      <% }) %> <% } else { %> No data <% } %>
+      <% }) %> <% } else { %>
+      <p class="text-gray-400">No Groups</p>
+      <% } %>
     </div>
   </div>
   <% if ([ 'single-select', 'multiple-select', 'radio-buttons',
@@ -131,9 +136,16 @@
   <div class="w-1/2 mx-auto text-center">
     <h2 class="p-1 bg-nex text-white font-bold">Choices</h2>
     <div class="show-value border border-nex p-5">
-      <% if (choices.length > 0) { %> <% choices.forEach(choice => { %>
-      <p class="rounded-lg border m-1 p-1 bg-gray-100 text-md"><%= choice %></p>
-      <% }) %> <% } else { %> No data <% } %>
+      <% if (choices.length > 0) { %> <% choices.forEach((choice, i) => { %>
+      <p class="rounded-lg border-b m-1 p-1 bg-gray-100 text-xl text-left my-2">
+        <span class="text-white bg-nex rounded-md p-1 px-3 mx-3"
+          ><%=i+1%>
+        </span>
+        <%= choice %>
+      </p>
+      <% }) %> <% } else { %>
+      <p class="text-gray-400">No Choices</p>
+      <% } %>
     </div>
   </div>
   <% } %>

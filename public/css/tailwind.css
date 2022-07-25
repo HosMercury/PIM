@@ -74,9 +74,14 @@ input {
   margin-right: auto;
 }
 
-#nex-modal-create-group {
+#nex-modal-create-group,
+.nex-modal-edit-group {
   left: 25%;
-  top: 20%;
+  top: 10%;
+}
+
+.nex-modal-edit-group {
+  height: 70vh;
 }
 
 body {

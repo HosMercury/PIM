@@ -277,6 +277,9 @@ $(document).ready(function () {
     $('.nex-modal-create').slideDown(500);
   });
 
+  $('body').on('click', '.edit-group', function () {
+    $('.nex-modal-edit-group').slideDown(500);
+  });
   // Groups table
   $('#groups-table').DataTable({
     ajax: {
@@ -308,6 +311,7 @@ $(document).ready(function () {
 
   $('body').on('click', '#close-nex-modal-group', function () {
     $('#nex-modal-create-group').slideUp(300);
+    $('.nex-modal-edit-group').slideUp(300);
   });
 
   $('body').on('click', '.create-group', function () {

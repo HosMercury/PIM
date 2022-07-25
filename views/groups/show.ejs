@@ -40,21 +40,22 @@
   </table>
   <div class="w-1/2 mx-auto text-center">
     <h2 class="p-1 bg-nex text-white font-bold">Attributes</h2>
-    <%= group.attributes.length %>
     <div class="border border-nex p-5">
-      <% if (typeof group.attributes !== 'undefined' > 0 ) { %> <%
+      <% if (group.attributes.length > 0) { %> <%
       group.attributes.forEach(attribute => { %>
       <a
         href="/attributes/<%= attribute.id %>"
         class="w-1/4 border p-2 inline m-3 bg-nex text-white rounded-md"
         ><%= attribute.name %>
       </a>
-      <% }) %> <% } %>
+      <% }) %> <% } else { %>
+      <p class="text-gray-400">No Attributes</p>
+      <% }%>
     </div>
 
     <div class="w-1/2 mx-auto text-center flex justify-between p-3">
       <button
-        class="edit-attr rounded-lg border m-1 p-1 px-3 text-sm bg-nex text-white h-8"
+        class="edit-group rounded-lg border m-1 p-1 px-3 text-sm bg-nex text-white h-8"
       >
         Edit
       </button>
@@ -69,5 +70,5 @@
       </form>
     </div>
   </div>
-  <%- include('../partials/footer'); %>
+  <%- include('./edit'); %> <%- include('../partials/footer'); %>
 </div>

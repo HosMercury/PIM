@@ -8,9 +8,7 @@ const moment = require('moment');
 let conn;
 
 router.get('/', (req, res) => {
-  return res.render('index', {
-    title: 'Dashboard'
-  });
+  return res.redirect('/attributes');
 });
 
 async function deleteAttribute(req) {
@@ -102,7 +100,7 @@ router.get('/attributes/:id', async (req, res) => {
       moment
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     req.session.err = 'Error while fetching the attribute';
     return res.status(400).redirect('/attributes');
   }
@@ -335,7 +333,7 @@ async function postAttribute(body) {
     await conn.commit();
     return true;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await conn.rollback();
     return false;
   }
