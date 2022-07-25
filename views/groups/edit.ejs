@@ -64,7 +64,7 @@ shadow-2xl <%= typeof redirector !== 'undefined' && redirector == 'group' ?
             <% all_attributes.forEach(attribute => { %>
             <option value="<%= attribute.id %>"
               <% 
-              if (typeof locals.old !== 'undefined' && typeof locals.old.attributes !== 'undefined' && locals.old.attributes.includes(attribute.id)) { 
+              if (typeof locals.old !== 'undefined' && typeof locals.old.attributes !== 'undefined' && locals.old.attributes.includes(attribute.id.toString())) { 
               %>
               <%= ' selected ' %> 
               <% } else if (typeof group_attrs_ids !== 'undefined' && group_attrs_ids.includes(attribute.id)) { %>

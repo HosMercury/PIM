@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
-const { isNumeric } = require('validator');
 const validateGroup = require('./validation/group');
 const moment = require('moment');
 
@@ -99,12 +98,10 @@ router.get('/groups/:id', async (req, res) => {
 
 // post -- group
 router.post('/groups', async (req, res) => {
-  let { id, name, description } = req.body;
-  const errs = validateGroup(name, description);
+  const { name, description } = req.body;
+  const errs = await validateGroup(name, description);
 
-  if (id !== '' && !isNumeric(id)) {
-    errs.push('Invalid id');
-  }
+  // console.log(errs);
 
   if (errs.length > 0) {
     req.session.redirector = 'group';
@@ -140,10 +137,10 @@ router.post('/groups/:id/edit', async (req, res) => {
 
     const sent_attrs_ids = req.body.attributes || [];
 
-    errs = validateGroup(name, description);
+    errs = await validateGroup(name, description);
 
     if (errs.length > 0) {
-      // req.session.redirector = 'group';
+      req.session.redirector = 'group';
       req.session.errs = errs;
       req.session.old = req.body;
       return res.status(400).redirect('back');
@@ -153,6 +150,7 @@ router.post('/groups/:id/edit', async (req, res) => {
     let all_attributes_ids = await pool.query(
       `select JSON_ARRAYAGG(id) attributes from attributes`
     );
+
     // if all_attributes_ids the value of all_attributes_ids[0.attributes IS NULL]
     all_attributes_ids = all_attributes_ids[0].attributes;
 
@@ -186,7 +184,7 @@ router.post('/groups/:id/edit', async (req, res) => {
   } catch (err) {
     // console.log(err);
     await conn.rollback();
-    // req.session.redirector = 'group';
+    req.session.redirector = 'group';
     req.session.err = ['Error happened while saving the group'];
     req.session.old = req.body;
     return res.status(400).redirect('back');

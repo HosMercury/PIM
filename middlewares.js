@@ -48,7 +48,6 @@ module.exports = {
     delete req.session.old;
     delete req.session.msg;
     delete req.session.redirector;
-
     next();
   }
 };
