@@ -636,6 +636,10 @@ video {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
 .mb-0 {
   margin-bottom: 0px;
 }
