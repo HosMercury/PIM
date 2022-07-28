@@ -1,4 +1,4 @@
-const pool = require('../../config/db_pool');
+const pool = require('../config/db_pool');
 
 async function validateGroup(name, description) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;

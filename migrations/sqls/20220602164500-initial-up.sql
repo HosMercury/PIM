@@ -69,15 +69,15 @@ create table attributes (
 	updated_at timestamp default now()
 );
 
-create table attribute_choices (
+create table attribute_choice (
 	id int unsigned primary key not null auto_increment,
-	name varchar(255) not null,
+	choice varchar(255) not null,
   attribute_id int unsigned  not null references attributes(id) on delete cascade,
 	created_at timestamp default now(),
 	updated_at timestamp default now()
 );
 
-create table attribute_labels (
+create table attribute_local (
 	id int unsigned primary key not null auto_increment,
 	label varchar(255) not null,
   attribute_id int unsigned  not null references attributes(id) on delete cascade,
@@ -86,7 +86,7 @@ create table attribute_labels (
 	updated_at timestamp default now()
 );
 
-create table attribute_groups (
+create table attribute_group (
 	id int unsigned primary key not null auto_increment,
   attribute_id int unsigned  not null references attributes(id) on delete cascade,
   group_id int unsigned  not null references groups(id) on delete cascade,

@@ -39,14 +39,13 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 const { auth, trim, flash } = require('./middlewares');
-app.use(auth);
-app.use(trim);
+// app.use(auth);
 app.use(flash);
 
 // Routes
-app.use('/', require('./routes/auth_router'));
-app.use('/', require('./routes/attrs_router'));
-app.use('/', require('./routes/groups_router'));
+app.use('/api', require('./routes/auth_router'));
+app.use('/api', require('./routes/attrs_router'));
+app.use('/api', require('./routes/groups_router'));
 
 require('./config/db_pool');
 

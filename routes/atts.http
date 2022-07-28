@@ -1,0 +1,64 @@
+### Get all attributes
+GET http://localhost:3000/api/attributes
+
+### Get one attribute
+GET http://localhost:3000/api/attributes/1
+
+### Post one attributes
+POST http://localhost:3000/api/attributes
+content-type: application/json
+
+{
+  "name": "test",
+  "type": "single-select",
+  "description": "this is description",
+  "default_value": "test text",
+  "default_area": "",
+  "min": 2,
+  "max": 100,
+  "required": true,
+  "unit": "Hertz",
+  "locals": [
+    {
+      "id": 1,
+      "label" : "I am an english label"
+    },
+    {
+      "id": 2,
+      "label" : "I am an english label"
+    }
+  ],
+  "groups": [ 1 , 2],
+  "choices": ["choice 1", "foo bar "]
+}
+
+### Update one attributes
+PATCH http://localhost:3000/api/attributes/3
+content-type: application/json
+
+{
+  "name": "test edits here",
+  "type": "single-select",
+  "description": "this is description",
+  "default_value": "test text",
+  "default_area": "",
+  "min": 2,
+  "max": 100,
+  "required": true,
+  "unit": "Hertz",
+  "locals": [
+    {
+      "id": 1,
+      "label" : "This is english label"
+    },
+    {
+      "id": 34,
+      "label" : "I am an english label"
+    }
+  ],
+  "choices": ["choice 1", "foo bar "]
+}
+
+
+### Delete one attribute
+DELETE http://localhost:3000/api/attributes/3

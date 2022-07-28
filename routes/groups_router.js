@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
-const validateGroup = require('./validation/group');
+const validateGroup = require('../validation/group');
 const moment = require('moment');
 
 let conn;

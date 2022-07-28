@@ -1,5 +1,3 @@
-const { escape } = require('validator');
-
 module.exports = {
   auth: (req, res, next) => {
     if (req.session.user) {
@@ -21,17 +19,17 @@ module.exports = {
     }
   },
 
-  trim: (req, res, next) => {
-    body = req.body;
-    const trimmed = JSON.parse(
-      JSON.stringify(body, (k, v) =>
-        ['string', 'number'].includes(typeof v) ? v.trim() : v
-      )
-    );
+  // trim: (req, res, next) => {
+  //   body = req.body;
+  //   const trimmed = JSON.parse(
+  //     JSON.stringify(body, (k, v) =>
+  //       ['string', 'number'].includes(typeof v) ? v.trim() : v
+  //     )
+  //   );
 
-    req.body = trimmed;
-    next();
-  },
+  //   req.body = trimmed;
+  //   next();
+  // },
 
   flash: (req, res, next) => {
     res.locals.errs = req.session.errs;

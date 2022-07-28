@@ -1,173 +1,174 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
-const validateAttribute = require('./validation/attr');
+const validateAttribute = require('../validation/attr');
 const { isNumeric } = require('validator');
-const moment = require('moment');
-
 let conn;
 
-router.get('/', (req, res) => {
-  return res.redirect('/attributes');
-});
-
-async function deleteAttribute(req) {
-  try {
-    conn = await pool.getConnection();
-    await conn.beginTransaction();
-
-    const id = parseInt(req.params.id);
-
-    const attr_choices_query = `delete from attribute_choices where attribute_id = ?`;
-    await conn.batch(attr_choices_query, [id]);
-
-    const attr_gps_query = `delete from attribute_groups where attribute_id = ?`;
-    await conn.batch(attr_gps_query, [id]);
-
-    const attr_lbs_query = `delete from attribute_labels where attribute_id = ?`;
-    await conn.batch(attr_lbs_query, [id]);
-
-    const delete_attr = `delete from attributes where id = ?`;
-    await conn.batch(delete_attr, [id]);
-
-    await conn.commit();
-
-    return true;
-  } catch (err) {
-    // console.log(err);
-    await conn.rollback();
-    return false;
+function generateValidationErrosResponse(errs) {
+  if (errs.length > 0) {
+    const validationErrors = [];
+    errs.forEach((err) => {
+      validationErrors.push({
+        type: 'validation',
+        err
+      });
+    });
+    const response = { erros: validationErrors };
+    return res.status(400).json(response);
   }
 }
 
+/*
+// Get all attributes
+*/
+router.get('/attributes', async (req, res) => {
+  try {
+    const attributes = await pool.query(
+      `
+        select a.id, a.name, a.type, a.slug, a.created_at, al.label label,
+        (select cast(count(*) as char) from attribute_group ag where ag.attribute_id = a.id) groups_count,
+        (select cast(count(*) as char) from attribute_local al where al.attribute_id = a.id) labels_count,
+        (select cast(count(*) as char) from attribute_choice ac where ac.attribute_id = a.id) choices
+        FROM attributes a
+        left join attribute_group ag on a.id = ag.attribute_id
+        left join groups g on g.id = ag.group_id
+        left join attribute_local al on a.id = al.attribute_id
+        left join locals l on l.id = al.local_id
+        left join attribute_choice ac on a.id = ac.attribute_id
+        group by a.id
+      `
+    );
+    return res.json(attributes);
+  } catch (err) {
+    // console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while fetching the attributes'
+        }
+      ]
+    };
+    return res.status(400).json(response);
+  }
+});
+
+async function getAttributeById(id) {
+  return await pool.query(
+    `
+    with 
+    attribute as (
+     select * from attributes where id = ?
+    ),
+    groups as (
+     select JSON_ARRAYAGG(
+     JSON_OBJECT('id', g.id,'name', g.name ))
+     from groups g
+     join attributes a on a.id = ?
+     join attribute_group ag on ag.attribute_id = a.id
+     and ag.group_id = g.id
+    ),
+    locals as (
+     select JSON_ARRAYAGG(
+     JSON_OBJECT('id', l.id,'name', l.name,'label', al.label))
+     from locals l
+     join attributes a on a.id = ? 
+     join attribute_local al on al.attribute_id = a.id
+     and al.local_id = l.id
+    ),
+    choices as (
+     select JSON_ARRAYAGG(choice)
+     from attribute_choice where attribute_id = ?
+    )
+    
+    select *, 
+    (select cast(count(*) as char) from attribute_group where attribute_id = ? ) groups_count,
+    (select * from groups) groups,
+    (select cast(count(*) as char) from attribute_local where attribute_id = ? ) locals_count,
+    (select * from locals) locals,
+    (select cast(count(*) as char) from attribute_choice where attribute_id = ? ) choices_count,
+    (select * from choices) choices
+    from attribute
+  `,
+    Array.from({ length: 7 }, () => id) // id 7 times
+  );
+}
+
+/*
+// Get attribute by id with its groups and choices
+*/
 router.get('/attributes/:id', async (req, res) => {
   try {
     const id = req.params.id;
-
-    const results = await pool.query('select * from attributes where id = ?', [
-      id
-    ]);
-
-    if (results.length < 1) throw new Error('invalid attribute');
+    const results = await getAttributeById(id);
+    if (results.length < 1) throw '';
     const attribute = results[0];
 
-    const attr_groups = await pool.query(
-      `
-        select g.id, g.name from groups g
-        left join attribute_groups ag on g.id = ag.group_id
-        left join attributes a on a.id = ag.attribute_id 
-        where a.id = ?
-    `,
-      [id]
-    );
-    const attr_groups_ids = attr_groups.map((g) => g.id);
-
-    const groups = await pool.query(`select id, name from groups`, [id]);
-    const labels = await pool.query(
-      'select id, name, abbreviation, direction from locals'
-    );
-
-    const attr_labels = await pool.query(
-      `
-        select l.abbreviation, al.label 
-        from locals l
-        left join attribute_labels al on l.id = al.local_id
-        left join attributes a on a.id = al.attribute_id 
-        where a.id = ?
-    `,
-      [id]
-    );
-
-    const remapped_labels = Object.fromEntries(
-      attr_labels.map(({ abbreviation, label }) => [abbreviation, label])
-    );
-
-    const choices_results = await pool.query(
-      `select name from attribute_choices where attribute_id = ?`,
-      [id]
-    );
-    const choices = choices_results.map((choice) => choice.name);
-
-    return res.status(200).render('attrs/show', {
-      title: 'Attribute : ' + attribute.name,
-      attribute,
-      attr_groups,
-      attr_groups_ids,
-      labels,
-      remapped_labels,
-      choices,
-      groups,
-      moment
-    });
+    return res.json(attribute);
   } catch (err) {
-    // console.log(err);
-    req.session.err = 'Error while fetching the attribute';
-    return res.status(400).redirect('/attributes');
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while fetching the attribute'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
 // delete attr
-router.post('/attributes/:id/delete', async (req, res) => {
-  if (await deleteAttribute(req)) {
-    req.session.msg = 'Attribute deleted successfully';
-    return res.status(200).redirect('/attributes');
-  } else {
-    req.session.err = 'Error while deleting the attribute';
-    return res.status(400).redirect('back');
-  }
-});
-
-// Get all atrrs by json or api
-router.get('/api/attributes', async (req, res) => {
+router.delete('/attributes/:id', async (req, res) => {
   try {
-    let results = await pool.query(
-      `
-        select a.id, a.name, a.type, a.slug, a.created_at, al.label label,
-        (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
-        (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
-        (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices
-        FROM attributes a
-        left join attribute_groups ag on a.id = ag.attribute_id
-        left join groups g on g.id = ag.group_id
-        left join attribute_labels al on a.id = al.attribute_id
-        left join locals l on l.id = al.local_id
-        left join attribute_choices ac on a.id = ac.attribute_id
-        group by a.id
-        order by a.id desc limit 10000
-      `
-    );
-    return res.json(results);
+    const id = req.params.id;
+
+    await pool.query(`delete from attribute_choice where id = ?`, [id]);
   } catch (err) {
-    // console.log(err);
-    return res.status(400).send('error'); // error page
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while deleting the attribute'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
-// Get -- Attributes home page
-router.get('/attributes', async (req, res) => {
-  try {
-    const labels = await pool.query(
-      'select id, name, abbreviation, direction from locals'
-    );
+async function insertChoices(choices, conn, id) {
+  const insert_choices = [];
+  choices.forEach((choice) => {
+    insert_choices.push([choice, id]);
+  });
 
-    const groups = await pool.query(
-      'select id, name from groups order by name'
-    );
+  let choices_query = `insert into attribute_choice (choice, attribute_id) values(?,?)`;
+  await conn.batch(choices_query, insert_choices);
+}
 
-    return res.render('attrs/index', {
-      title: 'Attributes',
-      button: 'Create Attribute',
-      buttonClass: 'create-attribute',
-      labels,
-      groups
-    });
-  } catch (err) {
-    req.session.err = 'Error while fetching the attributes';
-    return res.status(400).redirect('back');
-  }
-});
+async function insertGroups(groups, conn, id) {
+  const insert_groups = [];
+  groups.forEach((group_id) => {
+    insert_groups.push([group_id, id]);
+  });
+  const groups_query = `insert into attribute_group (group_id, attribute_id) values(?,?)`;
+  await conn.batch(groups_query, insert_groups);
+}
 
-// post  attribute or edit existing one
+async function insertLocals(locals, conn, id) {
+  const insert_locals = [];
+  locals.forEach((local) => {
+    insert_locals.push([local.id, local.label, id]);
+  });
+  const ls_query = `insert into attribute_local (local_id, label, attribute_id) values(?,?,?)`;
+  await conn.batch(ls_query, insert_locals);
+}
+
+// post  attribute
 async function postAttribute(body) {
   let {
     type,
@@ -176,19 +177,16 @@ async function postAttribute(body) {
     required,
     default_area,
     default_value,
-    minimum,
-    maximum,
+    min,
+    max,
     unit,
     choices,
     groups,
-    labels,
-    id
+    locals
   } = body;
 
   const slug = name.replace(/[^0-9a-z]/gi, '') + '-' + new Date().getTime();
-  required = required == 'true';
-  minimum = parseInt(minimum) || null;
-  maximum = parseInt(maximum) || null;
+  required = required ? 1 : 0;
 
   try {
     const values = [
@@ -198,181 +196,170 @@ async function postAttribute(body) {
       description,
       required,
       default_value,
-      minimum,
-      maximum,
+      min,
+      max,
       unit,
       default_area
     ];
+
+    conn = await pool.getConnection();
+    await conn.beginTransaction();
 
     const query = `insert into attributes ( 
       type, name ,slug, description, required, default_value, min, max, unit, default_area
     ) values(?,?,?,?,?,?,?,?,?,?)`;
 
-    conn = await pool.getConnection();
-    await conn.beginTransaction();
+    const res = await conn.query(query, values);
+    const attribute_id = res.insertId;
 
-    ////////////////////////////////////////////////////////////////
-    // --------------- Edit existing attribute -------------------//
-    ////////////////////////////////////////////////////////////////
-    if (typeof id !== undefined && isNumeric(id)) {
-      const editQuery = `
-        update attributes set 
-          type = ? ,
-          name = ? ,
-          slug = ? ,
-          description = ? ,
-          required = ? ,
-          default_value = ? ,
-          min = ? ,
-          max = ? ,
-          unit = ? ,
-          default_area = ? 
-        where id = ?
-      `;
+    // Choices ---
+    if (typeof choices !== 'undefined' && choices.length > 0) {
+      await insertChoices(choices, conn, attribute_id);
+    }
 
-      const editValues = [
-        type,
-        name,
-        slug,
-        description,
-        required,
-        default_value,
-        minimum,
-        maximum,
-        unit,
-        default_area,
-        id
-      ];
+    //- Locals
+    await insertLocals(locals, conn, attribute_id);
 
-      await conn.query(editQuery, editValues);
-
-      // Choices ---
-      if (typeof choices !== 'undefined' && choices.length > 0) {
-        const options_query = `delete from attribute_choices where attribute_id = ?`;
-        await conn.batch(options_query, [id]);
-
-        choices.forEach(async (choice) => {
-          let _options_query = `insert into attribute_choices (name, attribute_id) values(?,${id})`;
-          await conn.batch(_options_query, choice);
-        });
-      }
-
-      // labels
-      // tremove labels
-      const lb_query = `delete from attribute_labels where attribute_id = ?`;
-      await conn.batch(lb_query, [id]);
-
-      const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,${id})`;
-      const lbels_array = [];
-      for (let abbreviation in labels) {
-        const results = await pool.query(
-          'select id from locals where abbreviation = ?',
-          [abbreviation]
-        );
-        const label_id = results[0].id;
-        if (labels[abbreviation].trim().length > 0) {
-          lbels_array.push([label_id, labels[abbreviation]]);
-        }
-      }
-      await conn.batch(labels_query, lbels_array);
-
-      // groups --
-      // remove old groups from
-      const gp_query = `delete from attribute_groups where attribute_id = ?`;
-      await conn.batch(gp_query, [id]);
-      if (typeof groups !== 'undefined' && groups.length > 0) {
-        // remove empty groups items
-        groups = groups.filter((group) => group.trim().length > 0);
-        groups = groups.map((group) => parseInt(group));
-        const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,${id})`;
-        await conn.batch(groups_query, groups);
-      }
-    } else {
-      ////////////////////////////////////////////////////////////////
-      // --------------- Create new attribute -------------------/////
-      ////////////////////////////////////////////////////////////////
-      const res = await conn.query(query, values);
-      const attr_id = res.insertId;
-
-      // Choices ---
-
-      if (typeof choices !== 'undefined' && choices.length > 0) {
-        const chcs_array = [];
-        choices.forEach((choice) => {
-          chcs_array.push([choice, attr_id]);
-        });
-        const options_query = `insert into attribute_choices (name, attribute_id) values(?,?)`;
-        await conn.batch(options_query, chcs_array);
-      }
-
-      // Locals - labels;
-      const labels_query = `insert into attribute_labels (local_id, label, attribute_id) values(?,?,${attr_id})`;
-      const lbels_array = [];
-      for (let abbreviation in labels) {
-        const results = await pool.query(
-          'select id from locals where abbreviation = ?',
-          [abbreviation]
-        );
-        const label_id = results[0].id;
-        if (labels[abbreviation].trim().length > 0) {
-          lbels_array.push([label_id, labels[abbreviation]]);
-        }
-      }
-      await conn.batch(labels_query, lbels_array);
-
-      //groups
-      if (typeof groups !== 'undefined' && groups.length > 0) {
-        // remove empty groups items
-        groups = groups.filter((group) => group.trim().length > 0);
-        groups = groups.map((group) => parseInt(group));
-        const groups_query = `insert into attribute_groups (group_id, attribute_id) values(?,${attr_id})`;
-        await conn.batch(groups_query, groups);
-      }
+    // groups --
+    if (typeof groups !== 'undefined' && groups.length > 0) {
+      await insertGroups(groups, conn, attribute_id);
     }
 
     await conn.commit();
-    return true;
+    return attribute_id;
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     await conn.rollback();
     return false;
   }
 }
 
 router.post('/attributes', async (req, res) => {
-  const errs = await validateAttribute(req.body);
-  if (errs.length > 0) {
-    req.session.redirector = 'attribute';
-    req.session.errs = errs;
-    req.session.old = req.body;
-    return res.status(400).redirect('back');
+  try {
+    const body = req.body;
+    const errs = await validateAttribute(body);
+
+    generateValidationErrosResponse(errs);
+
+    if (postAttribute(req.body)) {
+      const attribute_id = await postAttribute(req.body);
+      const message = 'Attribute saved successfully';
+      const results = await getAttributeById(attribute_id);
+      if (results.length < 1) throw '';
+      const attribute = results[0];
+      return res.status(201).json({ message, attribute });
+    }
+  } catch (err) {
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while saving the attribute'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
+});
 
-  const success = await postAttribute(req.body);
+// post  attribute
+async function updateAttribute(body, id) {
+  let {
+    type,
+    name,
+    description,
+    required,
+    default_area,
+    default_value,
+    min,
+    max,
+    unit,
+    choices,
+    groups,
+    locals
+  } = body;
 
-  if (!success) {
-    req.session.err = 'Error while saving the attribute';
-    return res.status(400).redirect('back');
-  } else {
-    req.session.msg = 'Attribute saved successfully';
-    return res.status(200).redirect('back');
+  required = required ? 1 : 0;
+
+  try {
+    const values = [
+      type,
+      name,
+      description,
+      required,
+      default_value,
+      min,
+      max,
+      unit,
+      default_area,
+      id
+    ];
+
+    conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    const query = `update attributes set
+      type = ?, name = ?, description = ?, required = ?,
+      default_value = ?, min = ?, max = ?, unit = ?,
+      default_area = ?
+      where id = ?`;
+
+    await conn.query(query, values);
+
+    // Choices ---
+    if (typeof choices !== 'undefined' && choices.length > 0) {
+      // remove all
+      pool.query(`delete from attribute_choice where attribute_id = ?`, [id]);
+      await insertChoices(choices, conn, id);
+    }
+
+    //- Locals
+    pool.query(`delete from attribute_local where attribute_id = ?`, [id]);
+    await insertLocals(locals, conn, id);
+
+    // groups --
+    if (typeof groups !== 'undefined' && groups.length > 0) {
+      pool.query(`delete from attribute_group where attribute_id = ?`, [id]);
+      await insertGroups(groups, conn, id);
+    }
+
+    await conn.commit();
+    return id;
+  } catch (err) {
+    console.log(err);
+    await conn.rollback();
+    return false;
+  }
+}
+
+router.patch('/attributes/:id', async (req, res) => {
+  try {
+    const body = req.body;
+    const errs = await validateAttribute(body);
+    generateValidationErrosResponse(errs);
+
+    const id = req.params.id;
+    if (updateAttribute(req.body)) {
+      const attribute_id = await updateAttribute(req.body, id);
+      const message = 'Attribute saved successfully';
+      const results = await getAttributeById(attribute_id);
+      if (results.length < 1) throw '';
+      const attribute = results[0];
+      return res.status(201).json({ message, attribute });
+    }
+  } catch (err) {
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while saving the attribute'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
 module.exports = router;
-
-// select a.* ,
-// JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups
-// ,JSON_ARRAYAGG(JSON_OBJECT("id", al.local_id, "abbreviation",l.abbreviation,"name", al.label)) as locals
-// ,JSON_ARRAYAGG(JSON_OBJECT('id', ac.id,"name", ac.name)) as choices,
-// (select cast(count(*) as char) from attribute_groups ag where ag.attribute_id = a.id) groups_count,
-// (select cast(count(*) as char) from attribute_labels al where al.attribute_id = a.id) labels_count,
-// (select cast(count(*) as char) from attribute_choices ac where ac.attribute_id = a.id) choices_count
-// FROM attributes a
-// left join attribute_groups ag on a.id = ag.attribute_id
-// left join groups g on g.id = ag.group_id
-// left join attribute_labels al on a.id = al.attribute_id
-// left join locals l on l.id = al.local_id
-// left join attribute_choices ac on a.id = ac.attribute_id
-// group by a.id
-// order by a.id desc limit 10000
