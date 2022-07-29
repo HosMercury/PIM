@@ -137,7 +137,7 @@ router.post('/groups/:id/edit', async (req, res) => {
 
     const sent_attrs_ids = req.body.attributes || [];
 
-    errs = await validateGroup(name, description);
+    const errs = await validateGroup(name, description, id);
 
     if (errs.length > 0) {
       req.session.redirector = 'group';

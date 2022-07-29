@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const validateAttribute = require('../validation/attr');
+const crypto = require('crypto');
 const { isNumeric } = require('validator');
+
 let conn;
 
-function generateValidationErrosResponse(errs) {
+function generateValidationErrosResponse(errs, res) {
   if (errs.length > 0) {
     const validationErrors = [];
     errs.forEach((err) => {
@@ -185,7 +187,8 @@ async function postAttribute(body) {
     locals
   } = body;
 
-  const slug = name.replace(/[^0-9a-z]/gi, '') + '-' + new Date().getTime();
+  const uniqueString = crypto.randomBytes(10).toString('hex').slice(0, 12);
+  const slug = name.replace(/[^0-9a-z]/gi, '') + uniqueString;
   required = required ? 1 : 0;
 
   try {
@@ -226,6 +229,8 @@ async function postAttribute(body) {
     }
 
     await conn.commit();
+    conn.release();
+    // conn.end();
     return attribute_id;
   } catch (err) {
     console.log(err);
@@ -239,7 +244,7 @@ router.post('/attributes', async (req, res) => {
     const body = req.body;
     const errs = await validateAttribute(body);
 
-    generateValidationErrosResponse(errs);
+    generateValidationErrosResponse(errs, res);
 
     if (postAttribute(req.body)) {
       const attribute_id = await postAttribute(req.body);
@@ -281,7 +286,6 @@ async function updateAttribute(body, id) {
   } = body;
 
   required = required ? 1 : 0;
-
   try {
     const values = [
       type,
@@ -325,6 +329,8 @@ async function updateAttribute(body, id) {
     }
 
     await conn.commit();
+    conn.release();
+    // conn.end();
     return id;
   } catch (err) {
     console.log(err);
@@ -335,13 +341,15 @@ async function updateAttribute(body, id) {
 
 router.patch('/attributes/:id', async (req, res) => {
   try {
-    const body = req.body;
-    const errs = await validateAttribute(body);
-    generateValidationErrosResponse(errs);
-
     const id = req.params.id;
-    if (updateAttribute(req.body)) {
-      const attribute_id = await updateAttribute(req.body, id);
+    const body = req.body;
+    const errs = await validateAttribute(body, id);
+    generateValidationErrosResponse(errs, res);
+
+    attribute_id = await updateAttribute(body, id);
+
+    if (isNumeric(attribute_id)) {
+      // const  await updateAttribute(req.body, id);
       const message = 'Attribute saved successfully';
       const results = await getAttributeById(attribute_id);
       if (results.length < 1) throw '';

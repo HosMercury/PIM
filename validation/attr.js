@@ -1,7 +1,7 @@
 const { isEmail, isNumeric } = require('validator');
 const pool = require('../config/db_pool');
 
-async function validateAttribute(body) {
+async function validateAttribute(body, id = null) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const errs = [];
   let {
@@ -33,6 +33,49 @@ async function validateAttribute(body) {
     'single-select',
     'multiple-select'
   ];
+  //////////////////// Type validation /////////////////
+  if (id) {
+    try {
+      const results = await pool.query(
+        'select type from attributes where id = ?',
+        [id]
+      );
+
+      const attr_type = results[0].type;
+
+      switch (attr_type) {
+        case 'text':
+        case 'number':
+        case 'email':
+        case 'textarea':
+        case 'switch':
+        case 'images':
+          if (attr_type !== type) errs.push('Attribute type field is invalid');
+          break;
+
+        case 'check-boxes':
+        case 'radio-buttons':
+        case 'single-select':
+        case 'multiple-select':
+          if (
+            attr_type !== 'check-boxes' &&
+            attr_type !== 'radio-buttons' &&
+            attr_type !== 'single-select' &&
+            attr_type !== 'multiple-select'
+          )
+            errs.push('Attribute type field is invalid');
+          break;
+        case 'date':
+        case 'datetime':
+          if (attr_type !== 'date' && attr_type !== 'datetime')
+            errs.push('Attribute type field is invalid');
+          break;
+      }
+    } catch (err) {
+      console.log(err);
+      throw '';
+    }
+  }
 
   if (type !== 'undefined' && !types.includes(type))
     errs.push('Attribute type field is invalid');
@@ -214,34 +257,7 @@ module.exports = validateAttribute;
 //     if (typeof results !== 'undefined') {
 //       attr = results[0];
 //     }
-//     switch (attr.type) {
-//       case 'text':
-//       case 'number':
-//       case 'email':
-//       case 'textarea':
-//       case 'switch':
-//       case 'images':
-//         if (attr.type !== type) errs.push('Attribute type field is invalid');
-//         break;
-
-//       case 'check-boxes':
-//       case 'radio-buttons':
-//       case 'single-select':
-//       case 'multiple-select':
-//         if (
-//           attr.type !== 'check-boxes' &&
-//           attr.type !== 'radio-buttons' &&
-//           attr.type !== 'single-select' &&
-//           attr.type !== 'multiple-select'
-//         )
-//           errs.push('Attribute type field is invalid');
-//         break;
-//       case 'date':
-//       case 'datetime':
-//         if (attr.type !== 'date' && attr.type !== 'datetime')
-//           errs.push('Attribute type field is invalid');
-//         break;
-//     }
+//
 //   } catch (err) {
 //     errs.push('Attribute id is invalid');
 //   }

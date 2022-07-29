@@ -1,9 +1,9 @@
 const pool = require('../config/db_pool');
 
-async function validateGroup(name, description) {
+async function validateGroup(name, description, id = null) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
-
   const errs = [];
+
   ///////////////// Name validation ////////////////////
   if (typeof name !== 'undefined') {
     try {

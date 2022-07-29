@@ -38,7 +38,7 @@ content-type: application/json
 
 {
   "name": "test edits here",
-  "type": "single-select",
+  "type": "multiple-select",
   "description": "this is description",
   "default_value": "test text",
   "default_area": "",
@@ -52,7 +52,7 @@ content-type: application/json
       "label" : "This is english label"
     },
     {
-      "id": 34,
+      "id": 2,
       "label" : "I am an english label"
     }
   ],
