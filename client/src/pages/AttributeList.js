@@ -15,25 +15,16 @@ const AttributeList = () => {
   const columns = useMemo(
     () => [
       {
-        Header: 'ID',
-        accessor: 'id'
+        accessorKey: 'id',
+        header: 'ID'
       },
       {
-        Header: 'Name',
-        accessor: 'name'
+        accessorKey: 'name',
+        header: 'Name'
       },
       {
-        Header: 'Groups Count',
-        accessor: 'groups_count'
-      },
-      {
-        Header: 'Labels Count',
-        accessor: 'labels_count'
-      },
-      {
-        Header: 'Creation Date',
-        accessor: 'created_at',
-        cell: ({ value }) => value.getYear() + '-' + value.getMonth()
+        accessorKey: 'created_at',
+        header: 'Created_at'
       }
     ],
     []
