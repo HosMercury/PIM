@@ -10,12 +10,11 @@ content-type: application/json
 
 {
   "name": "test",
-  "type": "single-select",
+  "type": "Single Select",
   "description": "this is description",
-  "default_value": "test text",
-  "default_area": "",
-  "min": 2,
+  "defaultValue": "test text",
   "max": 100,
+  "min": 5,
   "required": true,
   "unit": "Hertz",
   "locals": [
@@ -28,7 +27,7 @@ content-type: application/json
       "label" : "I am an english label"
     }
   ],
-  "groups": [ 1 , 2],
+  "groups": [1 , 2],
   "choices": ["choice 1", "foo bar "]
 }
 
@@ -38,7 +37,7 @@ content-type: application/json
 
 {
   "name": "test edits here",
-  "type": "multiple-select",
+  "type": "Multiple Select",
   "description": "this is description",
   "default_value": "test text",
   "default_area": "",

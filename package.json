@@ -4,8 +4,8 @@
   "description": "PIM",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon .",
-    "tw": "postcss public/css/tailwind.css -o public/css/style.css --watch",
+    "server": "nodemon .",
+    "dev": "concurrently \"npm run server\" \"npm start --prefix client\"",
     "css:build": "",
     "db": "npx db-migrate up"
   },
@@ -13,18 +13,16 @@
   "author": "Hossam Maher",
   "license": "copyrighted to awfarlak.com and nex-gasming Egypt",
   "devDependencies": {
-    "autoprefixer": "^10.4.7",
     "cross-env": "^7.0.3",
     "db-migrate-pg": "^1.2.2",
     "nodemon": "^2.0.16",
-    "postcss": "^8.4.14",
-    "postcss-cli": "^9.1.0",
-    "tailwindcss": "^3.1.6"
+    "postcss-cli": "^9.1.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "db-migrate": "^0.11.13",
     "db-migrate-mysql": "^2.2.0",
     "dotenv": "^16.0.0",

@@ -25,7 +25,7 @@ exports.up = async function (db) {
   const values = ['Hossam', 'Maher', 'admin', password];
   await pool.query(user, values);
 
-  const attr = 'insert into attributes(name,type, slug) values(?, ?, ?)';
+  const attr = 'insert into attributes(name,type) values(?, ?)';
   for (let index = 0; index < 500; index++) {
     const attr_values = [
       (Math.random() + 1).toString(36).substring(7),

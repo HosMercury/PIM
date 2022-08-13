@@ -2,12 +2,11 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const validateAttribute = require('../validation/attr');
-const crypto = require('crypto');
 const { isNumeric } = require('validator');
 
 let conn;
 
-function generateValidationErrosResponse(errs, res) {
+function generateValidationErrorsResponse(errs, res) {
   if (errs.length > 0) {
     const validationErrors = [];
     errs.forEach((err) => {
@@ -17,8 +16,18 @@ function generateValidationErrosResponse(errs, res) {
       });
     });
     const response = { erros: validationErrors };
-    return res.status(400).json(response);
+    return res.status(422).json(response);
   }
+}
+
+function generateValGeneralErrorResponse(errs, res) {
+  const response = {
+    erros: {
+      type: 'general',
+      err: 'General Error happened, please contact your adminstrator'
+    }
+  };
+  return res.status(422).json(response);
 }
 
 /*
@@ -28,22 +37,34 @@ router.get('/attributes', async (req, res) => {
   try {
     const attributes = await pool.query(
       `
-        select a.id, a.name, a.type, a.slug, a.created_at, al.label label,
+        select a.id, a.name, a.type, a.created_at, 
+        -- al.label label,
         (select cast(count(*) as char) from attribute_group ag where ag.attribute_id = a.id) groups_count,
         (select cast(count(*) as char) from attribute_local al where al.attribute_id = a.id) labels_count,
         (select cast(count(*) as char) from attribute_choice ac where ac.attribute_id = a.id) choices
         FROM attributes a
-        left join attribute_group ag on a.id = ag.attribute_id
-        left join groups g on g.id = ag.group_id
-        left join attribute_local al on a.id = al.attribute_id
-        left join locals l on l.id = al.local_id
-        left join attribute_choice ac on a.id = ac.attribute_id
-        group by a.id
+        -- left join attribute_group ag on a.id = ag.attribute_id
+        -- left join groups g on g.id = ag.group_id
+        -- left join attribute_local al on a.id = al.attribute_id
+        -- left join locals l on l.id = al.local_id
+        -- left join attribute_choice ac on a.id = ac.attribute_id
+        group by a.id order by a.id desc
       `
     );
-    return res.json(attributes);
+
+    const _groups = await pool.query(`select 
+      JSON_ARRAYAGG(JSON_OBJECT('value', g.id,'label', g.name )) as groups
+      from groups g`);
+    const groups = _groups[0].groups;
+
+    const _localss = await pool.query(`select 
+    JSON_ARRAYAGG(JSON_OBJECT('id', l.id, 'name', l.name , 'abbreviation', l.abbreviation, 'direction', l.direction)) as locals
+    from locals l`);
+    const locals = _localss[0].locals;
+
+    return res.json({ data: { groups, locals, attributes } });
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {
@@ -93,7 +114,7 @@ async function getAttributeById(id) {
     (select * from choices) choices
     from attribute
   `,
-    Array.from({ length: 7 }, () => id) // id 7 times
+    Array.from({ length: 7 }, () => id)
   );
 }
 
@@ -177,8 +198,7 @@ async function postAttribute(body) {
     name,
     description,
     required,
-    default_area,
-    default_value,
+    defaultValue,
     min,
     max,
     unit,
@@ -187,32 +207,27 @@ async function postAttribute(body) {
     locals
   } = body;
 
-  const uniqueString = crypto.randomBytes(10).toString('hex').slice(0, 12);
-  const slug = name.replace(/[^0-9a-z]/gi, '') + uniqueString;
-  required = required ? 1 : 0;
-
   try {
-    const values = [
+    let values = [
       type,
       name,
-      slug,
       description,
-      required,
-      default_value,
-      min,
-      max,
-      unit,
-      default_area
+      (required = required ? '1' : '0'),
+      defaultValue,
+      min === '' ? null : parseInt(min),
+      max === '' ? null : parseInt(max),
+      unit
     ];
 
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
     const query = `insert into attributes ( 
-      type, name ,slug, description, required, default_value, min, max, unit, default_area
-    ) values(?,?,?,?,?,?,?,?,?,?)`;
+      type, name , description, required, default_value, min, max, unit) 
+      values(?,?,?,?,?,?,?,?)`;
 
     const res = await conn.query(query, values);
+
     const attribute_id = res.insertId;
 
     // Choices ---
@@ -221,7 +236,9 @@ async function postAttribute(body) {
     }
 
     //- Locals
-    await insertLocals(locals, conn, attribute_id);
+    if (typeof locals !== 'undefined' && locals.length > 0) {
+      await insertLocals(locals, conn, attribute_id);
+    }
 
     // groups --
     if (typeof groups !== 'undefined' && groups.length > 0) {
@@ -229,8 +246,7 @@ async function postAttribute(body) {
     }
 
     await conn.commit();
-    conn.release();
-    // conn.end();
+    await conn.release();
     return attribute_id;
   } catch (err) {
     console.log(err);
@@ -244,27 +260,20 @@ router.post('/attributes', async (req, res) => {
     const body = req.body;
     const errs = await validateAttribute(body);
 
-    generateValidationErrosResponse(errs, res);
+    generateValidationErrorsResponse(errs, res);
 
-    if (postAttribute(req.body)) {
-      const attribute_id = await postAttribute(req.body);
+    if ((attribute_id = await postAttribute(req.body))) {
       const message = 'Attribute saved successfully';
       const results = await getAttributeById(attribute_id);
-      if (results.length < 1) throw '';
+      if (results.length < 1) {
+        generateValGeneralErrorResponse(res);
+      }
       const attribute = results[0];
       return res.status(201).json({ message, attribute });
     }
   } catch (err) {
     console.log(err);
-    const response = {
-      errors: [
-        {
-          type: 'general',
-          err: 'Error while saving the attribute'
-        }
-      ]
-    };
-    return res.status(400).json(response);
+    generateValGeneralErrorResponse(res);
   }
 });
 
@@ -275,8 +284,7 @@ async function updateAttribute(body, id) {
     name,
     description,
     required,
-    default_area,
-    default_value,
+    defaultValue,
     min,
     max,
     unit,
@@ -285,18 +293,16 @@ async function updateAttribute(body, id) {
     locals
   } = body;
 
-  required = required ? 1 : 0;
   try {
     const values = [
       type,
       name,
       description,
       required,
-      default_value,
+      defaultValue,
       min,
       max,
       unit,
-      default_area,
       id
     ];
 
@@ -305,8 +311,7 @@ async function updateAttribute(body, id) {
 
     const query = `update attributes set
       type = ?, name = ?, description = ?, required = ?,
-      default_value = ?, min = ?, max = ?, unit = ?,
-      default_area = ?
+      default_value = ?, min = ?, max = ?, unit = ?
       where id = ?`;
 
     await conn.query(query, values);
@@ -344,7 +349,7 @@ router.patch('/attributes/:id', async (req, res) => {
     const id = req.params.id;
     const body = req.body;
     const errs = await validateAttribute(body, id);
-    generateValidationErrosResponse(errs, res);
+    generateValidationErrorsResponse(errs, res);
 
     attribute_id = await updateAttribute(body, id);
 

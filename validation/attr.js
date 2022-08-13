@@ -9,10 +9,9 @@ async function validateAttribute(body, id = null) {
     name,
     description,
     required,
-    default_area,
-    default_value,
-    minimum,
-    maximum,
+    defaultValue,
+    min,
+    max,
     unit,
     choices,
     locals,
@@ -20,18 +19,18 @@ async function validateAttribute(body, id = null) {
   } = body;
 
   const types = [
-    'text',
-    'number',
-    'date',
-    'datetime',
-    'email',
-    'textarea',
-    'switch',
-    'images',
-    'check-boxes',
-    'radio-buttons',
-    'single-select',
-    'multiple-select'
+    'Text',
+    'Number',
+    'Date',
+    'Date Time',
+    'Email',
+    'Text Area',
+    'Switch',
+    'Images',
+    'Check Boxes',
+    'Radio Buttons',
+    'Single Select',
+    'Multiple Select'
   ];
   //////////////////// Type validation /////////////////
   if (id) {
@@ -44,30 +43,30 @@ async function validateAttribute(body, id = null) {
       const attr_type = results[0].type;
 
       switch (attr_type) {
-        case 'text':
-        case 'number':
-        case 'email':
-        case 'textarea':
-        case 'switch':
-        case 'images':
+        case 'Text':
+        case 'Number':
+        case 'Email':
+        case 'Text Area':
+        case 'Switch':
+        case 'Images':
           if (attr_type !== type) errs.push('Attribute type field is invalid');
           break;
 
-        case 'check-boxes':
-        case 'radio-buttons':
-        case 'single-select':
-        case 'multiple-select':
+        case 'Check Boxes':
+        case 'Radio Buttons':
+        case 'Single Select':
+        case 'Multiple Select':
           if (
-            attr_type !== 'check-boxes' &&
-            attr_type !== 'radio-buttons' &&
-            attr_type !== 'single-select' &&
-            attr_type !== 'multiple-select'
+            attr_type !== 'Check Boxes' &&
+            attr_type !== 'Radio Buttons' &&
+            attr_type !== 'Single Select' &&
+            attr_type !== 'Multiple Select'
           )
             errs.push('Attribute type field is invalid');
           break;
         case 'date':
         case 'datetime':
-          if (attr_type !== 'date' && attr_type !== 'datetime')
+          if (attr_type !== 'Date' && attr_type !== 'Date Time')
             errs.push('Attribute type field is invalid');
           break;
       }
@@ -83,9 +82,8 @@ async function validateAttribute(body, id = null) {
   ////////// Attribute Name //////////////
   if (typeof name !== 'undefined') {
     name = name.trim();
-    if (name.length < 2) errs.push('Name field minimum length is 2 letters');
-    if (name.length > 250)
-      errs.push('Name field maximum length is 250 letters');
+    if (name.length < 2) errs.push('Name field min length is 2 letters');
+    if (name.length > 250) errs.push('Name field max length is 250 letters');
     if (name.search(alphaDashNumeric) === -1)
       errs.push(
         'Name field must contains only letters, numbers, space, dash and underscore'
@@ -96,42 +94,40 @@ async function validateAttribute(body, id = null) {
   if (typeof description !== 'undefined') {
     description = description.trim();
     if (description !== '' && description.length < 2)
-      errs.push('Description field minimum length is 2 letters');
+      errs.push('Description field min length is 2 letters');
     if (description !== '' && description.length > 250)
-      errs.push('Description field maximum length is 250 letters');
+      errs.push('Description field max length is 250 letters');
   }
 
   ////////// Attribute Default //////////////
-  if (typeof default_value !== 'undefined') {
-    default_value = default_value.trim();
-    if (type === 'number') {
-      if (default_value !== '' && default_value.length < 1)
-        errs.push('Default value field minimum value is 1');
-      if (default_value !== '' && default_value.length > 10000000000)
-        errs.push('Default value field maximum value is 10000000000');
+  if (typeof defaultValue !== 'undefined') {
+    defaultValue = defaultValue.trim();
+    if (type === 'Number') {
+      if (defaultValue !== '' && defaultValue.length < 1)
+        errs.push('Default value field min value is 1');
+      if (defaultValue !== '' && defaultValue.length > 10000000000)
+        errs.push('Default value field max value is 10000000000');
     } else {
-      if (default_value !== '' && default_value.length < 2)
-        errs.push('Default value field minimum length is 2 letters');
-      if (default_value !== '' && default_value.length > 250)
-        errs.push('Default value field maximum length is 250 letters');
+      if (defaultValue !== '' && defaultValue.length < 2)
+        errs.push('Default value field min length is 2 letters');
+      if (defaultValue !== '' && defaultValue.length > 250)
+        errs.push('Default value field max length is 250 letters');
     }
   }
 
   ///////// Attribute Min -- Attribute Max ////
   if (typeof type !== 'undefined') {
     type = type.trim();
-    if (type == 'text' || type == 'textarea' || type == 'number') {
-      if (typeof minimum !== 'undefined' && minimum.trim() !== '') {
-        minimum = minimum.trim();
-        if (!isNumeric(minimum.toString()))
-          errs.push('Minimum field must be numeric');
+    if (type == 'Text' || type == 'Text Area' || type == 'Number') {
+      if (typeof min !== 'undefined' && min.trim() !== '') {
+        min = min.trim();
+        if (!isNumeric(min.toString())) errs.push('min field must be numeric');
       }
-      if (typeof maximum !== 'undefined' && maximum.trim() !== '') {
-        max = maximum.trim();
-        if (!isNumeric(maximum.toString()))
-          errs.push('Maximum field must be numeric');
-        if (parseInt(maximum) < parseInt(minimum))
-          errs.push('Maximum field must be greater than minimum value');
+      if (typeof max !== 'undefined' && max.trim() !== '') {
+        max = max.trim();
+        if (!isNumeric(max.toString())) errs.push('max field must be numeric');
+        if (parseInt(max) < parseInt(min))
+          errs.push('Max field must be greater than min value');
       }
     }
   }
@@ -140,9 +136,9 @@ async function validateAttribute(body, id = null) {
   if (typeof unit !== 'undefined') {
     unit = unit.trim();
     if (unit !== '' && unit.length < 2)
-      errs.push('Unit field minimum length is 2 letters');
-    if (unit !== '' && unit.length > 250)
-      errs.push('Unit field maximum length is 250 letters');
+      errs.push('Unit field min length is 2 letters');
+    if (unit !== '' && unit.length > 50)
+      errs.push('Unit field max length is 250 letters');
     if (unit.trim().lenghth > 0 && unit.search(alphaDashNumeric) === -1)
       errs.push(
         'Unit field must contains only letters, numbers, space, dash and underscore'
@@ -151,22 +147,13 @@ async function validateAttribute(body, id = null) {
 
   ////////// Attribute required checkbox label //////////////
   if (typeof required !== 'undefined') {
-    if (required !== true) errs.push('Required field is invalid');
-  }
-
-  ////////// Attribute Default //////////////
-  if (typeof default_area !== 'undefined') {
-    default_area = default_area.trim();
-    if (default_area !== '' && default_area.length < 10)
-      errs.push('Default textarea field minimum length is 10 letters');
-    if (default_area !== '' && default_area.length > 10000)
-      errs.push('Default textarea field maximum length is 10000 letters');
+    if (typeof required !== 'boolean') errs.push('Required field is invalid');
   }
 
   ////////// Attribute email //////////////
   if (typeof type !== 'undefined' && typeof email !== 'undefined') {
     email = email.trim();
-    if (type === 'email' && !isEmail(default_value))
+    if (type === 'Email' && !isEmail(defaultValue))
       errs.push('Email default value is invalid email');
   }
 
@@ -184,24 +171,12 @@ async function validateAttribute(body, id = null) {
         const id = locals[k].id;
 
         if (label.length < 2) {
-          errs.push('Label minimum length is 2 letters');
+          errs.push('Label min length is 2 letters');
         }
 
         if (!isNumeric(id.toString())) {
           errs.push('Invalid Local id');
         }
-
-        // try {
-        //   const db_locals_ids = await pool.query(
-        //     'select json_arrayagg(id) as ids from locals group by id'
-        //   );
-
-        //   // if (!db_locals_ids.includes(id.toString())) {
-        //   //   errs.push('Invalid label');
-        //   // }
-        // } catch (err) {
-        //   errs.push('Error dfetching locals');
-        // }
       }
     });
   } else {
@@ -211,10 +186,10 @@ async function validateAttribute(body, id = null) {
   ////////// Attribute choices //////////////
   if (typeof type !== 'undefined' && typeof choices !== 'undefined') {
     if (
-      type == 'single-select' ||
-      type == 'multiple-select' ||
-      type == 'radio-buttons' ||
-      type == 'check-boxes'
+      type == 'Single Select' ||
+      type == 'Multiple Select' ||
+      type == 'Radio Buttons' ||
+      type == 'Check Boxes'
     ) {
       if (choices.length < 1) {
         errs.push('At least one choice is required');
@@ -222,7 +197,7 @@ async function validateAttribute(body, id = null) {
     } else {
       choices.forEach((choice) => {
         if (choice.trim().length < 2)
-          errs.push('Choice minimum length is 2 letters');
+          errs.push('Choice min length is 2 letters');
       });
     }
   }
@@ -247,18 +222,3 @@ async function validateAttribute(body, id = null) {
 }
 
 module.exports = validateAttribute;
-
-//if (typeof id !== undefined && isNumeric(id.toString())) {
-//   // edit attribute
-//   try {
-//     const q = `select * from attributes where id = ?`;
-//     const results = await pool.query(q, [id]);
-//     let attr;
-//     if (typeof results !== 'undefined') {
-//       attr = results[0];
-//     }
-//
-//   } catch (err) {
-//     errs.push('Attribute id is invalid');
-//   }
-// }

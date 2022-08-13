@@ -1,9 +1,51 @@
 @import url('./assets/lato/stylesheet.css');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   font-family: 'Lato', sans-serif;
+}
+
+tbody tr:nth-of-type(even) {
+  background: #e5e7eb !important;
+}
+
+.table-btn {
+  @apply m-1 border rounded-lg p-1 px-2 cursor-pointer border-nex;
+}
+
+.type-icon {
+  @apply h-8 w-8 sm:h-12 sm:w-12 text-nex p-1 m-1 inline-block;
+}
+
+.main-menu-icon {
+  @apply h-10 w-12 mx-auto my-2 p-1 font-thin block;
+}
+
+.modal-input {
+  @apply p-1 border border-nex rounded my-3 w-24 sm:w-1/2  px-2 h-10 inline-block;
+}
+
+.modal-label {
+  @apply sm:mx-4 w-28 inline-block h-full;
+}
+
+.create-btn {
+  @apply relative md:text-base md:m-2 m-1 border-nex md:px-4 md:py-2  p-1 text-center border 
+  rounded-lg hover:bg-gray-200 w-1/4 sm:w-1/6 md:w-24 text-sm sm:text-base flex align-middle 
+  flex-col;
+}
+
+.nex-btn {
+  @apply border bg-nex text-white rounded-md h-12 w-36 p-1 px-2 hover:opacity-90;
+}
+
+.form-err {
+  @apply mx-auto font-bold text-white border rounded-md p-1 bg-red-500 w-[80%] text-center m-1;
+}
+
+.secondary-menu {
+  @apply text-left flex-1 w-44 left-[96px] sm:left-[112px]
+  bg-gray-100 py-1 px-4 rounded-r-lg  text-nex font-bold border-r border-b border-t;
 }

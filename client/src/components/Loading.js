@@ -1,10 +1,9 @@
 import React from 'react';
-
 export const Loading = () => {
   return (
     <div
       role="status"
-      className="absolute top-1/3 md:left-1/2 left-1/3 ml-4 mt-8 z-100"
+      className="absolute top-1/3 sm:left-1/2 left-1/3 ml-4 mt-8 z-100"
     >
       <svg
         aria-hidden="true"
