@@ -46,7 +46,7 @@ const Show = ({ data }) => {
 
   return (
     <>
-      <table className="w-[90%] m-auto text-center font-bold">
+      <table className="w-[100%] px-2 m-auto text-center font-bold border border-nex">
         <tbody>
           {Object.keys(data).map((key) => {
             return (
@@ -54,7 +54,7 @@ const Show = ({ data }) => {
               data[key] !== '' &&
               data[key] !== undefined && (
                 <tr key={key} className="border  border-collapse">
-                  <td className="p-2 text-nex">
+                  <td className="p-2 text-nex border">
                     {key.replace('_', ' ').toUpperCase()}
                   </td>
                   <td>{renderDate(key)}</td>
@@ -69,7 +69,7 @@ const Show = ({ data }) => {
         return (
           typeof data[key] === 'object' && (
             <div
-              className="my-6 border w-[90%] m-auto text-center px-2 font-bold"
+              className="my-6 border w-[100%] m-auto text-center px-2 font-bold"
               key={key}
             >
               <h2 className="text-nex p-2 my-4 border rounded bg-gray-200">

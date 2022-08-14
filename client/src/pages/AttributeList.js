@@ -4,6 +4,7 @@ import { Loading } from '../components/Loading';
 import Table from '../components/Table';
 import { format } from 'date-fns';
 import AttributeModal from '../components/AttributeModal';
+import Header from '../components/Header';
 
 const AttributeList = () => {
   useEffect(() => {
@@ -67,6 +68,7 @@ const AttributeList = () => {
 
   return (
     <>
+      <Header title="Attributes" first="Attributes" second="" />
       <Table columns={columns} data={data.data.attributes}>
         <button
           className="bg-nex hover:bg-white hover:opacity-90 hover:text-nex hover:border-nex 

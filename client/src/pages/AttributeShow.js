@@ -3,6 +3,7 @@ import Show from '../components/Show';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Loading } from '../components/Loading';
+import Header from '../components/Header';
 
 const AttributeShow = () => {
   const params = useParams();
@@ -22,7 +23,14 @@ const AttributeShow = () => {
 
   if (error) return 'An error has occurred';
 
-  return <Show data={data} />;
+  const title = `Attribute ( ${data.name} )`;
+
+  return (
+    <>
+      <Header title={title} first="Attributes" second={title} />
+      <Show data={data} />
+    </>
+  );
 };
 
 export default AttributeShow;
