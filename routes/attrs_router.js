@@ -3,32 +3,12 @@ const router = express.Router();
 const pool = require('../config/db_pool');
 const validateAttribute = require('../validation/attr');
 const { isNumeric } = require('validator');
+const {
+  generateValidationErrorsResponse,
+  generateValGeneralErrorResponse
+} = require('./errs');
 
 let conn;
-
-function generateValidationErrorsResponse(errs, res) {
-  if (errs.length > 0) {
-    const validationErrors = [];
-    errs.forEach((err) => {
-      validationErrors.push({
-        type: 'validation',
-        err
-      });
-    });
-    const response = { erros: validationErrors };
-    return res.status(422).json(response);
-  }
-}
-
-function generateValGeneralErrorResponse(errs, res) {
-  const response = {
-    erros: {
-      type: 'general',
-      err: 'General Error happened, please contact your adminstrator'
-    }
-  };
-  return res.status(422).json(response);
-}
 
 /*
 // Get all attributes
@@ -51,18 +31,7 @@ router.get('/attributes', async (req, res) => {
         group by a.id order by a.id desc
       `
     );
-
-    const _groups = await pool.query(`select 
-      JSON_ARRAYAGG(JSON_OBJECT('value', g.id,'label', g.name )) as groups
-      from groups g`);
-    const groups = _groups[0].groups;
-
-    const _localss = await pool.query(`select 
-    JSON_ARRAYAGG(JSON_OBJECT('id', l.id, 'name', l.name , 'abbreviation', l.abbreviation, 'direction', l.direction)) as locals
-    from locals l`);
-    const locals = _localss[0].locals;
-
-    return res.json({ data: { groups, locals, attributes } });
+    return res.json({ attributes });
   } catch (err) {
     console.log(err);
     const response = {
@@ -128,7 +97,7 @@ router.get('/attributes/:id', async (req, res) => {
     if (results.length < 1) throw '';
     const attribute = results[0];
 
-    return res.json(attribute);
+    return res.json({ attribute });
   } catch (err) {
     console.log(err);
     const response = {
@@ -148,7 +117,8 @@ router.delete('/attributes/:id', async (req, res) => {
   try {
     const id = req.params.id;
 
-    await pool.query(`delete from attribute_choice where id = ?`, [id]);
+    await pool.query(`delete from attributes where id = ?`, [id]);
+    return res.status(204).end();
   } catch (err) {
     console.log(err);
     const response = {
@@ -368,6 +338,26 @@ router.patch('/attributes/:id', async (req, res) => {
         {
           type: 'general',
           err: 'Error while saving the attribute'
+        }
+      ]
+    };
+    return res.status(400).json(response);
+  }
+});
+
+///////////////////////////////////////////////
+/////////////// Locals ////////////////////////
+router.get('/locals', async (req, res) => {
+  try {
+    let locals = await pool.query('select * from locals');
+    return res.json({ locals });
+  } catch (err) {
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while fetching the groups'
         }
       ]
     };

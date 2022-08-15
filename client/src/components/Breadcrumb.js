@@ -8,7 +8,7 @@ const Breadcrumb = ({ first, second }) => {
         <li className="inline-flex items-center">
           <Link
             to="/"
-            className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-400"
           >
             <svg
               className="w-4 h-4 mr-2"
@@ -38,7 +38,7 @@ const Breadcrumb = ({ first, second }) => {
               </svg>
               <Link
                 to={`/${first}`}
-                className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-400 md:ml-2 "
               >
                 {first}
               </Link>
@@ -61,7 +61,7 @@ const Breadcrumb = ({ first, second }) => {
                   clipRule="evenodd"
                 ></path>
               </svg>
-              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
                 {second}
               </span>
             </div>

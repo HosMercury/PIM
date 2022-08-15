@@ -49,3 +49,20 @@ tbody tr:nth-of-type(even) {
   @apply text-left flex-1 w-44 left-[96px] sm:left-[112px]
   bg-gray-100 py-1 px-4 rounded-r-lg  text-nex font-bold border-r border-b border-t;
 }
+
+.edit-item-btn {
+  @apply bg-nex rounded text-white p-2 px-4;
+}
+
+.delete-item-btn {
+  @apply bg-red-500 rounded text-white p-2 px-4;
+}
+
+.success-toast {
+  background-color: green !important;
+  color: #fff !important;
+}
+.error-toast {
+  background-color: red !important;
+  color: #fff !important;
+}

@@ -2,7 +2,10 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const validatetemplate = require('../validation/template');
-const moment = require('moment');
+const {
+  generateValidationErrorsResponse,
+  generateValGeneralErrorResponse
+} = require('./errs');
 
 let conn;
 

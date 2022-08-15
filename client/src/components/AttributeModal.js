@@ -5,12 +5,18 @@ import { AiOutlineClose } from 'react-icons/ai';
 import ModalHeader from './ModalHeader';
 import Select from 'react-select';
 import { nanoid } from 'nanoid';
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
-const AttributeModal = ({ openTheModal, closeTheModal, groups, locals }) => {
+const AttributeModal = ({
+  openTheModal,
+  closeTheModal,
+  locals,
+  groups,
+  successToast,
+  errorToast
+}) => {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const navigate = useNavigate();
 
@@ -22,25 +28,25 @@ const AttributeModal = ({ openTheModal, closeTheModal, groups, locals }) => {
   const [minMaxInputType, setMinMaxInputType] = useState('number');
   const [textArea, setTextArea] = useState(false);
   const [required, setRequired] = useState(false);
-  const [unit, setUnit] = useState('');
-  const [unitErr, setUnitErr] = useState(false);
   const [name, setName] = useState('');
-  const [nameErr, setNameErr] = useState(false);
   const [description, setDescription] = useState('');
-  const [descriptionErr, setDescriptionErr] = useState(false);
   const [defaultValue, setDefaultValue] = useState('');
-  const [defaultValueErr, setDefaultValueErr] = useState(false);
   const [min, setMin] = useState('');
-  const [minErr, setMinErr] = useState(false);
   const [max, setMax] = useState('');
+  const [unit, setUnit] = useState('');
+  const [nameErr, setNameErr] = useState(false);
+  const [descriptionErr, setDescriptionErr] = useState(false);
+  const [defaultValueErr, setDefaultValueErr] = useState(false);
+  const [minErr, setMinErr] = useState(false);
   const [maxErr, setMaxErr] = useState(false);
-  const [choice, setChoice] = useState('');
+  const [unitErr, setUnitErr] = useState(false);
+  const [labelsErr, setLabelsErr] = useState(false);
   const [choiceErr, setChoiceErr] = useState(false);
+  const [choice, setChoice] = useState('');
   const [choices, setChoices] = useState([]);
   const [labels, setLabels] = useState([]);
-  const [labelsErr, setLabelsErr] = useState(false);
 
-  const postAttribute = useMutation(async (data) => {
+  const postAttribute = async (newData) => {
     try {
       const response = await fetch('/api/attributes', {
         method: 'POST',
@@ -48,18 +54,20 @@ const AttributeModal = ({ openTheModal, closeTheModal, groups, locals }) => {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(newData)
       });
 
       if (response.status === 201) {
-        console.log(response);
-        // navigate('/attributes/1');
+        const { attribute } = await response.json();
+        navigate('/attributes/' + attribute.id);
+        successToast();
+      } else {
+        errorToast();
       }
-      return response.json();
     } catch (e) {
-      console.log(e);
+      errorToast();
     }
-  });
+  };
 
   const handleTypeClick = (type) => {
     setSelectedType(type);
@@ -144,6 +152,8 @@ const AttributeModal = ({ openTheModal, closeTheModal, groups, locals }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    let canSubmit = true;
+
     setNameErr(false);
     setDescriptionErr(false);
     setDefaultValueErr(false);
@@ -153,90 +163,97 @@ const AttributeModal = ({ openTheModal, closeTheModal, groups, locals }) => {
     setLabelsErr(false);
     setChoiceErr(false);
 
-    // Name Validation
-    if (name.length < 2) setNameErr('Name must be at least 2 characters');
-    if (name.length > 250) setNameErr('Name must not exceed 250 characters');
-    if (name.search(alphaDashNumeric) === -1)
+    if (name.search(alphaDashNumeric) === -1) {
       setNameErr(
         'Name field must contains only letters, numbers, space, dash and underscore'
       );
+      canSubmit = false;
+    }
+    if (name.length < 2) {
+      setNameErr('Name must be at least 2 characters');
+      canSubmit = false;
+    }
+    if (name.length > 250) {
+      setNameErr('Name must not exceed 250 characters');
+      canSubmit = false;
+    }
 
-    if (description !== '' && description.length < 2)
+    if (description !== '' && description.length < 2) {
       setDescriptionErr('Description must be at least 2 characters');
-    if (description !== '' && description.length > 250)
-      setNameErr('Description must not exceed 250 characters');
+      canSubmit = false;
+    }
 
-    if (unit !== '' && unit.length < 2)
-      setUnitErr('Unit must be at least 2 characters');
-    if (unit !== '' && unit.length > 50)
-      setUnitErr('Unit must not exceed 50 characters');
-    if (unit !== '' && unit.search(alphaDashNumeric) === -1)
+    if (description !== '' && description.length > 250) {
+      setNameErr('Description must not exceed 250 characters');
+      canSubmit = false;
+    }
+
+    if (unit !== '' && unit.search(alphaDashNumeric) === -1) {
       setUnitErr(
         'Unit field must contains only letters, numbers, space, dash and underscore'
       );
+      canSubmit = false;
+    }
+
+    if (unit !== '' && unit.length < 2) {
+      setUnitErr('Unit must be at least 2 characters');
+      canSubmit = false;
+    }
+    if (unit !== '' && unit.length > 50) {
+      setUnitErr('Unit must not exceed 50 characters');
+      canSubmit = false;
+    }
 
     // Default value validation
     if (selectedType === 'Number') {
-      if (defaultValue !== '' && defaultValue.length < 1)
+      if (defaultValue !== '' && defaultValue.length < 1) {
         setDefaultValueErr('Default value field minimum value is 1');
-      if (defaultValue !== '' && defaultValue.length > 10000000000)
+        canSubmit = false;
+      }
+
+      if (defaultValue !== '' && defaultValue.length > 10000000000) {
         setDefaultValueErr('Default value field maximum value is 10000000000');
+        canSubmit = false;
+      }
     } else {
-      if (defaultValue !== '' && defaultValue.length < 2)
+      if (defaultValue !== '' && defaultValue.length < 2) {
         setDefaultValueErr('Default value field minimum length is 2 letters');
-      if (defaultValue !== '' && defaultValue.length > 250)
+        canSubmit = false;
+      }
+      if (defaultValue !== '' && defaultValue.length > 250) {
         setDefaultValueErr('Default value field maximum length is 250 letters');
+        canSubmit = false;
+      }
     }
 
-    if (min !== '' && min < 0) setMinErr('Min must be positive');
-    if (max !== '' && max < 0) setMaxErr('Max must be positive');
-    if (max !== '' && max !== '' && min > max)
+    if (min !== '' && min < 0) {
+      setMinErr('Min must be positive');
+      canSubmit = false;
+    }
+    if (max !== '' && max < 0) {
+      setMaxErr('Max must be positive');
+      canSubmit = false;
+    }
+    if (max !== '' && max !== '' && min > max) {
       setMaxErr('Max must be greater than min');
+      canSubmit = false;
+    }
 
     // Validate Labels
     labels.forEach(({ id, label }) => {
-      if (label !== '' && label.length < 2)
+      if (label !== '' && label.length < 2) {
         setLabelsErr('Label must be at least 2 characters');
+        canSubmit = false;
+      }
     });
 
     if (!Object.keys(labels).includes('0')) {
       setLabelsErr('English label is required');
+      canSubmit = false;
     }
 
-    // console.log('nameErr', nameErr);
-    // console.log('descriptionErr', descriptionErr);
-    // console.log('minErr', minErr);
-    // console.log('defaultValueErr', defaultValueErr);
-    // console.log('maxErr', maxErr);
-    // console.log('unitErr', unitErr);
-    // console.log('choiceErr', choiceErr);
-    // console.log('labelsErr', labelsErr);
-    // console.log(
-    //   'all erros boolean',
-    //   nameErr ||
-    //     descriptionErr ||
-    //     minErr ||
-    //     defaultValueErr ||
-    //     maxErr ||
-    //     unitErr ||
-    //     choiceErr ||
-    //     labelsErr
-    // );
-
-    if (
-      !(
-        nameErr ||
-        descriptionErr ||
-        minErr ||
-        defaultValueErr ||
-        maxErr ||
-        unitErr ||
-        choiceErr ||
-        labelsErr
-      )
-    ) {
-      //  Send the POST request
-      const data = {
+    if (canSubmit) {
+      const newData = {
         type: selectedType,
         name,
         description,
@@ -250,9 +267,9 @@ const AttributeModal = ({ openTheModal, closeTheModal, groups, locals }) => {
         groups: selectedGroups.map((g) => g.value)
       };
 
-      postAttribute.mutate(data);
+      postAttribute(newData);
     } else {
-      console.log('Errs happened');
+      // console.log('Errs happened');
     }
   };
 

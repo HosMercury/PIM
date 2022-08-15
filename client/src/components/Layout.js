@@ -6,7 +6,6 @@ import MainMenuItem from './MainMenuItem';
 import SecondaryMenuItem from './SecondaryMenuItem';
 import { HiMenuAlt2 } from 'react-icons/hi';
 import { IoLogOutOutline } from 'react-icons/io5';
-import Header from './Header';
 
 function Layout() {
   const [showMainMenu, setShowMainMenu] = useState(false);
@@ -14,7 +13,6 @@ function Layout() {
   const [showProductsMenu, setShowProductsMenu] = useState(false);
   const [showUsersMenu, setShowUsersMenu] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-  const [title, setTitle] = useState(false);
 
   const switchMenus = (header) => {
     switch (header) {
@@ -190,7 +188,7 @@ function Layout() {
             </form>
           </div>
           <Outlet />
-          <div className="text-center border-t py-2 w-[100%] mt-8 text-gray-500">
+          <div className="text-center border-t py-2 w-[100%] mt-4 text-gray-500 absolute bottom-0">
             Copyright© NEX {new Date().getFullYear()}
           </div>
         </div>

@@ -3,44 +3,40 @@ const router = express.Router();
 const pool = require('../config/db_pool');
 const validateGroup = require('../validation/group');
 const moment = require('moment');
-
+const {
+  generateValidationErrorsResponse,
+  generateValGeneralErrorResponse
+} = require('./errs');
 let conn;
 
-router.get('/api/groups', async (req, res) => {
+router.get('/groups', async (req, res) => {
   try {
-    let results = await pool.query(`
+    let groups = await pool.query(`
       select g.* ,
       JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
-      (select cast(count(*) as char) from attribute_groups ag where ag.group_id = g.id) attributes_count
+      (select cast(count(*) as char) from attribute_group ag where ag.group_id = g.id) attributes_count
       from groups g
-      left join attribute_groups ag on g.id = ag.group_id
+      left join attribute_group ag on g.id = ag.group_id
       left join attributes a on a.id = ag.attribute_id
       group by g.id order by g.id desc
     `);
-    return res.json(results);
+    return res.json({ groups });
   } catch (err) {
-    // console.log(err);
-    return res.status(400).send('error'); // error page
-  }
-});
-
-// Get -- Group show
-router.get('/groups', async (req, res) => {
-  try {
-    return res.render('groups/index', {
-      title: 'Groups',
-      button: 'Create Group',
-      buttonClass: 'create-group'
-      // groups
-    });
-  } catch (err) {
-    req.session.err = 'Error happened while fetching the groups';
-    return res.status(400).redirect('back');
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while fetching the groups'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
 // DElete -- group
-router.post('/groups/:id/delete', async (req, res) => {
+router.delete('/groups/:id', async (req, res) => {
   try {
     const id = req.params.id;
     await pool.query(`delete from groups where id = ?`, [id]);
@@ -48,13 +44,20 @@ router.post('/groups/:id/delete', async (req, res) => {
     req.session.msg = 'Group deleted successfully';
     return res.redirect('/groups');
   } catch (err) {
-    // console.log(err);
-    req.session.err = 'Error happened while deleting the group';
-    return res.status(400).redirect('back');
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while deleting the group'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
-// Get -- groups home page
+// Get --
 router.get('/groups/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -64,7 +67,7 @@ router.get('/groups/:id', async (req, res) => {
       select g.* ,
       JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes
       from groups g 
-      left join attribute_groups ag on g.id = ag.group_id 
+      left join attribute_group ag on g.id = ag.group_id 
       left join attributes a on a.id = ag.attribute_id 
       where g.id = ? 
     `,
@@ -90,9 +93,16 @@ router.get('/groups/:id', async (req, res) => {
       moment
     });
   } catch (err) {
-    // console.log(err);
-    req.session.err = 'Error happened while fetching the group';
-    return res.status(400).redirect('back');
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while fetching the group'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
@@ -120,15 +130,20 @@ router.post('/groups', async (req, res) => {
     req.session.msg = 'Group saved successfully';
     return res.redirect('back');
   } catch (err) {
-    // console.log(err);
-    req.session.redirector = 'group';
-    req.session.err = ['Error happened while saving the group'];
-    req.session.old = req.body;
-    return res.status(400).redirect('back');
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while posting the group'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 
-router.post('/groups/:id/edit', async (req, res) => {
+router.patch('/groups/:id', async (req, res) => {
   try {
     conn = await pool.getConnection();
     await conn.beginTransaction();
@@ -168,12 +183,12 @@ router.post('/groups/:id/edit', async (req, res) => {
       [name, description, id]
     );
 
-    await conn.batch(`delete from attribute_groups where group_id = ?`, [id]);
+    await conn.batch(`delete from attribute_group where group_id = ?`, [id]);
 
     if (sent_attrs_ids.length > 0) {
       const values = sent_attrs_ids.map((attribute_id) => [id, attribute_id]);
       await conn.batch(
-        `insert into attribute_groups (group_id, attribute_id) values (?, ?)`,
+        `insert into attribute_group (group_id, attribute_id) values (?, ?)`,
         values
       );
     }
@@ -182,12 +197,16 @@ router.post('/groups/:id/edit', async (req, res) => {
     req.session.msg = 'Group updated successfully';
     return res.redirect('back');
   } catch (err) {
-    // console.log(err);
-    await conn.rollback();
-    req.session.redirector = 'group';
-    req.session.err = ['Error happened while saving the group'];
-    req.session.old = req.body;
-    return res.status(400).redirect('back');
+    console.log(err);
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while editing the group'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 

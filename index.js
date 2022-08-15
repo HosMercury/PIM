@@ -37,10 +37,6 @@ app.use(
   })
 );
 
-const ejs = require('ejs');
-app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
-
 const { auth, trim, flash } = require('./middlewares');
 // app.use(auth);
 app.use(flash);
