@@ -59,8 +59,8 @@ const AttributeList = () => {
         header: 'Groups'
       },
       {
-        accessor: 'labels_count',
-        header: 'Labels'
+        accessor: 'locals_count',
+        header: 'Locals'
       },
       {
         accessor: 'choices',
