@@ -12,16 +12,15 @@ Modal.setAppElement('#root');
 const AttributeModal = ({
   openTheModal,
   closeTheModal,
-  locals,
-  groups,
-  successToast,
-  errorToast
+  attribute,
+  postAttribute,
+  editAttribute
 }) => {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const navigate = useNavigate();
 
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [selectedGroups, setselectedGroups] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState([]);
   const [selectedType, setSelectedType] = useState('Text');
   const [inputType, setInputType] = useState('text');
   const [typeLabel, setTypeLabel] = useState('Length');
@@ -40,34 +39,67 @@ const AttributeModal = ({
   const [minErr, setMinErr] = useState(false);
   const [maxErr, setMaxErr] = useState(false);
   const [unitErr, setUnitErr] = useState(false);
-  const [labelsErr, setLabelsErr] = useState(false);
+  const [localsErr, setLocalsErr] = useState(false);
   const [choiceErr, setChoiceErr] = useState(false);
   const [choice, setChoice] = useState('');
   const [choices, setChoices] = useState([]);
-  const [labels, setLabels] = useState([]);
+  const [attributeLocals, setAttributeLocals] = useState([]);
 
-  const postAttribute = async (newData) => {
-    try {
-      const response = await fetch('/api/attributes', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newData)
-      });
+  const [groups, setGroups] = useState([]);
+  const [locals, setLocals] = useState([]);
 
-      if (response.status === 201) {
-        const { attribute } = await response.json();
-        navigate('/attributes/' + attribute.id);
-        successToast();
-      } else {
-        errorToast();
-      }
-    } catch (e) {
-      errorToast();
-    }
+  const getGroups = async () => {
+    const res = await fetch('/api/groups');
+    const data = await res.json();
+    const newGroups = data.groups.map((g) => {
+      const newG = {};
+      newG.value = g.id;
+      newG.label = g.name;
+      return newG;
+    });
+    setGroups(newGroups);
   };
+
+  const getLocals = async () => {
+    const res = await fetch('/api/locals');
+    const data = await res.json();
+    setLocals(data.locals);
+  };
+
+  useEffect(() => {
+    setIsOpen(openTheModal);
+    getGroups();
+    getLocals();
+
+    if (attribute) {
+      setAttributeLocals(attribute.locals || []);
+
+      if (attribute.groups && attribute.groups.length > 0) {
+        const newSelected = attribute.groups.map((g) => {
+          const newG = {};
+          newG.value = g.id;
+          newG.label = g.name;
+          return newG;
+        });
+        setSelectedGroups(newSelected);
+      }
+
+      if (attribute.choices && attribute.choices.length > 0) {
+        const newChoices = attribute.choices.map((c) => {
+          return { id: nanoid(), choice: c };
+        });
+        setChoices(newChoices);
+      }
+
+      setName(attribute.name || '');
+      setDescription(attribute.description || '');
+      setRequired(attribute.required === 1 ? true : false);
+      setDefaultValue(attribute.default_value || '');
+      setMin(attribute.min || '');
+      setMax(attribute.max | '');
+      setUnit(attribute.unit || '');
+    }
+  }, [openTheModal]);
 
   const handleTypeClick = (type) => {
     setSelectedType(type);
@@ -111,14 +143,9 @@ const AttributeModal = ({
   };
 
   const handleChange = (selectedGroups) => {
-    setselectedGroups(selectedGroups);
+    setSelectedGroups(selectedGroups);
   };
 
-  useEffect(() => {
-    setIsOpen(openTheModal);
-  }, [openTheModal]);
-
-  // const openModal = () => setIsOpen(true);
   const closeModal = () => {
     setIsOpen(false);
     closeTheModal();
@@ -160,7 +187,7 @@ const AttributeModal = ({
     setMinErr(false);
     setMaxErr(false);
     setUnitErr(false);
-    setLabelsErr(false);
+    setLocalsErr(false);
     setChoiceErr(false);
 
     if (name.search(alphaDashNumeric) === -1) {
@@ -173,6 +200,7 @@ const AttributeModal = ({
       setNameErr('Name must be at least 2 characters');
       canSubmit = false;
     }
+
     if (name.length > 250) {
       setNameErr('Name must not exceed 250 characters');
       canSubmit = false;
@@ -239,21 +267,35 @@ const AttributeModal = ({
       canSubmit = false;
     }
 
-    // Validate Labels
-    labels.forEach(({ id, label }) => {
-      if (label !== '' && label.length < 2) {
-        setLabelsErr('Label must be at least 2 characters');
+    // Validate locals
+    attributeLocals.forEach(({ id, local }) => {
+      if (typeof local !== 'undefined' && local !== '' && local.length < 2) {
+        setLocalsErr('Local must be at least 2 characters');
         canSubmit = false;
       }
     });
 
-    if (!Object.keys(labels).includes('0')) {
-      setLabelsErr('English label is required');
+    if (!Object.keys(attributeLocals).includes('0')) {
+      setLocalsErr('English local is required');
       canSubmit = false;
     }
 
+    if (
+      [
+        'Multiple Select',
+        'Single Select',
+        'Radio Buttons',
+        'Check Boxes'
+      ].includes(selectedType)
+    ) {
+      if (choices.length < 1) {
+        setChoiceErr('At Least one choice required');
+        canSubmit = false;
+      }
+    }
+
     if (canSubmit) {
-      const newData = {
+      let newData = {
         type: selectedType,
         name,
         description,
@@ -262,23 +304,27 @@ const AttributeModal = ({
         min,
         max,
         unit,
-        locals: labels,
+        locals: attributeLocals,
         choices: choices.map((c) => c.choice),
         groups: selectedGroups.map((g) => g.value)
       };
 
+      if (typeof attribute !== 'undefined' && attribute.id) {
+        newData = { ...newData, id: attribute.id };
+      }
+
       postAttribute(newData);
     } else {
-      // console.log('Errs happened');
+      //
     }
   };
 
-  const handleLabels = (id, label) => {
-    const newLabel = { id, label };
-    setLabels((prev) =>
-      prev.find((label) => label.id === id)
-        ? prev.map((label) => (label.id === id ? newLabel : label))
-        : prev.concat(newLabel)
+  const handleLocals = (id, local) => {
+    const newLocal = { id, local };
+    setAttributeLocals((prev) =>
+      prev.find((local) => local.id === id)
+        ? prev.map((local) => (local.id === id ? newLocal : local))
+        : prev.concat(newLocal)
     );
   };
 
@@ -369,6 +415,7 @@ const AttributeModal = ({
                   id="required"
                   type="checkbox"
                   className="w-8 h-8 "
+                  checked={required}
                   value={required}
                   onChange={() => setRequired(!required)}
                 />
@@ -436,23 +483,28 @@ const AttributeModal = ({
               )}
             </div>
             <div className="w-full md:w-1/2 p-1 md:border-l ">
-              <ModalHeader header="Labels" />
-              {locals.map(({ id, abbreviation, name, direction }) => (
-                <div className="my-2" key={id}>
-                  <label htmlFor={abbreviation} className="modal-label">
-                    {name} :
-                  </label>
-                  <input
-                    id={abbreviation}
-                    type="text"
-                    dir={direction}
-                    className="modal-input "
-                    value={locals.find((l) => l.id === id).value}
-                    onChange={(e) => handleLabels(id, e.target.value.trim())}
-                  />
-                </div>
-              ))}
-              {labelsErr && <p className="form-err">{labelsErr}</p>}
+              <ModalHeader header="Locals" />
+
+              {locals &&
+                locals.map(({ id, abbreviation, name, direction }) => (
+                  <div className="my-2" key={id}>
+                    <label htmlFor={abbreviation} className="modal-label">
+                      {name} :
+                    </label>
+                    <input
+                      id={abbreviation}
+                      type="text"
+                      dir={direction}
+                      className="modal-input"
+                      defaultValue={attributeLocals.map((at) =>
+                        at.id === id ? at.local : ''
+                      )}
+                      value={locals.find((l) => l.id === id).value}
+                      onChange={(e) => handleLocals(id, e.target.value.trim())}
+                    />
+                  </div>
+                ))}
+              {localsErr && <p className="form-err">{localsErr}</p>}
 
               <ModalHeader header="Groups" />
               <Select
@@ -491,20 +543,21 @@ const AttributeModal = ({
 
                     <div className="my-2">
                       <div className="p-2 w-full">
-                        {choices.map(({ id, choice }) => (
-                          <span
-                            key={id}
-                            className="border border-nex rounded-md bg-gray-50 m-1 p-2 inline-block"
-                          >
-                            {choice}
-                            <button
-                              className="inline-block bg-red-500 text-white rounded-full w-6 ml-2"
-                              onClick={() => handleDeleteChoice(id)}
+                        {choices &&
+                          choices.map(({ id, choice }) => (
+                            <span
+                              key={id}
+                              className="border border-nex rounded-md bg-gray-50 m-1 p-2 inline-block"
                             >
-                              x
-                            </button>
-                          </span>
-                        ))}
+                              {choice}
+                              <button
+                                className="inline-block bg-red-500 text-white rounded-full w-6 ml-2"
+                                onClick={() => handleDeleteChoice(id)}
+                              >
+                                x
+                              </button>
+                            </span>
+                          ))}
                       </div>
                     </div>
                   </div>

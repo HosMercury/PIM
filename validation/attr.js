@@ -119,12 +119,10 @@ async function validateAttribute(body, id = null) {
   if (typeof type !== 'undefined') {
     type = type.trim();
     if (type == 'Text' || type == 'Text Area' || type == 'Number') {
-      if (typeof min !== 'undefined' && min.trim() !== '') {
-        min = min.trim();
+      if (typeof min !== 'undefined' && min !== '') {
         if (!isNumeric(min.toString())) errs.push('min field must be numeric');
       }
-      if (typeof max !== 'undefined' && max.trim() !== '') {
-        max = max.trim();
+      if (typeof max !== 'undefined' && max !== '') {
         if (!isNumeric(max.toString())) errs.push('max field must be numeric');
         if (parseInt(max) < parseInt(min))
           errs.push('Max field must be greater than min value');
@@ -145,7 +143,7 @@ async function validateAttribute(body, id = null) {
       );
   }
 
-  ////////// Attribute required checkbox label //////////////
+  ////////// Attribute required checkbox  //////////////
   if (typeof required !== 'undefined') {
     if (typeof required !== 'boolean') errs.push('Required field is invalid');
   }
@@ -157,21 +155,21 @@ async function validateAttribute(body, id = null) {
       errs.push('Email default value is invalid email');
   }
 
-  ////////// Attribute english label //////////////
+  ////////// Attribute english local //////////////
   if (typeof locals !== 'undefined' && locals.length > 0) {
     const locals_ids = locals.map((local) => local.id);
 
     if (!locals_ids.includes(1)) {
-      errs.push('English label is required');
+      errs.push('English local is required');
     }
 
     locals.forEach(async (local) => {
       for (const k in locals) {
-        const label = locals[k].label.trim();
+        const lc = locals[k].local.trim();
         const id = locals[k].id;
 
-        if (label.length < 2) {
-          errs.push('Label min length is 2 letters');
+        if (lc.length < 2) {
+          errs.push('Local min length is 2 letters');
         }
 
         if (!isNumeric(id.toString())) {
@@ -180,7 +178,7 @@ async function validateAttribute(body, id = null) {
       }
     });
   } else {
-    errs.push('English label is required');
+    errs.push('English local is required');
   }
 
   ////////// Attribute choices //////////////

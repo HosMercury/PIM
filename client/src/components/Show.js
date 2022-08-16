@@ -16,7 +16,7 @@ const Show = ({ data }) => {
       if (typeof v === 'string') {
         return (
           <span
-            className="font-bold text-nex border rounded bg-gray-100 p-2 m-2 inline-block"
+            className="font-bold text-nex border rounded bg-gray-100 p-2 m-2 inline-block "
             key={k}
           >
             {v}
@@ -27,8 +27,7 @@ const Show = ({ data }) => {
           return (
             <p className="p-2 m-2 border bg-gray-100 rounded " key={v.id}>
               <strong className="mx-2 text-nex">{v.name} </strong>
-              {''}
-              {v.label || ''}
+              {v.local || ''}
             </p>
           );
         } else {
@@ -67,7 +66,8 @@ const Show = ({ data }) => {
 
       {Object.keys(data).map((key) => {
         return (
-          typeof data[key] === 'object' && (
+          typeof data[key] === 'object' &&
+          data[key] !== null && (
             <div
               className="my-6 border w-[100%] m-auto text-center px-2 font-bold"
               key={key}

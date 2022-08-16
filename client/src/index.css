@@ -16,7 +16,7 @@ tbody tr:nth-of-type(even) {
 }
 
 .type-icon {
-  @apply h-8 w-8 sm:h-12 sm:w-12 text-nex p-1 m-1 inline-block;
+  @apply h-8 w-8 sm:h-12 sm:w-12 text-nex p-1 m-1 inline-block mx-auto;
 }
 
 .main-menu-icon {

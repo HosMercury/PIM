@@ -46,7 +46,7 @@ create table categories (
 
 create table groups (
 	id int unsigned primary key not null auto_increment,
-	name varchar(255) not null, -- unique checked in router
+	name varchar(255) not null unique, -- unique checked in router
 	description varchar(255),
 	created_at timestamp default now(),
 	updated_at timestamp default now()
@@ -56,8 +56,6 @@ create table attributes (
 	id int unsigned primary key not null auto_increment,
 	type varchar(255) not null,
 	name varchar(255) not null,
-	-- slug varchar(255) not null unique,
-	-- label varchar(255) not null,
 	description varchar(255),
 	required boolean not null default 0,
 	default_value text,
@@ -78,7 +76,7 @@ create table attribute_choice (
 
 create table attribute_local (
 	id int unsigned primary key not null auto_increment,
-	label varchar(255) not null,
+	local varchar(255) not null,
   attribute_id int unsigned  not null references attributes(id) on delete cascade,
   local_id int unsigned  not null references locals(id) on delete cascade,
 	created_at timestamp default now(),

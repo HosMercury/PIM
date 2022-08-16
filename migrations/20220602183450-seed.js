@@ -45,7 +45,7 @@ exports.up = async function (db) {
   await pool.query(ar_lang, values3);
 
   const g1 = 'insert into groups(name) values(?)';
-  pool.query(g1, 'Basic');
+  await pool.query(g1, 'Basic');
 
   const g2 = 'insert into groups(name) values(?)';
   await pool.query(g2, 'Dimentions');

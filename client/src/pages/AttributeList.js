@@ -3,14 +3,15 @@ import Table from '../components/Table';
 import { format } from 'date-fns';
 import AttributeModal from '../components/AttributeModal';
 import Header from '../components/Header';
-import { toast } from 'react-toastify';
 import { Loading } from '../components/Loading';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const AttributeList = () => {
+  const navigate = useNavigate();
+
   const [attributes, setAttributes] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [locals, setLocals] = useState([]);
 
   const getAttributes = async () => {
     const res = await fetch('/api/attributes');
@@ -18,27 +19,13 @@ const AttributeList = () => {
     setAttributes(data.attributes);
   };
 
-  const getGroups = async () => {
-    const res = await fetch('/api/groups');
-    const data = await res.json();
-    setGroups(data.groups);
-  };
-
-  const getLocals = async () => {
-    const res = await fetch('/api/locals');
-    const data = await res.json();
-    setLocals(data.locals);
-  };
-
   useEffect(() => {
     document.title = 'NEX Content | Attributes';
     getAttributes();
-    getGroups();
-    getLocals();
   }, []);
 
   const successToast = () => {
-    toast('Done successfully', {
+    toast('Attributed created successfully', {
       className: 'success-toast'
     });
   };
@@ -96,6 +83,29 @@ const AttributeList = () => {
     return <Loading />;
   }
 
+  const postAttribute = async (newData) => {
+    try {
+      const response = await fetch('/api/attributes', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newData)
+      });
+
+      if (response.status === 201) {
+        const { attribute } = await response.json();
+        navigate('/attributes/' + attribute.id);
+        successToast();
+      } else {
+        errorToast();
+      }
+    } catch (e) {
+      errorToast();
+    }
+  };
+
   return (
     <>
       <Header title="Attributes" first="Attributes" second="" />
@@ -108,13 +118,9 @@ const AttributeList = () => {
           Create
         </button>
         <AttributeModal
-          attributes={attributes}
-          groups={groups}
-          locals={locals}
           openTheModal={openTheModal}
           closeTheModal={closeTheModal}
-          successToast={successToast}
-          errorToast={errorToast}
+          postAttribute={postAttribute}
         />
       </Table>
     </>

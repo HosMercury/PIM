@@ -18,9 +18,9 @@ router.get('/attributes', async (req, res) => {
     const attributes = await pool.query(
       `
         select a.id, a.name, a.type, a.created_at, 
-        -- al.label label,
+        -- al.local local,
         (select cast(count(*) as char) from attribute_group ag where ag.attribute_id = a.id) groups_count,
-        (select cast(count(*) as char) from attribute_local al where al.attribute_id = a.id) labels_count,
+        (select cast(count(*) as char) from attribute_local al where al.attribute_id = a.id) locals_count,
         (select cast(count(*) as char) from attribute_choice ac where ac.attribute_id = a.id) choices
         FROM attributes a
         -- left join attribute_group ag on a.id = ag.attribute_id
@@ -63,7 +63,7 @@ async function getAttributeById(id) {
     ),
     locals as (
      select JSON_ARRAYAGG(
-     JSON_OBJECT('id', l.id,'name', l.name,'label', al.label))
+     JSON_OBJECT('id', l.id,'name', l.name,'local', al.local))
      from locals l
      join attributes a on a.id = ? 
      join attribute_local al on al.attribute_id = a.id
@@ -96,6 +96,16 @@ router.get('/attributes/:id', async (req, res) => {
     const results = await getAttributeById(id);
     if (results.length < 1) throw '';
     const attribute = results[0];
+
+    attribute.required = attribute.required == 1 ? 'Yes' : 'No';
+    if (!attribute.max) delete attribute.max;
+    if (!attribute.min) delete attribute.min;
+    if (!attribute.description) delete attribute.description;
+    if (!attribute.default_value) delete attribute.default_value;
+    if (!attribute.unit) delete attribute.unit;
+    if (!attribute.groups) delete attribute.groups;
+    if (!attribute.choices) delete attribute.choices;
+    if (!attribute.locals) delete attribute.locals;
 
     return res.json({ attribute });
   } catch (err) {
@@ -155,9 +165,9 @@ async function insertGroups(groups, conn, id) {
 async function insertLocals(locals, conn, id) {
   const insert_locals = [];
   locals.forEach((local) => {
-    insert_locals.push([local.id, local.label, id]);
+    insert_locals.push([local.id, local.local, id]);
   });
-  const ls_query = `insert into attribute_local (local_id, label, attribute_id) values(?,?,?)`;
+  const ls_query = `insert into attribute_local (local_id, local, attribute_id) values(?,?,?)`;
   await conn.batch(ls_query, insert_locals);
 }
 
@@ -268,10 +278,10 @@ async function updateAttribute(body, id) {
       type,
       name,
       description,
-      required,
+      (required = required ? '1' : '0'),
       defaultValue,
-      min,
-      max,
+      min === '' ? null : parseInt(min),
+      max === '' ? null : parseInt(max),
       unit,
       id
     ];
@@ -289,17 +299,23 @@ async function updateAttribute(body, id) {
     // Choices ---
     if (typeof choices !== 'undefined' && choices.length > 0) {
       // remove all
-      pool.query(`delete from attribute_choice where attribute_id = ?`, [id]);
+      await pool.query(`delete from attribute_choice where attribute_id = ?`, [
+        id
+      ]);
       await insertChoices(choices, conn, id);
     }
 
     //- Locals
-    pool.query(`delete from attribute_local where attribute_id = ?`, [id]);
+    await pool.query(`delete from attribute_local where attribute_id = ?`, [
+      id
+    ]);
     await insertLocals(locals, conn, id);
 
     // groups --
     if (typeof groups !== 'undefined' && groups.length > 0) {
-      pool.query(`delete from attribute_group where attribute_id = ?`, [id]);
+      await pool.query(`delete from attribute_group where attribute_id = ?`, [
+        id
+      ]);
       await insertGroups(groups, conn, id);
     }
 
@@ -321,15 +337,15 @@ router.patch('/attributes/:id', async (req, res) => {
     const errs = await validateAttribute(body, id);
     generateValidationErrorsResponse(errs, res);
 
-    attribute_id = await updateAttribute(body, id);
+    const attribute_id = await updateAttribute(body, id);
 
     if (isNumeric(attribute_id)) {
-      // const  await updateAttribute(req.body, id);
       const message = 'Attribute saved successfully';
       const results = await getAttributeById(attribute_id);
-      if (results.length < 1) throw '';
+      if (results.length < 1) generateValGeneralErrorResponse(res);
       const attribute = results[0];
-      return res.status(201).json({ message, attribute });
+      res.status(201).json({ message, attribute });
+      return res.end();
     }
   } catch (err) {
     console.log(err);

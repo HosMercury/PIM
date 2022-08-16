@@ -3,20 +3,20 @@ import Show from '../components/Show';
 import { useParams } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import Header from '../components/Header';
-import { useNavigate } from 'react-router-dom';
 import AttributeModal from '../components/AttributeModal';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const AttributeShow = () => {
+  const navigate = useNavigate();
+
   const params = useParams();
   const id = params.id;
-  const navigate = useNavigate();
 
   const [openTheModal, setOpenModal] = useState(false);
   const closeTheModal = () => setOpenModal(false);
 
   const [attribute, setAttribute] = useState(null);
-  const [groups, setGroups] = useState(null);
-  const [locals, setLocals] = useState(null);
 
   const [title, setTitle] = useState('');
 
@@ -26,34 +26,11 @@ const AttributeShow = () => {
     setAttribute(data.attribute);
   };
 
-  const getGroups = async () => {
-    const res = await fetch('/api/groups');
-    const data = await res.json();
-    setGroups(data.groups);
-  };
-
-  const getLocals = async () => {
-    const res = await fetch('/api/locals');
-    const data = await res.json();
-    setLocals(data.locals);
-  };
-
   useEffect(() => {
     document.title = `NEX Content | Attribute #${id}`;
     getAttribute();
-    getGroups();
-    getLocals();
     setTitle(`Attribute #${id}`);
   }, [id]);
-
-  const deleteAttribute = async (id) => {
-    const res = await fetch(`/api/attributes/${id}`, {
-      method: 'DELETE'
-    });
-    if (res.status === 204) {
-      navigate('/attributes');
-    }
-  };
 
   const delAttr = async () => {
     if (window.confirm('Are you sure?')) {
@@ -61,9 +38,60 @@ const AttributeShow = () => {
     }
   };
 
+  const successDeleteToast = () => {
+    toast('Attribute edited successfully', {
+      className: 'success-toast'
+    });
+  };
+
+  const successEditToast = () => {
+    toast('Attribute edited successfully', {
+      className: 'success-toast'
+    });
+  };
+
+  const errorToast = () => {
+    toast('Something went wrong', {
+      className: 'error-toast'
+    });
+  };
+
+  const deleteAttribute = async (id) => {
+    const res = await fetch(`/api/attributes/${id}`, {
+      method: 'DELETE'
+    });
+    if (res.status === 204) {
+      navigate('/attributes');
+      successDeleteToast();
+    }
+  };
+
   if (!attribute) {
     return <Loading />;
   }
+
+  const postAttribute = async (newData) => {
+    try {
+      const response = await fetch(`/api/attributes/${newData.id}`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newData)
+      });
+
+      if (response.status === 201) {
+        getAttribute();
+        closeTheModal();
+        successEditToast();
+      } else {
+        errorToast();
+      }
+    } catch (e) {
+      errorToast();
+    }
+  };
 
   return (
     <>
@@ -78,10 +106,10 @@ const AttributeShow = () => {
         </button>
       </div>
       <AttributeModal
-        locals={locals}
-        groups={groups}
+        attribute={attribute}
         openTheModal={openTheModal}
         closeTheModal={closeTheModal}
+        postAttribute={postAttribute}
       />
     </>
   );
