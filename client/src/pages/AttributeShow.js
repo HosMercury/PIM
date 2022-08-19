@@ -30,7 +30,7 @@ const AttributeShow = () => {
     document.title = `NEX Content | Attribute #${id}`;
     getAttribute();
     setTitle(`Attribute #${id}`);
-  }, [id]);
+  }, []);
 
   const delAttr = async () => {
     if (window.confirm('Are you sure?')) {

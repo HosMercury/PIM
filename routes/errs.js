@@ -7,17 +7,21 @@ module.exports.generateValidationErrorsResponse = (errs, res) => {
         err
       });
     });
-    const response = { erros: validationErrors };
-    return res.status(422).json(response);
+    const response = { errors: validationErrors };
+    return res.status(422).json(response).end();
   }
 };
 
-module.exports.generateValGeneralErrorResponse = (res) => {
+module.exports.generateValGeneralErrorResponse = (
+  err = 'General Error happened, please contact your adminstrator',
+  res,
+  status = 422
+) => {
   const response = {
-    erros: {
+    errors: {
       type: 'general',
-      err: 'General Error happened, please contact your adminstrator'
+      err
     }
   };
-  return res.status(422).json(response);
+  return res.status(status).json(response).end();
 };

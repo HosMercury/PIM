@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import logo from '../assets/images/nex.png';
 import { Link } from 'react-router-dom';
 import MainMenuItem from './MainMenuItem';
 import SecondaryMenuItem from './SecondaryMenuItem';
 import { HiMenuAlt2 } from 'react-icons/hi';
-import { IoLogOutOutline } from 'react-icons/io5';
+import { RiUser3Line } from 'react-icons/ri';
+import { AiOutlineLogout } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from './App';
 
 function Layout() {
   const [showMainMenu, setShowMainMenu] = useState(false);
@@ -13,6 +16,8 @@ function Layout() {
   const [showProductsMenu, setShowProductsMenu] = useState(false);
   const [showUsersMenu, setShowUsersMenu] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const navigate = useNavigate();
+  const user = useContext(UserContext);
 
   const switchMenus = (header) => {
     switch (header) {
@@ -46,9 +51,16 @@ function Layout() {
     switchMenus(header);
   };
 
+  const handleLogout = async (e) => {
+    await fetch('/api/logout', {
+      method: 'POST'
+    });
+    navigate('/login');
+  };
+
   return (
     <>
-      <div className="flex min-h-screen relative">
+      <div className="flex min-h-screen relative ">
         <div
           className={`sm:w-28 w-24 bg-nex flex flex-col text-white text-center pb-4 shrink-0
       sm:text-base text-sm font-bold transition-all ease-in-out duration-200 delay-75  sm:translate-x-0 sm:block sm:static  ${
@@ -164,31 +176,34 @@ function Layout() {
             </ul>
           </div>
         </div>
-        <div className="grow sm:mx-8 mx-2 ">
-          <div className="h-[50px] text-nex bg-white sm:border-0 border-b-2 border-gray-200">
+        <div className="grow sm:mx-8 mx-2 w-full">
+          <div className=" h-[50px] bg-white sm:border-0 border-b-2 border-gray-200 ">
             <button
               className="w-16 block sm:hidden "
               onClick={() => setShowMainMenu(!showMainMenu)}
             >
               <HiMenuAlt2 className="h-8 w-8 my-2" />
             </button>
-            {/* Logout */}
-            <form
-              action="/logout"
-              method="post"
-              className="mx-2 sm:mx-4 py-2 px-2 absolute z-10 top-0 right-0"
-            >
+
+            {/* Username and Logout */}
+            <div className="mx-4 flex justify-center align-middle  text-gray-700 	absolute top-4 right-0 text-sm sm:text-base ">
+              {user && (
+                <div className="flex justify-center align-middle mx-1 ">
+                  <RiUser3Line className="w-4 h-4 mx-1 relative sm:top-1" />
+                  <span>{user.firstname}</span>
+                </div>
+              )}
+
               <button
-                type="submit"
-                className="mx-auto cursor-pointer flex items-center"
+                className="  inline-block "
+                onClick={(e) => handleLogout(e)}
               >
-                <span className="mx-1">Logout</span>
-                <IoLogOutOutline className="w-8 h-8 m-auto" />
+                <AiOutlineLogout className="w-6 h-6 " />
               </button>
-            </form>
+            </div>
           </div>
           <Outlet />
-          <div className="text-center border-t py-2 w-[100%] mt-4 text-gray-500 absolute bottom-0">
+          <div className="text-center border-t py-2 block mt-4 text-gray-500">
             Copyright© NEX {new Date().getFullYear()}
           </div>
         </div>

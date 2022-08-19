@@ -5,7 +5,6 @@ import { AiOutlineClose } from 'react-icons/ai';
 import ModalHeader from './ModalHeader';
 import Select from 'react-select';
 import { nanoid } from 'nanoid';
-import { useNavigate } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
@@ -13,11 +12,9 @@ const AttributeModal = ({
   openTheModal,
   closeTheModal,
   attribute,
-  postAttribute,
-  editAttribute
+  postAttribute
 }) => {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
-  const navigate = useNavigate();
 
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState([]);
@@ -44,6 +41,7 @@ const AttributeModal = ({
   const [choice, setChoice] = useState('');
   const [choices, setChoices] = useState([]);
   const [attributeLocals, setAttributeLocals] = useState([]);
+  const [backendErrs, setBackendErrs] = useState([]);
 
   const [groups, setGroups] = useState([]);
   const [locals, setLocals] = useState([]);

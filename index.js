@@ -37,9 +37,8 @@ app.use(
   })
 );
 
-const { auth, trim, flash } = require('./middlewares');
-// app.use(auth);
-app.use(flash);
+const { auth } = require('./middlewares');
+app.use(auth);
 
 // Routes
 app.use('/api', require('./routes/auth_router'));

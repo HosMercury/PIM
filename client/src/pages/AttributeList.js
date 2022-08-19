@@ -79,7 +79,7 @@ const AttributeList = () => {
     []
   );
 
-  if (attributes.length < 1) {
+  if (typeof attributes !== 'undefined' && attributes.length < 1) {
     return <Loading />;
   }
 

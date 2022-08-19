@@ -7,6 +7,10 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+/* * {
+  border: solid 1px red;
+} */
+
 tbody tr:nth-of-type(even) {
   background: #e5e7eb !important;
 }

@@ -2,29 +2,31 @@ const express = require('express');
 const router = express.Router();
 var bcrypt = require('bcryptjs');
 const pool = require('../config/db_pool');
-// const { isAlphanumeric } = require('validator');
-const { isEmpty } = require('lodash');
+const {
+  generateValidationErrorsResponse,
+  generateValGeneralErrorResponse
+} = require('../routes/errs');
 
-// if (!isAlphanumeric(username))
-//   errs.push('Username:  Only letters and numbers are allowed');
-
-// if (!isAlphanumeric(password))
-//   errs.push('Password: Only letters and numbers are allowed');
-
-function validateCredentials(username, password) {
+function validateCredentials(username, password, remember) {
   const errs = [];
 
-  if (isEmpty(username)) errs.push('Username is required');
+  if (typeof username === 'undefined') errs.push('Username is required');
 
-  if (isEmpty(password)) errs.push('Password is required');
+  if (typeof password === 'undefined') errs.push('Password is required');
 
-  if (username.length < 5) errs.push('Username must be at least 5 letters');
+  if (typeof username !== 'undefined' && username.length < 5)
+    errs.push('Username must be at least 5 letters');
 
-  if (password.length < 5) errs.push('Password must be at least 5 letters');
+  if (typeof password !== 'undefined' && password.length < 5)
+    errs.push('Password must be at least 5 letters');
 
-  if (username.length > 50) errs.push('Username maximum 50 letters');
+  if (typeof username !== 'undefined' && username.length > 50)
+    errs.push('Username maximum 50 letters');
 
-  if (password.length > 100) errs.push('Password maximum 100 letters');
+  if (typeof password !== 'undefined' && password.length > 100)
+    errs.push('Password maximum 100 letters');
+
+  if (typeof remember !== 'boolean') errs.push('Invalid remember value');
 
   return errs;
 }
@@ -47,38 +49,38 @@ async function authenticateUser(username, password) {
   }
 }
 
-// GET
-router.get('/login', (req, res) => {
-  return res.render('login', { layout: false });
-});
-
 // POST
 router.post('/login', async (req, res) => {
   const { username, password, remember } = req.body;
   const errs = validateCredentials(username, password, remember);
 
-  if (errs.length === 0) {
-    const user = await authenticateUser(username, password); // Returns user or null
+  if (errs.length > 0) return generateValidationErrorsResponse(errs, res);
 
-    if (user != null) {
-      req.session.user = user;
-      if (remember === 'true')
-        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
+  const user = await authenticateUser(username, password); // Returns user or null
 
-      return res.redirect('/');
-    }
-    errs.push('Please check your credentials');
+  if (user) {
+    req.session.user = user;
+    if (remember) req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+    delete req.session.user.password;
+
+    return res.json(req.session.user);
   }
+  // invalid credentials
+  return generateValGeneralErrorResponse(res);
+});
 
-  req.session.errs = errs;
-  req.session.old = { username, remember };
-
-  return res.redirect('back');
+router.get('/me', (req, res) => {
+  try {
+    return res.status(200).json(req.session.user).end();
+  } catch (e) {
+    return generateValGeneralErrorResponse(res);
+  }
 });
 
 router.post('/logout', async (req, res) => {
   req.session.destroy();
-  return res.redirect('/login');
+  return res.status(200).end();
 });
 
 module.exports = router;

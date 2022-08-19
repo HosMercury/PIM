@@ -17,7 +17,7 @@ router.get('/attributes', async (req, res) => {
   try {
     const attributes = await pool.query(
       `
-        select a.id, a.name, a.type, a.created_at, 
+        select a.*, 
         -- al.local local,
         (select cast(count(*) as char) from attribute_group ag where ag.attribute_id = a.id) groups_count,
         (select cast(count(*) as char) from attribute_local al where al.attribute_id = a.id) locals_count,
@@ -31,6 +31,14 @@ router.get('/attributes', async (req, res) => {
         group by a.id order by a.id desc
       `
     );
+
+    attributes.forEach((attribute) => {
+      return Object.keys(attribute).forEach((key) => {
+        if (!attribute[key]) {
+          delete attribute[key];
+        }
+      });
+    });
     return res.json({ attributes });
   } catch (err) {
     console.log(err);
