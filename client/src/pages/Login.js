@@ -33,7 +33,7 @@ const Login = () => {
       );
       canSubmit = false;
     }
-    if (username.length > 1 && username.length < 5) {
+    if (username.length > 0 && username.length < 5) {
       setUsernameError('Username must be at least 5 letters');
       canSubmit = false;
     }
@@ -45,7 +45,7 @@ const Login = () => {
       setPasswordError('Password is required');
       canSubmit = false;
     }
-    if (password.length > 1 && password.length < 5) {
+    if (password.length > 0 && password.length < 5) {
       setPasswordError('Password must be at least 5 letters');
       canSubmit = false;
     }
@@ -53,6 +53,8 @@ const Login = () => {
       setPasswordError('Password maximum 100 letters');
       canSubmit = false;
     }
+
+    console.log(usernameError);
 
     if (canSubmit) {
       try {
@@ -69,6 +71,8 @@ const Login = () => {
           const data = await res.json();
           setAuth(data);
           navigate('/attributes');
+        } else if (res.status === 422) {
+          setErrMsg('Invalid credentials');
         }
       } catch (e) {
         console.log(e);

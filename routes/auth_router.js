@@ -74,8 +74,10 @@ router.post('/login', async (req, res) => {
 
     return res.json(req.session.user);
   }
+
+  console.log(user);
   // invalid credentials
-  return generateValGeneralErrorResponse(res);
+  return generateValGeneralErrorResponse('Please check your credentials', res);
 });
 
 router.get('/me', (req, res) => {
