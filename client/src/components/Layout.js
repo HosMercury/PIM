@@ -8,7 +8,6 @@ import { RiUser3Line } from 'react-icons/ri';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from './Loading';
-import AuthContext from '../Context/AuthProvider';
 
 function Layout({ children }) {
   const [showMainMenu, setShowMainMenu] = useState(false);
@@ -17,10 +16,6 @@ function Layout({ children }) {
   const [showUsersMenu, setShowUsersMenu] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const navigate = useNavigate();
-
-  const { auth } = useContext(AuthContext);
-
-  console.log(auth);
 
   const switchMenus = (header) => {
     switch (header) {
@@ -41,12 +36,6 @@ function Layout({ children }) {
         break;
     }
   };
-
-  useEffect(() => {
-    if (!auth) {
-      navigate('/login');
-    }
-  }, [auth]);
 
   const onClick = (header) => {
     switchMenus(header);

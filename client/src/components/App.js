@@ -22,8 +22,11 @@ const App = () => {
             path="/attributes"
             element={auth ? <AttributeList /> : <Login />}
           />
-          <Route path="/attributes/:id" element={<AttributeShow />} />
-          <Route path="*" element={<NoPage />} />
+          <Route
+            path="/attributes/:id"
+            element={auth ? <AttributeShow /> : <Login />}
+          />
+          <Route path="*" element={auth ? <NoPage /> : <Login />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />
