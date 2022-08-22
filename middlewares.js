@@ -29,6 +29,7 @@ module.exports = {
       if (req.method.toUpperCase() === 'POST' && req.url === '/api/login') {
         return next();
       }
+
       // Not LoggedIn -- only can get::Login and post::login ( ONLY 2 routes availabale)
       return generateValGeneralErrorResponse('Unauthorized request', res, 401);
     }

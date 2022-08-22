@@ -7,6 +7,7 @@ import { Loading } from '../components/Loading';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Layout from '../components/Layout';
 
 const AttributeList = () => {
   const navigate = useNavigate();
@@ -107,7 +108,7 @@ const AttributeList = () => {
   };
 
   return (
-    <>
+    <Layout>
       <Header title="Attributes" first="Attributes" second="" />
       <Table columns={columns} data={attributes}>
         <button
@@ -123,7 +124,7 @@ const AttributeList = () => {
           postAttribute={postAttribute}
         />
       </Table>
-    </>
+    </Layout>
   );
 };
 

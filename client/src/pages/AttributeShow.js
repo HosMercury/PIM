@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import AttributeModal from '../components/AttributeModal';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Layout from '../components/Layout';
 
 const AttributeShow = () => {
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ const AttributeShow = () => {
   };
 
   return (
-    <>
+    <Layout>
       <Header title={title} first="Attributes" second={title} />
       <Show data={attribute} />
       <div className="m-4 mb-20 mt-4 p-2 flex justify-between">
@@ -111,7 +112,7 @@ const AttributeShow = () => {
         closeTheModal={closeTheModal}
         postAttribute={postAttribute}
       />
-    </>
+    </Layout>
   );
 };
 

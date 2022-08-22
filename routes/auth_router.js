@@ -7,10 +7,18 @@ const {
   generateValGeneralErrorResponse
 } = require('../routes/errs');
 
+const alphaDashNumeric = /^[a-zA-Z0-9-_]+$/;
+
 function validateCredentials(username, password, remember) {
   const errs = [];
 
   if (typeof username === 'undefined') errs.push('Username is required');
+
+  if (username.search(alphaDashNumeric) === -1) {
+    errs.push(
+      'Username field must contains only letters, numbers, dash and underscore'
+    );
+  }
 
   if (typeof password === 'undefined') errs.push('Password is required');
 
@@ -79,7 +87,8 @@ router.get('/me', (req, res) => {
 });
 
 router.post('/logout', async (req, res) => {
-  req.session.destroy();
+  req.session.user = null;
+  await req.session.destroy();
   return res.status(200).end();
 });
 

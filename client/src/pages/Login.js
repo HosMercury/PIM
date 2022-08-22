@@ -1,27 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import logo from '../assets/images/nex.png';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../Context/AuthProvider';
+
+const alphaDashNumeric = /^[a-zA-Z0-9-_]+$/;
 
 const Login = () => {
   const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState(null);
   const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(null);
   const [remember, setRemember] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const { setAuth } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username, password, remember })
-    });
-    const data = await res.json();
-    if (data.id) {
-      navigate('/attributes');
+    setUsernameError(null);
+    setPasswordError(null);
+
+    let canSubmit = true;
+
+    if (username === '') {
+      setUsernameError('Username is required');
+      canSubmit = false;
+    }
+    if (username.length >= 5 && username.search(alphaDashNumeric) === -1) {
+      setUsernameError(
+        'Username field must contains only letters, numbers, dash and underscore'
+      );
+      canSubmit = false;
+    }
+    if (username.length > 1 && username.length < 5) {
+      setUsernameError('Username must be at least 5 letters');
+      canSubmit = false;
+    }
+    if (username.length > 50) {
+      setUsernameError('Username maximum 50 letters');
+      canSubmit = false;
+    }
+    if (password === '') {
+      setPasswordError('Password is required');
+      canSubmit = false;
+    }
+    if (password.length > 1 && password.length < 5) {
+      setPasswordError('Password must be at least 5 letters');
+      canSubmit = false;
+    }
+    if (password.length > 100) {
+      setPasswordError('Password maximum 100 letters');
+      canSubmit = false;
+    }
+
+    if (canSubmit) {
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password, remember })
+        });
+
+        if (res.status === 200) {
+          const data = await res.json();
+          setAuth(data);
+          navigate('/attributes');
+        }
+      } catch (e) {
+        console.log(e);
+        setErrMsg('Server Error');
+      }
     }
   };
 
@@ -35,8 +87,8 @@ const Login = () => {
             alt="logo"
           />
         </div>
-
-        <form className="mt-0">
+        {errMsg && <p className="form-err">{errMsg}</p>}
+        <form className="mt-0" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username" className="block text-sm text-gray-800">
               Username
@@ -49,6 +101,7 @@ const Login = () => {
               onChange={(e) => setUsername(e.target.value.trim())}
               className="border-nex block w-full px-4 py-2 mt-2 text-nex bg-white border rounded-md focus:border-nex focus:ring-nex focus:outline-none focus:ring focus:ring-opacity-40"
             />
+            {usernameError && <p className="form-err">{usernameError}</p>}
           </div>
           <div className="mt-4">
             <div>
@@ -63,6 +116,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value.trim())}
                 className="border-nex block w-full px-4 py-2 mt-2 text-nex bg-white border rounded-md focus:border-nex focus:ring-nex focus:outline-none focus:ring focus:ring-opacity-40"
               />
+              {passwordError && <p className="form-err">{passwordError}</p>}
             </div>
             <div className="mt-4">
               <input
@@ -84,7 +138,6 @@ const Login = () => {
                 type="submit"
                 className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform
                  bg-nex rounded-md hover:opacity-90 focus:outline-none focus:opacity-90"
-                onClick={(e) => handleSubmit(e)}
               >
                 Login
               </button>

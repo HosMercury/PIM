@@ -46,14 +46,14 @@ const Show = ({ data }) => {
 
   return (
     <>
-      <table className="w-[100%] px-2 m-auto text-center font-bold border border-nex">
+      <table className="w-[100%] px-2  text-center font-bold  border-nex border-t-4 ">
         <tbody>
           {Object.keys(data).map((key) => {
             return (
               typeof data[key] !== 'object' &&
               data[key] !== '' &&
               data[key] !== undefined && (
-                <tr key={nanoid()} className="border  border-collapse">
+                <tr key={nanoid()} className="border border-collapse">
                   <td className="p-2 text-nex border">
                     {key.replace('_', ' ').toUpperCase()}
                   </td>
@@ -70,10 +70,10 @@ const Show = ({ data }) => {
           typeof data[key] === 'object' &&
           data[key] !== null && (
             <div
-              className="my-6 border w-[100%] m-auto text-center px-2 font-bold"
+              className="my-6 border w-[100%] m-auto text-center px-2 font-bold border-t-4 border-t-nex rounded"
               key={nanoid()}
             >
-              <h2 className="text-nex p-2 my-4 border rounded bg-gray-200">
+              <h2 className="text-nex py-2  border  bg-gray-200">
                 {key.toUpperCase()}
               </h2>
               {data[key] ? (
