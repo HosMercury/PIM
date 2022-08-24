@@ -72,11 +72,21 @@ const Login = () => {
           setAuth(data);
           navigate('/attributes');
         } else if (res.status === 422) {
-          setErrMsg('Invalid credentials');
+          const data = await res.json();
+
+          if (data.errors) {
+            let errs = '';
+            data.errors.forEach((e) => {
+              errs += e.err + ' ...  ';
+            });
+            setErrMsg(errs);
+          } else {
+            setErrMsg('Invalid credentials');
+          }
         }
       } catch (e) {
         console.log(e);
-        setErrMsg('Server Error');
+        setErrMsg('Invalid credentials');
       }
     }
   };

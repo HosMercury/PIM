@@ -41,7 +41,7 @@ const AttributeModal = ({
   const [choice, setChoice] = useState('');
   const [choices, setChoices] = useState([]);
   const [attributeLocals, setAttributeLocals] = useState([]);
-  const [backendErrs, setBackendErrs] = useState([]);
+  const [errMsg, setErrMsg] = useState('');
 
   const [groups, setGroups] = useState([]);
   const [locals, setLocals] = useState([]);
@@ -174,7 +174,7 @@ const AttributeModal = ({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let canSubmit = true;
@@ -311,9 +311,16 @@ const AttributeModal = ({
         newData = { ...newData, id: attribute.id };
       }
 
-      postAttribute(newData);
+      const data = await postAttribute(newData);
+      if (data.errors.length > 0) {
+        let errs = '';
+        data.errors.forEach((e) => {
+          errs += e.err + ' ...  ';
+        });
+        setErrMsg(errs);
+      }
     } else {
-      //
+      setErrMsg('Please check your input errors');
     }
   };
 
@@ -333,6 +340,7 @@ const AttributeModal = ({
         onRequestClose={closeModal}
         contentLabel="Example Modal"
       >
+        {errMsg && <p className="form-err">{errMsg}</p>}
         <div className="border-b  border-nex p-1 flex justify-between ">
           <h2 className="text-nex font-bold text-xl">Create Attribute</h2>
           <button

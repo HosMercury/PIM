@@ -16,6 +16,8 @@ function Layout({ children }) {
   const [showProductsMenu, setShowProductsMenu] = useState(false);
   const [showUsersMenu, setShowUsersMenu] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
 
@@ -52,10 +54,15 @@ function Layout({ children }) {
   };
 
   const handleLogout = async (e) => {
-    await fetch('/api/logout', {
+    const res = await fetch('/api/logout', {
       method: 'POST'
     });
-    navigate('/login');
+
+    if (res.status === 200) {
+      navigate('/login');
+    } else {
+      setErrMsg('Server error , Unable to logout');
+    }
   };
 
   return (
@@ -201,6 +208,7 @@ function Layout({ children }) {
             </button>
           </div>
         </div>
+        {errMsg && <p className="form-err ">{errMsg}</p>}
         {children}
         <div className="mt-20 text-center border-t py-2 block  text-gray-500">
           Copyright© NEX {new Date().getFullYear()}

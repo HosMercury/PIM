@@ -88,10 +88,15 @@ router.get('/me', (req, res) => {
   }
 });
 
-router.post('/logout', async (req, res) => {
+router.post('/logout', (req, res) => {
   req.session.user = null;
-  await req.session.destroy();
-  return res.status(200).end();
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(400).end();
+    } else {
+      return res.status(200).end();
+    }
+  });
 });
 
 module.exports = router;

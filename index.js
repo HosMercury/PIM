@@ -11,11 +11,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
 
-const morgan = require('morgan');
-if (process.env.NODE_ENV !== 'production') app.use(morgan('tiny'));
+// const morgan = require('morgan');
+// if (process.env.NODE_ENV !== 'production') app.use(morgan('tiny'));
 
 const session = require('express-session');
 const MariaDBStore = require('express-session-mariadb-store');

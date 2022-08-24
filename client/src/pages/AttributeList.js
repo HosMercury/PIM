@@ -101,6 +101,7 @@ const AttributeList = () => {
         successToast();
       } else {
         errorToast();
+        return response.json();
       }
     } catch (e) {
       errorToast();
