@@ -71,7 +71,7 @@ async function validateAttribute(body, id = null) {
           break;
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw '';
     }
   }

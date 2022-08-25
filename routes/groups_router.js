@@ -20,9 +20,16 @@ router.get('/groups', async (req, res) => {
       left join attributes a on a.id = ag.attribute_id
       group by g.id order by g.id desc
     `);
-    return res.json({ groups });
+    groups.forEach((group) => {
+      return Object.keys(group).forEach((key) => {
+        if (!group[key]) {
+          delete group[key];
+        }
+      });
+    });
+    return res.status(200).json({ groups });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -44,7 +51,7 @@ router.delete('/groups/:id', async (req, res) => {
     req.session.msg = 'Group deleted successfully';
     return res.redirect('/groups');
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -93,7 +100,7 @@ router.get('/groups/:id', async (req, res) => {
       moment
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -130,7 +137,7 @@ router.post('/groups', async (req, res) => {
     req.session.msg = 'Group saved successfully';
     return res.redirect('back');
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -197,7 +204,7 @@ router.patch('/groups/:id', async (req, res) => {
     req.session.msg = 'Group updated successfully';
     return res.redirect('back');
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {

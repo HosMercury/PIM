@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import logo from '../assets/images/nex.png';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../Context/AuthProvider';
@@ -12,9 +12,11 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(null);
   const [remember, setRemember] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
 
   const navigate = useNavigate();
+
+  console.log('component Auth', auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,8 +56,6 @@ const Login = () => {
       canSubmit = false;
     }
 
-    console.log(usernameError);
-
     if (canSubmit) {
       try {
         const res = await fetch('/api/login', {
@@ -85,7 +85,7 @@ const Login = () => {
           }
         }
       } catch (e) {
-        console.log(e);
+        // console.log(e);
         setErrMsg('Invalid credentials');
       }
     }

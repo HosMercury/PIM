@@ -11,7 +11,6 @@ async function validateTemplatete(name, description) {
         `select json_arrayagg(LOWER(name)) as templatete_names from templatetes`
       );
 
-      // console.log(templatetes_names);
       const names = templatetes_names[0].templatete_names;
 
       if (names.includes(name.trim().toLowerCase())) {

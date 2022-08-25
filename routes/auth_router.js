@@ -72,10 +72,9 @@ router.post('/login', async (req, res) => {
 
     delete req.session.user.password;
 
-    return res.json(req.session.user);
+    return res.status(200).json(req.session.user);
   }
 
-  console.log(user);
   // invalid credentials
   return generateValGeneralErrorResponse('Please check your credentials', res);
 });
@@ -90,6 +89,8 @@ router.get('/me', (req, res) => {
 
 router.post('/logout', (req, res) => {
   req.session.user = null;
+  res.clearCookie('sid', { path: '/' });
+
   req.session.destroy((err) => {
     if (err) {
       return res.status(400).end();

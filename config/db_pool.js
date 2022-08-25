@@ -20,7 +20,7 @@ async function asyncFunction() {
       1,
       'mariadb'
     ]);
-    console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
+    // console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
   } catch (err) {
     throw err;
   } finally {

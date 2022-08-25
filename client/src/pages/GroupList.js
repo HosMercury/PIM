@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Table from '../components/Table';
 import { format } from 'date-fns';
-import AttributeModal from '../components/AttributeModal';
 import Header from '../components/Header';
 import { Loading } from '../components/Loading';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,24 +8,25 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
 
-const AttributeList = () => {
+const GroupList = () => {
   const navigate = useNavigate();
+  const [groups, setGroups] = useState([]);
 
-  const [attributes, setAttributes] = useState([]);
+  console.log(groups);
 
-  const getAttributes = async () => {
-    const res = await fetch('/api/attributes');
+  const getGroups = async () => {
+    const res = await fetch('/api/groups');
     const data = await res.json();
-    setAttributes(data.attributes);
+    setGroups(data.groups);
   };
 
   useEffect(() => {
-    document.title = 'NEX Content | Attributes';
-    getAttributes();
+    document.title = 'NEX Content | Groups';
+    getGroups();
   }, []);
 
   const successToast = () => {
-    toast('Attribute created successfully', {
+    toast('Group created successfully', {
       className: 'success-toast'
     });
   };
@@ -52,20 +52,8 @@ const AttributeList = () => {
         header: 'Name'
       },
       {
-        accessor: 'type',
-        header: 'Type'
-      },
-      {
-        accessor: 'groups_count',
-        header: 'Groups'
-      },
-      {
-        accessor: 'locals_count',
-        header: 'Locals'
-      },
-      {
-        accessor: 'choices',
-        header: 'Choices'
+        accessor: 'attributes_count',
+        header: 'Attributes'
       },
       {
         accessor: 'created_at',
@@ -80,13 +68,13 @@ const AttributeList = () => {
     []
   );
 
-  if (typeof attributes !== 'undefined' && attributes.length < 1) {
+  if (typeof groups !== 'undefined' && groups.length < 1) {
     return <Loading />;
   }
 
-  const postAttribute = async (newData) => {
+  const postGroup = async (newData) => {
     try {
-      const response = await fetch('/api/attributes', {
+      const response = await fetch('/api/groups', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -96,8 +84,8 @@ const AttributeList = () => {
       });
 
       if (response.status === 201) {
-        const { attribute } = await response.json();
-        navigate('/attributes/' + attribute.id);
+        const { group } = await response.json();
+        navigate('/groups/' + group.id);
         successToast();
       } else {
         errorToast();
@@ -110,8 +98,8 @@ const AttributeList = () => {
 
   return (
     <Layout>
-      <Header title="Attributes" first="Attributes" second="" />
-      <Table columns={columns} data={attributes}>
+      <Header title="Groups" first="Groups" second="" />
+      <Table columns={columns} data={groups}>
         <button
           className="bg-nex hover:bg-white hover:opacity-90 hover:text-nex hover:border-nex 
           hover:font-bold border text-white rounded-md sm:px-4 px-2 w-16 sm:w-20 h-10 shadow p-1 mx-4"
@@ -119,14 +107,14 @@ const AttributeList = () => {
         >
           Create
         </button>
-        <AttributeModal
+        {/* <AttributeModal
           openTheModal={openTheModal}
           closeTheModal={closeTheModal}
-          postAttribute={postAttribute}
-        />
+          postAttribute={postGroup}
+        /> */}
       </Table>
     </Layout>
   );
 };
 
-export default AttributeList;
+export default GroupList;

@@ -11,7 +11,6 @@ async function validateGroup(name, description, id = null) {
         `select json_arrayagg(LOWER(name)) as group_names from groups`
       );
 
-      // console.log(groups_names);
       const names = groups_names[0].group_names;
 
       if (names.includes(name.trim().toLowerCase())) {

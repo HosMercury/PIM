@@ -6,11 +6,15 @@ import AttributeShow from '../pages/AttributeShow';
 import NoPage from '../pages/NoPage';
 import { ToastContainer } from 'react-toastify';
 import AuthContext from '../Context/AuthProvider';
+import GroupList from '../pages/GroupList';
+import GroupShow from '../pages/GroupShow';
 
 const App = () => {
   const { auth } = useContext(AuthContext);
 
   useEffect(() => {}, [auth]);
+
+  // console.log('App component', auth);
 
   return (
     <>
@@ -25,6 +29,11 @@ const App = () => {
           <Route
             path="/attributes/:id"
             element={auth ? <AttributeShow /> : <Login />}
+          />
+          <Route path="/groups" element={auth ? <GroupList /> : <Login />} />
+          <Route
+            path="/groups/:id"
+            element={auth ? <GroupShow /> : <Login />}
           />
           <Route path="*" element={auth ? <NoPage /> : <Login />} />
         </Routes>

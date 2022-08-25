@@ -41,7 +41,7 @@ router.get('/attributes', async (req, res) => {
     });
     return res.json({ attributes });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -117,7 +117,7 @@ router.get('/attributes/:id', async (req, res) => {
 
     return res.json({ attribute });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -138,7 +138,7 @@ router.delete('/attributes/:id', async (req, res) => {
     await pool.query(`delete from attributes where id = ?`, [id]);
     return res.status(204).end();
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -237,7 +237,7 @@ async function postAttribute(body) {
     await conn.release();
     return attribute_id;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await conn.rollback();
     return false;
   }
@@ -260,7 +260,7 @@ router.post('/attributes', async (req, res) => {
       return res.status(201).json({ message, attribute });
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     generateValGeneralErrorResponse(res);
   }
 });
@@ -332,7 +332,7 @@ async function updateAttribute(body, id) {
     // conn.end();
     return id;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await conn.rollback();
     return false;
   }
@@ -356,7 +356,7 @@ router.patch('/attributes/:id', async (req, res) => {
       return res.end();
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -376,7 +376,7 @@ router.get('/locals', async (req, res) => {
     let locals = await pool.query('select * from locals');
     return res.json({ locals });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {

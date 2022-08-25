@@ -21,6 +21,10 @@ function Layout({ children }) {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
 
+  if (!auth) {
+    navigate('/login');
+  }
+
   const switchMenus = (header) => {
     switch (header) {
       case 'Attributes':
@@ -61,7 +65,7 @@ function Layout({ children }) {
     if (res.status === 200) {
       navigate('/login');
     } else {
-      setErrMsg('Server error , Unable to logout');
+      setErrMsg('Server error, Unable to logout');
     }
   };
 
