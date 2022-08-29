@@ -1,0 +1,31 @@
+### Get all groups
+GET http://localhost:4000/api/groups
+
+### Get one attribute
+GET http://localhost:4000/api/groups/1
+
+### Post one groups
+POST http://localhost:4000/api/groups
+content-type: application/json
+
+{
+  "name": "dthh",
+  "description": "this is description",
+  "attributes": [1, 2],
+  "templates": [1, 2],
+}
+
+### Update one groups
+PATCH http://localhost:4000/api/groups/3
+content-type: application/json
+
+{
+  "name": "test",
+  "description": "this is description",
+  "attributes": [1,2  ],
+  "templates": [1 , 2],
+}
+
+
+### Delete one attribute
+DELETE http://localhost:4000/api/groups/3
