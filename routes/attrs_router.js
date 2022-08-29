@@ -106,14 +106,18 @@ router.get('/attributes/:id', async (req, res) => {
     const attribute = results[0];
 
     attribute.required = attribute.required == 1 ? 'Yes' : 'No';
-    if (!attribute.max) delete attribute.max;
-    if (!attribute.min) delete attribute.min;
-    if (!attribute.description) delete attribute.description;
-    if (!attribute.default_value) delete attribute.default_value;
-    if (!attribute.unit) delete attribute.unit;
-    if (!attribute.groups) delete attribute.groups;
-    if (!attribute.choices) delete attribute.choices;
-    if (!attribute.locals) delete attribute.locals;
+    Object.keys(attribute).forEach((k) => {
+      if (!attribute[k]) {
+        delete attribute[k];
+      }
+      if (
+        k === 'groups_count' ||
+        k === 'choices_count' ||
+        k === 'locals_count'
+      ) {
+        attribute[k] = parseInt(attribute[k]);
+      }
+    });
 
     return res.json({ attribute });
   } catch (err) {

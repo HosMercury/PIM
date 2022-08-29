@@ -7,23 +7,38 @@ const {
   generateValidationErrorsResponse,
   generateValGeneralErrorResponse
 } = require('./errs');
+const { parse } = require('date-fns');
 let conn;
 
 router.get('/groups', async (req, res) => {
   try {
     let groups = await pool.query(`
-      select g.* ,
-      JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
-      (select cast(count(*) as char) from attribute_group ag where ag.group_id = g.id) attributes_count
-      from groups g
-      left join attribute_group ag on g.id = ag.group_id
-      left join attributes a on a.id = ag.attribute_id
-      group by g.id order by g.id desc
+    select g.* ,
+    JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
+    JSON_ARRAYAGG(JSON_OBJECT('id', t.id,'name', t.name)) as templates,
+    (select cast(count(*) as char) from attribute_group ag where ag.group_id = g.id) attributes_count,
+          (select cast(count(*) as char) from group_template gt where gt.group_id = g.id) templates_count
+    from groups g
+    left join attribute_group ag on g.id = ag.group_id
+    left join attributes a on a.id = ag.attribute_id
+    left join group_template gt on g.id = gt.group_id
+    left join templates t on t.id = gt.template_id
+    group by g.id order by g.id desc
     `);
     groups.forEach((group) => {
       return Object.keys(group).forEach((key) => {
         if (!group[key]) {
           delete group[key];
+        }
+        if (key === 'attributes_count' || key === 'templates_count') {
+          group[key] = parseInt(group[key]) || 0;
+        }
+
+        if (group.attributes_count === 0) {
+          delete group.attributes;
+        }
+        if (group.templates_count === 0) {
+          delete group.templates;
         }
       });
     });
@@ -64,43 +79,63 @@ router.delete('/groups/:id', async (req, res) => {
   }
 });
 
+async function getGroupById(id) {
+  return await pool.query(
+    `
+    with 
+    grp as (
+     select * from groups where id = ?
+    ),
+    attributes as (
+     select JSON_ARRAYAGG(
+     JSON_OBJECT('id', a.id,'name', a.name ))
+     from attributes a
+     join groups g on g.id = ?
+     join attribute_group ag on ag.attribute_id = a.id
+     and ag.group_id = g.id
+    ),
+    templates as (
+     select JSON_ARRAYAGG(
+     JSON_OBJECT('id', t.id,'name', t.name))
+     from templates t
+     join groups g on g.id = ?
+     join group_template gt on gt.template_id = t.id
+     and gt.group_id = g.id
+    )
+    
+    select *, 
+    (select cast(count(*) as char) from attribute_group where group_id = ? ) attributes_count,
+    (select * from attributes) attributes,
+    (select cast(count(*) as char) from group_template where group_id = ? ) templates_count,
+    (select * from templates) templates
+    from grp
+  `,
+    Array.from({ length: 7 }, () => id)
+  );
+}
+
 // Get --
 router.get('/groups/:id', async (req, res) => {
   try {
     const id = req.params.id;
 
-    const results = await pool.query(
-      `
-      select g.* ,
-      JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes
-      from groups g 
-      left join attribute_group ag on g.id = ag.group_id 
-      left join attributes a on a.id = ag.attribute_id 
-      where g.id = ? 
-    `,
-      [id]
-    );
+    const results = await getGroupById(id);
 
-    if (results.length < 1) throw new Error('invalid group');
+    if (results.length < 1) throw '';
     const group = results[0];
 
-    const all_attributes = await pool.query(
-      `select id, name from attributes order by name asc`
-    );
-
-    group.attributes = group.attributes.filter((attribute) => attribute.id);
-
-    const group_attrs_ids = group.attributes.map((attribute) => attribute.id);
-
-    return res.render('groups/show', {
-      title: 'Group : ' + group.name,
-      group,
-      all_attributes,
-      group_attrs_ids,
-      moment
+    Object.keys(group).forEach((k) => {
+      if (!group[k]) {
+        delete group[k];
+      }
+      if (k === 'attributes_count' || k === 'templates_count') {
+        group[k] = parseInt(group[k]);
+      }
     });
+
+    return res.json({ group });
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {
@@ -162,9 +197,6 @@ router.patch('/groups/:id', async (req, res) => {
     const errs = await validateGroup(name, description, id);
 
     if (errs.length > 0) {
-      req.session.redirector = 'group';
-      req.session.errs = errs;
-      req.session.old = req.body;
       return res.status(400).redirect('back');
     }
 

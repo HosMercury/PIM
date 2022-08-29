@@ -57,6 +57,10 @@ const GroupList = () => {
         header: 'Attributes'
       },
       {
+        accessor: 'templates_count',
+        header: 'Templates'
+      },
+      {
         accessor: 'created_at',
         header: 'Created At',
         Cell: ({ value }) => (
