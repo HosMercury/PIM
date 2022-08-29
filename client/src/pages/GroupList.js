@@ -7,12 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
+import GroupModal from '../components/GroupModal';
 
 const GroupList = () => {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
 
-  console.log(groups);
+  // console.log(groups);
 
   const getGroups = async () => {
     const res = await fetch('/api/groups');
@@ -99,19 +100,15 @@ const GroupList = () => {
   return (
     <Layout>
       <Header title="Groups" first="Groups" second="" />
-      <Table columns={columns} data={groups}>
-        <button
-          className="bg-nex hover:bg-white hover:opacity-90 hover:text-nex hover:border-nex 
-          hover:font-bold border text-white rounded-md sm:px-4 px-2 w-16 sm:w-20 h-10 shadow p-1 mx-4"
-          onClick={() => setOpenModal(true)}
-        >
+      <Table columns={columns} data={groups} name="groups">
+        <button className="list-create-btn" onClick={() => setOpenModal(true)}>
           Create
         </button>
-        {/* <AttributeModal
+        <GroupModal
           openTheModal={openTheModal}
           closeTheModal={closeTheModal}
-          postAttribute={postGroup}
-        /> */}
+          postGroup={postGroup}
+        />
       </Table>
     </Layout>
   );

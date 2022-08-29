@@ -338,10 +338,10 @@ const AttributeModal = ({
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Example Modal"
+        contentLabel="Attribute Modal"
       >
         {errMsg && <p className="form-err">{errMsg}</p>}
-        <div className="border-b  border-nex p-1 flex justify-between ">
+        <div className="border-nex p-1 flex justify-between ">
           <h2 className="text-nex font-bold text-xl">Create Attribute</h2>
           <button
             onClick={closeModal}
@@ -386,6 +386,7 @@ const AttributeModal = ({
                   Name :
                 </label>
                 <input
+                  required
                   id="name"
                   type="text"
                   className="modal-input "

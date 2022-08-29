@@ -111,12 +111,8 @@ const AttributeList = () => {
   return (
     <Layout>
       <Header title="Attributes" first="Attributes" second="" />
-      <Table columns={columns} data={attributes}>
-        <button
-          className="bg-nex hover:bg-white hover:opacity-90 hover:text-nex hover:border-nex 
-          hover:font-bold border text-white rounded-md sm:px-4 px-2 w-16 sm:w-20 h-10 shadow p-1 mx-4"
-          onClick={() => setOpenModal(true)}
-        >
+      <Table columns={columns} data={attributes} name="attributes">
+        <button className="list-create-btn" onClick={() => setOpenModal(true)}>
           Create
         </button>
         <AttributeModal

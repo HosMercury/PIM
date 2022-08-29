@@ -16,7 +16,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  console.log('component Auth', auth);
+  // console.log('component Auth', auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

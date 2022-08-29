@@ -7,7 +7,7 @@ import {
 } from 'react-table';
 import { useNavigate } from 'react-router-dom';
 
-function Table({ columns, data, children }) {
+function Table({ columns, data, name, children }) {
   const navigate = useNavigate();
 
   const {
@@ -80,7 +80,7 @@ function Table({ columns, data, children }) {
                 <tr
                   {...row.getRowProps()}
                   className="border-b border-collapse cursor-pointer"
-                  onClick={() => navigate(`/attributes/${row.values.id}`)}
+                  onClick={() => navigate(`/${name}/${row.values.id}`)}
                 >
                   {row.cells.map((cell) => {
                     return (
