@@ -102,7 +102,9 @@ router.get('/attributes/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const results = await getAttributeById(id);
-    if (results.length < 1) throw '';
+    if (results.length < 1) {
+      generateValGeneralErrorResponse(res);
+    }
     const attribute = results[0];
 
     attribute.required = attribute.required == 1 ? 'Yes' : 'No';

@@ -4,6 +4,10 @@ const app = express();
 const port = 4000;
 const path = require('path');
 
+const helmet = require('helmet');
+app.use(helmet());
+app.disable('x-powered-by');
+
 const cors = require('cors');
 app.use(cors());
 

@@ -72,7 +72,7 @@ async function validateAttribute(body, id = null) {
       }
     } catch (err) {
       // console.log(err);
-      throw '';
+      generateValGeneralErrorResponse(res);
     }
   }
 

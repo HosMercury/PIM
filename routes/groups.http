@@ -9,10 +9,10 @@ POST http://localhost:4000/api/groups
 content-type: application/json
 
 {
-  "name": "dthh",
+  "name": "d",
   "description": "this is description",
   "attributes": [1, 2],
-  "templates": [1, 2],
+  "templates": [1, 2]
 }
 
 ### Update one groups

@@ -121,7 +121,10 @@ router.get('/groups/:id', async (req, res) => {
 
     const results = await getGroupById(id);
 
-    if (results.length < 1) throw '';
+    if (results.length < 1) {
+      generateValGeneralErrorResponse(res);
+    }
+
     const group = results[0];
 
     Object.keys(group).forEach((k) => {
@@ -148,40 +151,78 @@ router.get('/groups/:id', async (req, res) => {
   }
 });
 
-// post -- group
-router.post('/groups', async (req, res) => {
-  const { name, description } = req.body;
-  const errs = await validateGroup(name, description);
+async function insertAttributes(attributes, conn, id) {
+  const insert_attributes = [];
+  attributes.forEach((attribute_id) => {
+    insert_attributes.push([attribute_id, id]);
+  });
+  const attrs_query = `insert into attribute_group (group_id, attribute_id) values(?,?)`;
+  await conn.batch(attrs_query, insert_attributes);
+}
 
-  // console.log(errs);
+async function insertTemplates(templates, conn, id) {
+  const insert_templates = [];
+  templates.forEach((temp_id) => {
+    insert_templates.push([temp_id, id]);
+  });
+  const temps_query = `insert into attribute_group (group_id, attribute_id) values(?,?)`;
+  await conn.batch(temps_query, insert_templates);
+}
 
-  if (errs.length > 0) {
-    req.session.redirector = 'group';
-    req.session.errs = errs;
-    req.session.old = req.body;
-    return res.status(400).redirect('back');
-  }
+async function postGroup(body) {
+  let { name, description, attributes, templates } = body;
 
-  /// Edit group ////
   try {
-    await pool.query('insert into groups (name, description) values(?,?)', [
-      name,
-      description
-    ]);
+    let values = [name, description];
 
-    req.session.msg = 'Group saved successfully';
-    return res.redirect('back');
+    conn = await pool.getConnection();
+    await conn.beginTransaction();
+
+    const query = `insert into groups (name , description) values(?,?)`;
+
+    const res = await conn.query(query, values);
+
+    const group_id = res.insertId;
+
+    //- Locals
+    if (typeof attributes !== 'undefined' && attributes.length > 0) {
+      await insertAttributes(attributes, conn, group_id);
+    }
+
+    // groups --
+    if (typeof templates !== 'undefined' && templates.length > 0) {
+      await insertTemplates(groups, conn, group_id);
+    }
+
+    await conn.commit();
+    await conn.release();
+    return attribute_id;
   } catch (err) {
     // console.log(err);
-    const response = {
-      errors: [
-        {
-          type: 'general',
-          err: 'Error while posting the group'
-        }
-      ]
-    };
-    return res.status(400).json(response);
+    await conn.rollback();
+    return false;
+  }
+}
+
+router.post('/groups', async (req, res) => {
+  try {
+    const body = req.body;
+    const errs = await validateGroup(body);
+
+    generateValidationErrorsResponse(errs, res);
+
+    if ((group_id = await postGroup(req.body))) {
+      const message = 'Group saved successfully';
+      const results = await getGroupById(group_id);
+      if (results.length < 1) {
+        generateValGeneralErrorResponse(res);
+      }
+      const group = results[0];
+      return res.status(201).json({ message, group });
+    }
+  } catch (err) {
+    // console.log(err);
+    generateValGeneralErrorResponse(res);
   }
 });
 
