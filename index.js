@@ -48,6 +48,7 @@ app.use(auth);
 app.use('/api', require('./routes/auth_router'));
 app.use('/api', require('./routes/attrs_router'));
 app.use('/api', require('./routes/groups_router'));
+app.use('/api', require('./routes/templates_router'));
 
 require('./config/db_pool');
 

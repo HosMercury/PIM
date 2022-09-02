@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
   }
 
   // invalid credentials
-  return generateValGeneralErrorResponse('Please check your credentials', res);
+  return generateValGeneralErrorResponse(res, 'Please check your credentials');
 });
 
 router.get('/me', (req, res) => {

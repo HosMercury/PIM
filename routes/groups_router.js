@@ -57,21 +57,19 @@ router.get('/groups', async (req, res) => {
   }
 });
 
-// DElete -- group
 router.delete('/groups/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    await pool.query(`delete from groups where id = ?`, [id]);
 
-    req.session.msg = 'Group deleted successfully';
-    return res.redirect('/groups');
+    await pool.query(`delete from groups where id = ?`, [id]);
+    return res.status(204).end();
   } catch (err) {
     // console.log(err);
     const response = {
       errors: [
         {
           type: 'general',
-          err: 'Error while deleting the group'
+          err: 'Error while deleting the attribute'
         }
       ]
     };
@@ -138,7 +136,7 @@ router.get('/groups/:id', async (req, res) => {
 
     return res.json({ group });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const response = {
       errors: [
         {
@@ -156,7 +154,7 @@ async function insertAttributes(attributes, conn, id) {
   attributes.forEach((attribute_id) => {
     insert_attributes.push([attribute_id, id]);
   });
-  const attrs_query = `insert into attribute_group (group_id, attribute_id) values(?,?)`;
+  const attrs_query = `insert into attribute_group ( attribute_id, group_id) values(?,?)`;
   await conn.batch(attrs_query, insert_attributes);
 }
 
@@ -165,7 +163,7 @@ async function insertTemplates(templates, conn, id) {
   templates.forEach((temp_id) => {
     insert_templates.push([temp_id, id]);
   });
-  const temps_query = `insert into attribute_group (group_id, attribute_id) values(?,?)`;
+  const temps_query = `insert into group_template (template_id, group_id) values(?,?)`;
   await conn.batch(temps_query, insert_templates);
 }
 
@@ -191,12 +189,12 @@ async function postGroup(body) {
 
     // groups --
     if (typeof templates !== 'undefined' && templates.length > 0) {
-      await insertTemplates(groups, conn, group_id);
+      await insertTemplates(templates, conn, group_id);
     }
 
     await conn.commit();
     await conn.release();
-    return attribute_id;
+    return group_id;
   } catch (err) {
     // console.log(err);
     await conn.rollback();
@@ -218,6 +216,7 @@ router.post('/groups', async (req, res) => {
         generateValGeneralErrorResponse(res);
       }
       const group = results[0];
+      // console.log('group', group);
       return res.status(201).json({ message, group });
     }
   } catch (err) {

@@ -64,6 +64,8 @@ const GroupShow = () => {
     if (res.status === 204) {
       navigate('/groups');
       successDeleteToast();
+    } else {
+      errorToast();
     }
   };
 

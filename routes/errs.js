@@ -13,8 +13,8 @@ module.exports.generateValidationErrorsResponse = (errs, res) => {
 };
 
 module.exports.generateValGeneralErrorResponse = (
-  err = 'General Error happened, please contact your adminstrator',
   res,
+  err = 'General Error happened, please contact your adminstrator',
   status = 422
 ) => {
   const response = {

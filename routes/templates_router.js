@@ -9,25 +9,50 @@ const {
 
 let conn;
 
-router.get('/api/templates', async (req, res) => {
+router.get('/templates', async (req, res) => {
   try {
-    const template_attributes = await pool.query(
-      `
-      select t.*, 
-      cast(count(tc.attribute_id) as char ) attributes_count,
-      cast(count(tc.group_id) as char ) groups_count
+    let templates = await pool.query(`
+    select t.* ,
+    JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
+    JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups,
+    (select cast(count(*) as char) from attribute_template at where at.template_id = t.id) attributes_count,
+    (select cast(count(*) as char) from group_template gt where gt.template_id = t.id) groups_count
+    from templates t
+    left join attribute_template at on t.id = at.template_id
+    left join attributes a on a.id = at.attribute_id
+    left join group_template gt on t.id = gt.template_id
+    left join groups g on g.id = gt.group_id
+    group by t.id order by t.id desc
+    `);
+    templates.forEach((template) => {
+      return Object.keys(template).forEach((key) => {
+        if (!template[key]) {
+          delete template[key];
+        }
+        if (key === 'attributes_count' || key === 'groups_count') {
+          template[key] = parseInt(template[key]) || 0;
+        }
 
-      from templates t
-      
-      left join template_components tc on t.id = tc.template_id 
-
-      group by t.id
-      `
-    );
-    return res.json(template_attributes);
+        if (template.attributes_count === 0) {
+          delete template.attributes;
+        }
+        if (template.groups_count === 0) {
+          delete template.groups;
+        }
+      });
+    });
+    return res.status(200).json({ templates });
   } catch (err) {
     // console.log(err);
-    return res.status(400).send('error'); // error page
+    const response = {
+      errors: [
+        {
+          type: 'general',
+          err: 'Error while fetching the templates'
+        }
+      ]
+    };
+    return res.status(400).json(response);
   }
 });
 

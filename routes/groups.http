@@ -9,8 +9,8 @@ POST http://localhost:4000/api/groups
 content-type: application/json
 
 {
-  "name": "d",
-  "description": "this is description",
+  "name": "dhtghfggf",
+  "description": "",
   "attributes": [1, 2],
   "templates": [1, 2]
 }

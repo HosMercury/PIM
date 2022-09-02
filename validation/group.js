@@ -1,11 +1,12 @@
 const pool = require('../config/db_pool');
 
-async function validateGroup(name, description, id = null) {
+async function validateGroup({ name, description }, id = null) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const errs = [];
 
   ///////////////// Name validation ////////////////////
   if (typeof name !== 'undefined') {
+    name = name.trim();
     try {
       const groups_names = await pool.query(
         `select json_arrayagg(LOWER(name)) as group_names from groups`
@@ -13,7 +14,7 @@ async function validateGroup(name, description, id = null) {
 
       const names = groups_names[0].group_names;
 
-      if (names.includes(name.trim().toLowerCase())) {
+      if (names.includes(name.toLowerCase())) {
         errs.push('Group name is already exists');
       }
 
@@ -25,6 +26,7 @@ async function validateGroup(name, description, id = null) {
           'Name field must contains only letters, numbers, space, dash or underscore'
         );
     } catch (e) {
+      // console.log(e);
       errs.push('DB Error while validating the group data');
     }
   } else {
@@ -32,7 +34,7 @@ async function validateGroup(name, description, id = null) {
   }
 
   //////////  Description //////////////
-  if (description !== '') {
+  if (typeof description !== 'undefined' && description !== '') {
     if (description.length < 2)
       errs.push('Description field minimum length is 2 letters');
     if (description.length > 250)

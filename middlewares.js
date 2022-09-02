@@ -31,7 +31,7 @@ module.exports = {
       }
 
       // Not LoggedIn -- only can get::Login and post::login ( ONLY 2 routes availabale)
-      return generateValGeneralErrorResponse('Unauthorized request', res, 401);
+      return generateValGeneralErrorResponse(res, 'Unauthorized request', 401);
     }
   }
 

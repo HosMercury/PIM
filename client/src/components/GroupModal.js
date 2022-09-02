@@ -17,7 +17,7 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
   const [attributes, setAttributes] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
-  const [selectedTemplats, setSelectedTemplates] = useState([]);
+  const [selectedTemplates, setSelectedTemplates] = useState([]);
 
   const handleAttributesChange = (selectedAttributes) => {
     setSelectedAttributes(selectedAttributes);
@@ -27,7 +27,6 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
     setSelectedTemplates(selectedTemplates);
   };
 
-  console.log(selectedAttributes);
   const getAttributes = async () => {
     const res = await fetch('/api/attributes');
     const data = await res.json();
@@ -43,10 +42,10 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
   const getTemplates = async () => {
     const res = await fetch('/api/templates');
     const data = await res.json();
-    const newTemplates = data.groups.map((g) => {
+    const newTemplates = data.templates.map((t) => {
       const newT = {};
-      newT.value = g.id;
-      newT.label = g.name;
+      newT.value = t.id;
+      newT.label = t.name;
       return newT;
     });
     setTemplates(newTemplates);
@@ -56,18 +55,6 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
     setIsOpen(openTheModal);
     getAttributes();
     getTemplates();
-
-    // if (group) {
-    //   if (group.attributes && group.attributes.length > 0) {
-    //     const newSelected = group.attributes.map((g) => {
-    //       const newA = {};
-    //       newA.value = g.id;
-    //       newA.label = g.name;
-    //       return newA;
-    //     });
-    //     setSelectedAttributes(newSelected);
-    //   }
-    // }
   }, [openTheModal]);
 
   const closeModal = () => {
@@ -110,7 +97,28 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
     }
 
     if (canSubmit) {
-      let newData = { name, description };
+      const attributes = [];
+      selectedAttributes.forEach((attr) => {
+        attributes.push(attr.value);
+      });
+
+      const templates = [];
+      selectedTemplates.forEach((templ) => {
+        templates.push(templ.value);
+      });
+
+      let newData = { name, description, attributes, templates };
+
+      const data = await postGroup(newData);
+      if (data.errors.length > 0) {
+        let errs = '';
+        data.errors.forEach((e) => {
+          errs += e.err + ' ...  ';
+        });
+        setErrMsg(errs);
+      }
+    } else {
+      setErrMsg('Please check your input errors');
     }
   };
 
@@ -180,7 +188,7 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
             <Select
               isMulti
               className="my-6 border-nex border rounded w-[80%] mx-auto"
-              value={selectedTemplats}
+              value={selectedTemplates}
               onChange={handleTemplatesChange}
               options={templates}
             />
