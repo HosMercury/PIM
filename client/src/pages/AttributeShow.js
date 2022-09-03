@@ -64,6 +64,8 @@ const AttributeShow = () => {
     if (res.status === 204) {
       navigate('/attributes');
       successDeleteToast();
+    } else {
+      errorToast();
     }
   };
 

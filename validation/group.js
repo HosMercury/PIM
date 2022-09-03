@@ -14,8 +14,10 @@ async function validateGroup({ name, description }, id = null) {
 
       const names = groups_names[0].group_names;
 
-      if (names.includes(name.toLowerCase())) {
-        errs.push('Group name is already exists');
+      if (!id) {
+        if (names.includes(name.toLowerCase())) {
+          errs.push('Group name is already exists');
+        }
       }
 
       if (name.length < 2) errs.push('Name field minimum length is 2 letters');

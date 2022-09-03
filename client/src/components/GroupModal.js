@@ -55,6 +55,33 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
     setIsOpen(openTheModal);
     getAttributes();
     getTemplates();
+
+    if (group) {
+      setSelectedAttributes(group.attributes || []);
+
+      if (group.attributes && group.attributes.length > 0) {
+        const newSelected = group.attributes.map((g) => {
+          const newA = {};
+          newA.value = g.id;
+          newA.label = g.name;
+          return newA;
+        });
+        setSelectedAttributes(newSelected);
+      }
+
+      if (group.templates && group.templates.length > 0) {
+        const newSelected = group.templates.map((g) => {
+          const newT = {};
+          newT.value = g.id;
+          newT.label = g.name;
+          return newT;
+        });
+        setSelectedTemplates(newSelected);
+      }
+
+      setName(group.name || '');
+      setDescription(group.description || '');
+    }
   }, [openTheModal]);
 
   const closeModal = () => {
@@ -129,6 +156,7 @@ const GroupModal = ({ openTheModal, closeTheModal, group, postGroup }) => {
         onRequestClose={closeModal}
         contentLabel="Group Modal"
       >
+        {errMsg && <p className="form-err">{errMsg}</p>}
         <div className="border-nex p-1 flex justify-between ">
           <h2 className="text-nex font-bold text-xl">Create Group</h2>
           <button

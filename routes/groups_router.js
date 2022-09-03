@@ -25,13 +25,14 @@ router.get('/groups', async (req, res) => {
     left join templates t on t.id = gt.template_id
     group by g.id order by g.id desc
     `);
+
     groups.forEach((group) => {
       return Object.keys(group).forEach((key) => {
         if (!group[key]) {
           delete group[key];
         }
         if (key === 'attributes_count' || key === 'templates_count') {
-          group[key] = parseInt(group[key]) || 0;
+          group[key] = parseInt(group[key]);
         }
 
         if (group.attributes_count === 0) {
@@ -112,6 +113,19 @@ async function getGroupById(id) {
   );
 }
 
+const cleanGroup = (group) => {
+  Object.keys(group).forEach((k) => {
+    if (!group[k]) {
+      delete group[k];
+    }
+    if (k === 'attributes_count' || k === 'templates_count') {
+      group[k] = parseInt(group[k]) || 0;
+    }
+  });
+
+  return group;
+};
+
 // Get --
 router.get('/groups/:id', async (req, res) => {
   try {
@@ -123,18 +137,10 @@ router.get('/groups/:id', async (req, res) => {
       generateValGeneralErrorResponse(res);
     }
 
-    const group = results[0];
+    let group = results[0];
+    group = cleanGroup(group);
 
-    Object.keys(group).forEach((k) => {
-      if (!group[k]) {
-        delete group[k];
-      }
-      if (k === 'attributes_count' || k === 'templates_count') {
-        group[k] = parseInt(group[k]);
-      }
-    });
-
-    return res.json({ group });
+    return res.json({ group }).end();
   } catch (err) {
     // console.log(err);
     const response = {
@@ -145,7 +151,7 @@ router.get('/groups/:id', async (req, res) => {
         }
       ]
     };
-    return res.status(400).json(response);
+    return res.status(400).json(response).end();
   }
 });
 
@@ -216,7 +222,6 @@ router.post('/groups', async (req, res) => {
         generateValGeneralErrorResponse(res);
       }
       const group = results[0];
-      // console.log('group', group);
       return res.status(201).json({ message, group });
     }
   } catch (err) {
@@ -227,19 +232,16 @@ router.post('/groups', async (req, res) => {
 
 router.patch('/groups/:id', async (req, res) => {
   try {
+    const id = req.params.id;
+    const body = req.body;
+
+    const errs = await validateGroup(body, id);
+    generateValidationErrorsResponse(errs, res);
+
     conn = await pool.getConnection();
     await conn.beginTransaction();
-    const { name, description } = req.body;
-    const id = req.params.id; // group id
 
     const sent_attrs_ids = req.body.attributes || [];
-
-    const errs = await validateGroup(name, description, id);
-
-    if (errs.length > 0) {
-      return res.status(400).redirect('back');
-    }
-
     // Validate sent groups ids
     let all_attributes_ids = await pool.query(
       `select JSON_ARRAYAGG(id) attributes from attributes`
@@ -251,15 +253,47 @@ router.patch('/groups/:id', async (req, res) => {
     if (all_attributes_ids && sent_attrs_ids.length > 0) {
       sent_attrs_ids.map((attribute) => {
         if (!all_attributes_ids.includes(parseInt(attribute))) {
-          req.session.err = ['Invalid attribute'];
-          return res.status(400).redirect('back');
+          const response = {
+            errors: [
+              {
+                type: 'general',
+                err: 'Attribute is not found'
+              }
+            ]
+          };
+          return res.status(400).json(response);
+        }
+      });
+    }
+
+    const sent_temps_ids = req.body.templates || [];
+    // Validate sent groups ids
+    let all_templates_ids = await pool.query(
+      `select JSON_ARRAYAGG(id) templates from templates`
+    );
+
+    // if all_attributes_ids the value of all_attributes_ids[0.attributes IS NULL]
+    all_templates_ids = all_templates_ids[0].templates;
+
+    if (all_templates_ids && sent_temps_ids.length > 0) {
+      sent_temps_ids.map((template) => {
+        if (!all_templates_ids.includes(parseInt(template))) {
+          const response = {
+            errors: [
+              {
+                type: 'general',
+                err: 'Template is not found'
+              }
+            ]
+          };
+          return res.status(400).json(response);
         }
       });
     }
 
     const results = await conn.batch(
       `update groups set name = ? ,description = ? where id = ?`,
-      [name, description, id]
+      [body.name, body.description, id]
     );
 
     await conn.batch(`delete from attribute_group where group_id = ?`, [id]);
@@ -272,9 +306,27 @@ router.patch('/groups/:id', async (req, res) => {
       );
     }
 
+    await conn.batch(`delete from group_template where group_id = ?`, [id]);
+
+    if (sent_temps_ids.length > 0) {
+      const values = sent_temps_ids.map((temp_id) => [id, temp_id]);
+      await conn.batch(
+        `insert into group_template (group_id, template_id) values (?, ?)`,
+        values
+      );
+    }
+
     await conn.commit();
-    req.session.msg = 'Group updated successfully';
-    return res.redirect('back');
+    const message = 'Group updated successfully';
+    const result = await getGroupById(id);
+    if (result.length < 1) generateValGeneralErrorResponse(res);
+    let group = result[0];
+
+    group = cleanGroup(group);
+
+    res.status(201).json({ message, group });
+
+    return res.end();
   } catch (err) {
     // console.log(err);
     const response = {
@@ -285,7 +337,8 @@ router.patch('/groups/:id', async (req, res) => {
         }
       ]
     };
-    return res.status(400).json(response);
+    res.status(400).json(response);
+    return res.end();
   }
 });
 

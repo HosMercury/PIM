@@ -75,7 +75,7 @@ const GroupShow = () => {
 
   const postGroup = async (newData) => {
     try {
-      const response = await fetch(`/api/groups/${newData.id}`, {
+      const response = await fetch(`/api/groups/${id}`, {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
