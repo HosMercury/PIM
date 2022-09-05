@@ -1,0 +1,31 @@
+### Get all templates
+GET http://localhost:4000/api/templates
+
+### Get one attribute
+GET http://localhost:4000/api/templates/1
+
+### Post one templates
+POST http://localhost:4000/api/templates
+content-type: application/json
+
+{
+  "name": "dhtghfawgsfgf",
+  "description": "",
+  "attributes": [1, 2],
+  "groups": [3]
+}
+
+### Update one templates
+PATCH http://localhost:4000/api/templates/3
+content-type: application/json
+
+{
+  "name": "tesft",
+  "description": "this is description",
+  "attributes": [1,2  ],
+  "groups": [1]
+}
+
+
+### Delete one attribute
+DELETE http://localhost:4000/api/templates/2

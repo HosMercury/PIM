@@ -1,6 +1,7 @@
 const pool = require('../config/db_pool');
+const { isNumeric } = require('validator');
 
-async function validateGroup({ name, description }, id = null) {
+async function validateGroup({ name, description }, oldGroup = null) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const errs = [];
 
@@ -14,7 +15,7 @@ async function validateGroup({ name, description }, id = null) {
 
       const names = groups_names[0].group_names;
 
-      if (!id) {
+      if ((oldGroup && name !== oldGroup.name) || !oldGroup) {
         if (names.includes(name.toLowerCase())) {
           errs.push('Group name is already exists');
         }
@@ -28,7 +29,7 @@ async function validateGroup({ name, description }, id = null) {
           'Name field must contains only letters, numbers, space, dash or underscore'
         );
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       errs.push('DB Error while validating the group data');
     }
   } else {

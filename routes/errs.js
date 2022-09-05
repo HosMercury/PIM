@@ -1,15 +1,13 @@
 module.exports.generateValidationErrorsResponse = (errs, res) => {
-  if (errs.length > 0) {
-    const validationErrors = [];
-    errs.forEach((err) => {
-      validationErrors.push({
-        type: 'validation',
-        err
-      });
+  const validationErrors = [];
+  errs.forEach((err) => {
+    validationErrors.push({
+      type: 'validation',
+      err
     });
-    const response = { errors: validationErrors };
-    return res.status(422).json(response).end();
-  }
+  });
+  const response = { errors: validationErrors };
+  return res.status(422).json(response).end();
 };
 
 module.exports.generateValGeneralErrorResponse = (

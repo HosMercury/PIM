@@ -97,7 +97,7 @@ const AttributeModal = ({
       setMax(attribute.max | '');
       setUnit(attribute.unit || '');
     }
-  }, [openTheModal]);
+  }, [openTheModal, attribute]);
 
   const handleTypeClick = (type) => {
     setSelectedType(type);
@@ -298,7 +298,7 @@ const AttributeModal = ({
         name,
         description,
         required,
-        defaultValue,
+        default_value: defaultValue,
         min,
         max,
         unit,
@@ -312,7 +312,11 @@ const AttributeModal = ({
       }
 
       const data = await postAttribute(newData);
-      if (data.errors.length > 0) {
+      if (
+        typeof data !== 'undefined' &&
+        typeof data.errors !== 'undefined' &&
+        data.errors.length > 0
+      ) {
         let errs = '';
         data.errors.forEach((e) => {
           errs += e.err + ' ...  ';
@@ -499,6 +503,7 @@ const AttributeModal = ({
                       {name} :
                     </label>
                     <input
+                      required={id === 1}
                       id={abbreviation}
                       type="text"
                       dir={direction}

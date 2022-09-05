@@ -1,7 +1,7 @@
 const { isEmail, isNumeric } = require('validator');
 const pool = require('../config/db_pool');
 
-async function validateAttribute(body, id = null) {
+async function validateAttribute(body, oldAttr = null) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const errs = [];
   let {
@@ -33,11 +33,11 @@ async function validateAttribute(body, id = null) {
     'Multiple Select'
   ];
   //////////////////// Type validation /////////////////
-  if (id) {
+  if (oldAttr) {
     try {
       const results = await pool.query(
         'select type from attributes where id = ?',
-        [id]
+        [oldAttr.id]
       );
 
       const attr_type = results[0].type;
@@ -89,6 +89,18 @@ async function validateAttribute(body, id = null) {
         'Name field must contains only letters, numbers, space, dash and underscore'
       );
   } else errs.push('Name field is required');
+
+  const attributes_names = await pool.query(
+    `select json_arrayagg(LOWER(name)) as attributes_names from attributes`
+  );
+
+  const names = attributes_names[0].attributes_names;
+
+  if ((oldAttr && name !== oldAttr.name) || !oldAttr) {
+    if (names.includes(name.toLowerCase())) {
+      errs.push('Attribute name is already exists');
+    }
+  }
 
   ////////// Attribute Description //////////////
   if (typeof description !== 'undefined') {
@@ -163,18 +175,16 @@ async function validateAttribute(body, id = null) {
       errs.push('English local is required');
     }
 
-    locals.forEach(async (local) => {
-      for (const k in locals) {
-        const lc = locals[k].local.trim();
-        const id = locals[k].id;
+    locals.forEach((local) => {
+      const lc = local.local.trim();
+      const id = local.id;
 
-        if (lc.length < 2) {
-          errs.push('Local min length is 2 letters');
-        }
+      if (lc.length < 2) {
+        errs.push('One of the locals min length is 2 letters');
+      }
 
-        if (!isNumeric(id.toString())) {
-          errs.push('Invalid Local id');
-        }
+      if (!isNumeric(id.toString())) {
+        errs.push('Invalid Local id');
       }
     });
   } else {

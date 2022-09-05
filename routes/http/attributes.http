@@ -1,18 +1,18 @@
 ### Get all attributes
-GET http://localhost:3000/api/attributes
+GET http://localhost:4000/api/attributes
 
 ### Get one attribute
-GET http://localhost:3000/api/attributes/1
+GET http://localhost:4000/api/attributes/1
 
 ### Post one attributes
-POST http://localhost:3000/api/attributes
+POST http://localhost:4000/api/attributes
 content-type: application/json
 
 {
-  "name": "test",
+  "name": "tjhyergst",
   "type": "Single Select",
   "description": "this is description",
-  "defaultValue": "test text",
+  "default_value": "test text",
   "max": 100,
   "min": 5,
   "required": true,
@@ -20,27 +20,26 @@ content-type: application/json
   "locals": [
     {
       "id": 1,
-      "label" : "I am an english label"
+      "local" : "I am an english label"
     },
     {
       "id": 2,
-      "label" : "I am an english label"
+      "local" : "I am another label"
     }
   ],
-  "groups": [1 , 2],
+  "groups": [3,4],
   "choices": ["choice 1", "foo bar "]
 }
 
 ### Update one attributes
-PATCH http://localhost:3000/api/attributes/3
+PATCH http://localhost:4000/api/attributes/4
 content-type: application/json
 
 {
-  "name": "test edits here",
+  "name": "test edits yyhere",
   "type": "Multiple Select",
   "description": "this is description",
   "default_value": "test text",
-  "default_area": "",
   "min": 2,
   "max": 100,
   "required": true,
@@ -48,11 +47,11 @@ content-type: application/json
   "locals": [
     {
       "id": 1,
-      "label" : "This is english label"
+      "local" : "This is english label"
     },
     {
       "id": 2,
-      "label" : "I am an english label"
+      "local" : "I am an english label"
     }
   ],
   "choices": ["choice 1", "foo bar "]
@@ -60,4 +59,4 @@ content-type: application/json
 
 
 ### Delete one attribute
-DELETE http://localhost:3000/api/attributes/3
+DELETE http://localhost:4000/api/attributes/3

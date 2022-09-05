@@ -103,7 +103,7 @@ router.get('/attributes/:id', async (req, res) => {
     const id = req.params.id;
     const results = await getAttributeById(id);
     if (results.length < 1) {
-      generateValGeneralErrorResponse(res);
+      return generateValGeneralErrorResponse(res);
     }
     const attribute = results[0];
 
@@ -192,7 +192,7 @@ async function postAttribute(body) {
     name,
     description,
     required,
-    defaultValue,
+    default_value,
     min,
     max,
     unit,
@@ -207,7 +207,7 @@ async function postAttribute(body) {
       name,
       description,
       (required = required ? '1' : '0'),
-      defaultValue,
+      default_value,
       min === '' ? null : parseInt(min),
       max === '' ? null : parseInt(max),
       unit
@@ -243,7 +243,7 @@ async function postAttribute(body) {
     await conn.release();
     return attribute_id;
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     await conn.rollback();
     return false;
   }
@@ -254,31 +254,34 @@ router.post('/attributes', async (req, res) => {
     const body = req.body;
     const errs = await validateAttribute(body);
 
-    generateValidationErrorsResponse(errs, res);
+    if (errs.length > 0) {
+      return generateValidationErrorsResponse(errs, res);
+    }
 
     if ((attribute_id = await postAttribute(req.body))) {
       const message = 'Attribute saved successfully';
       const results = await getAttributeById(attribute_id);
       if (results.length < 1) {
-        generateValGeneralErrorResponse(res);
+        return generateValGeneralErrorResponse(res);
       }
+
       const attribute = results[0];
-      return res.status(201).json({ message, attribute });
+      return res.status(201).json({ message, attribute }).end();
     }
   } catch (err) {
-    // console.log(err);
-    generateValGeneralErrorResponse(res);
+    console.log(err);
+    return generateValGeneralErrorResponse(res);
   }
 });
 
 // post  attribute
-async function updateAttribute(body, id) {
+async function updateAttribute(body, attribute_id) {
   let {
     type,
     name,
     description,
     required,
-    defaultValue,
+    default_value,
     min,
     max,
     unit,
@@ -293,11 +296,11 @@ async function updateAttribute(body, id) {
       name,
       description,
       (required = required ? '1' : '0'),
-      defaultValue,
+      default_value,
       min === '' ? null : parseInt(min),
       max === '' ? null : parseInt(max),
       unit,
-      id
+      attribute_id
     ];
 
     conn = await pool.getConnection();
@@ -314,31 +317,31 @@ async function updateAttribute(body, id) {
     if (typeof choices !== 'undefined' && choices.length > 0) {
       // remove all
       await pool.query(`delete from attribute_choice where attribute_id = ?`, [
-        id
+        attribute_id
       ]);
-      await insertChoices(choices, conn, id);
+      await insertChoices(choices, conn, attribute_id);
     }
 
     //- Locals
     await pool.query(`delete from attribute_local where attribute_id = ?`, [
-      id
+      attribute_id
     ]);
-    await insertLocals(locals, conn, id);
+    await insertLocals(locals, conn, attribute_id);
 
     // groups --
     if (typeof groups !== 'undefined' && groups.length > 0) {
       await pool.query(`delete from attribute_group where attribute_id = ?`, [
-        id
+        attribute_id
       ]);
-      await insertGroups(groups, conn, id);
+      await insertGroups(groups, conn, attribute_id);
     }
 
     await conn.commit();
     conn.release();
     // conn.end();
-    return id;
+    return attribute_id;
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     await conn.rollback();
     return false;
   }
@@ -348,21 +351,31 @@ router.patch('/attributes/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
-    const errs = await validateAttribute(body, id);
-    generateValidationErrorsResponse(errs, res);
+
+    const oldAttr = await getAttributeById(id);
+    if (oldAttr.length < 1) {
+      return generateValGeneralErrorResponse(res);
+    }
+    const errs = await validateAttribute(body, oldAttr[0]);
+
+    if (errs.length > 0) {
+      return generateValidationErrorsResponse(errs, res);
+    }
 
     const attribute_id = await updateAttribute(body, id);
 
     if (isNumeric(attribute_id)) {
-      const message = 'Attribute saved successfully';
+      const message = 'Attribute updated successfully';
       const results = await getAttributeById(attribute_id);
-      if (results.length < 1) generateValGeneralErrorResponse(res);
+      if (results.length < 1) {
+        return generateValGeneralErrorResponse(res);
+      }
       const attribute = results[0];
       res.status(201).json({ message, attribute });
       return res.end();
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {

@@ -2,12 +2,10 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db_pool');
 const validateGroup = require('../validation/group');
-const moment = require('moment');
 const {
   generateValidationErrorsResponse,
   generateValGeneralErrorResponse
 } = require('./errs');
-const { parse } = require('date-fns');
 let conn;
 
 router.get('/groups', async (req, res) => {
@@ -134,7 +132,7 @@ router.get('/groups/:id', async (req, res) => {
     const results = await getGroupById(id);
 
     if (results.length < 1) {
-      generateValGeneralErrorResponse(res);
+      return generateValGeneralErrorResponse(res);
     }
 
     let group = results[0];
@@ -213,20 +211,22 @@ router.post('/groups', async (req, res) => {
     const body = req.body;
     const errs = await validateGroup(body);
 
-    generateValidationErrorsResponse(errs, res);
+    if (errs.length > 0) {
+      return generateValidationErrorsResponse(errs, res);
+    }
 
     if ((group_id = await postGroup(req.body))) {
       const message = 'Group saved successfully';
       const results = await getGroupById(group_id);
       if (results.length < 1) {
-        generateValGeneralErrorResponse(res);
+        return generateValGeneralErrorResponse(res);
       }
       const group = results[0];
       return res.status(201).json({ message, group });
     }
   } catch (err) {
     // console.log(err);
-    generateValGeneralErrorResponse(res);
+    return generateValGeneralErrorResponse(res);
   }
 });
 
@@ -235,14 +235,22 @@ router.patch('/groups/:id', async (req, res) => {
     const id = req.params.id;
     const body = req.body;
 
-    const errs = await validateGroup(body, id);
-    generateValidationErrorsResponse(errs, res);
+    const oldGroup = await getGroupById(id);
+    if (oldGroup.length < 1) {
+      return generateValGeneralErrorResponse(res);
+    }
+
+    const errs = await validateGroup(body, oldGroup[0]);
+
+    if (errs.length > 0) {
+      return generateValidationErrorsResponse(errs, res);
+    }
 
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
     const sent_attrs_ids = req.body.attributes || [];
-    // Validate sent groups ids
+    // Validate sent attrs ids
     let all_attributes_ids = await pool.query(
       `select JSON_ARRAYAGG(id) attributes from attributes`
     );
@@ -267,7 +275,7 @@ router.patch('/groups/:id', async (req, res) => {
     }
 
     const sent_temps_ids = req.body.templates || [];
-    // Validate sent groups ids
+    // Validate sent temp ids
     let all_templates_ids = await pool.query(
       `select JSON_ARRAYAGG(id) templates from templates`
     );
@@ -291,7 +299,7 @@ router.patch('/groups/:id', async (req, res) => {
       });
     }
 
-    const results = await conn.batch(
+    await conn.batch(
       `update groups set name = ? ,description = ? where id = ?`,
       [body.name, body.description, id]
     );
@@ -319,7 +327,9 @@ router.patch('/groups/:id', async (req, res) => {
     await conn.commit();
     const message = 'Group updated successfully';
     const result = await getGroupById(id);
-    if (result.length < 1) generateValGeneralErrorResponse(res);
+    if (result.length < 1) {
+      return generateValGeneralErrorResponse(res);
+    }
     let group = result[0];
 
     group = cleanGroup(group);
@@ -328,7 +338,7 @@ router.patch('/groups/:id', async (req, res) => {
 
     return res.end();
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {
@@ -343,3 +353,5 @@ router.patch('/groups/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// all names when edit should be unique

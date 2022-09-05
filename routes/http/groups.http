@@ -2,17 +2,17 @@
 GET http://localhost:4000/api/groups
 
 ### Get one attribute
-GET http://localhost:4000/api/groups/1
+GET http://localhost:4000/api/groups/3
 
 ### Post one groups
 POST http://localhost:4000/api/groups
 content-type: application/json
 
 {
-  "name": "dhtghfgsfgf",
+  "name": "dhthhfgsfgf",
   "description": "",
   "attributes": [1, 2],
-  "templates": [1, 2]
+  "templates": [1]
 }
 
 ### Update one groups
@@ -20,9 +20,9 @@ PATCH http://localhost:4000/api/groups/3
 content-type: application/json
 
 {
-  "name": "tesft",
-  "description": "this is description",
-  "attributes": [1,2  ],
+  "name": "dhthjghdfgsfgf",
+  "description": "ssthis lkhlk description",
+  "attributes": [1,2],
   "templates": []
 }
 
