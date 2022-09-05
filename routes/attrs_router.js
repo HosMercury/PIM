@@ -18,30 +18,32 @@ router.get('/attributes', async (req, res) => {
     const attributes = await pool.query(
       `
         select a.*, 
-        -- al.local local,
         (select cast(count(*) as char) from attribute_group ag where ag.attribute_id = a.id) groups_count,
         (select cast(count(*) as char) from attribute_local al where al.attribute_id = a.id) locals_count,
-        (select cast(count(*) as char) from attribute_choice ac where ac.attribute_id = a.id) choices
+        (select cast(count(*) as char) from attribute_choice ac where ac.attribute_id = a.id) choices_count
         FROM attributes a
-        -- left join attribute_group ag on a.id = ag.attribute_id
-        -- left join groups g on g.id = ag.group_id
-        -- left join attribute_local al on a.id = al.attribute_id
-        -- left join locals l on l.id = al.local_id
-        -- left join attribute_choice ac on a.id = ac.attribute_id
+
         group by a.id order by a.id desc
       `
     );
 
-    attributes.forEach((attribute) => {
-      return Object.keys(attribute).forEach((key) => {
-        if (!attribute[key]) {
-          delete attribute[key];
+    attributes.forEach((attr) => {
+      return Object.keys(attr).forEach((key) => {
+        if (!attr[key]) {
+          delete attr[key];
+        }
+        if (
+          key === 'groups_count' ||
+          key === 'locals_count' ||
+          key === 'choices_count'
+        ) {
+          attr[key] = parseInt(attr[key]);
         }
       });
     });
     return res.json({ attributes });
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {

@@ -1,6 +1,6 @@
 const pool = require('../config/db_pool');
 
-async function validateTemplate({ name, description }, id = null) {
+async function validateTemplate({ name, description }, oldTemp = null) {
   const alphaDashNumeric = /^[a-zA-Z0-9-_ ]+$/;
   const errs = [];
 
@@ -14,7 +14,7 @@ async function validateTemplate({ name, description }, id = null) {
 
       const names = templates_names[0].templates_names;
 
-      if (!id) {
+      if ((oldTemp && name !== oldTemp.name) || !oldTemp) {
         if (names.includes(name.toLowerCase())) {
           errs.push('Template name is already exists');
         }

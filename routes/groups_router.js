@@ -12,15 +12,9 @@ router.get('/groups', async (req, res) => {
   try {
     let groups = await pool.query(`
     select g.* ,
-    JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
-    JSON_ARRAYAGG(JSON_OBJECT('id', t.id,'name', t.name)) as templates,
     (select cast(count(*) as char) from attribute_group ag where ag.group_id = g.id) attributes_count,
-          (select cast(count(*) as char) from group_template gt where gt.group_id = g.id) templates_count
+    (select cast(count(*) as char) from group_template gt where gt.group_id = g.id) templates_count
     from groups g
-    left join attribute_group ag on g.id = ag.group_id
-    left join attributes a on a.id = ag.attribute_id
-    left join group_template gt on g.id = gt.group_id
-    left join templates t on t.id = gt.template_id
     group by g.id order by g.id desc
     `);
 
@@ -43,7 +37,7 @@ router.get('/groups', async (req, res) => {
     });
     return res.status(200).json({ groups });
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {

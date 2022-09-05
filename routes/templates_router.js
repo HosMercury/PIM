@@ -235,7 +235,13 @@ router.patch('/templates/:id', async (req, res) => {
     const id = req.params.id;
     const body = req.body;
 
-    const errs = await validateTemplate(body, id);
+    const oldTemp = await getTemplateById(id);
+    if (oldTemp.length < 1) {
+      return generateValGeneralErrorResponse(res);
+    }
+
+    const errs = await validateTemplate(body, oldTemp[0]);
+
     if (errs.length > 0) {
       return generateValidationErrorsResponse(errs, res);
     }
