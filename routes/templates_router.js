@@ -13,15 +13,9 @@ router.get('/templates', async (req, res) => {
   try {
     let templates = await pool.query(`
     select t.* ,
-    JSON_ARRAYAGG(JSON_OBJECT('id', a.id,'name', a.name)) as attributes,
-    JSON_ARRAYAGG(JSON_OBJECT('id', g.id,'name', g.name)) as groups,
     (select cast(count(*) as char) from attribute_template at where at.template_id = t.id) attributes_count,
     (select cast(count(*) as char) from group_template gt where gt.template_id = t.id) groups_count
     from templates t
-    left join attribute_template at on t.id = at.template_id
-    left join attributes a on a.id = at.attribute_id
-    left join group_template gt on t.id = gt.template_id
-    left join groups g on g.id = gt.group_id
     group by t.id order by t.id desc
     `);
     templates.forEach((template) => {
@@ -101,9 +95,9 @@ async function getTemplateById(id) {
     )
     
     select *, 
-    (select cast(count(*) as char) from attribute_group where group_id = ? ) attributes_count,
+    (select cast(count(*) as char) from attribute_template where template_id = ? ) attributes_count,
     (select * from attributes) attributes,
-    (select cast(count(*) as char) from group_template where group_id = ? ) groups_count,
+    (select cast(count(*) as char) from group_template where template_id = ? ) groups_count,
     (select * from groups) groups
     from template
   `,
@@ -140,7 +134,7 @@ router.get('/templates/:id', async (req, res) => {
 
     return res.json({ template }).end();
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {
@@ -245,6 +239,7 @@ router.patch('/templates/:id', async (req, res) => {
     if (errs.length > 0) {
       return generateValidationErrorsResponse(errs, res);
     }
+
     conn = await pool.getConnection();
     await conn.beginTransaction();
 
@@ -273,23 +268,23 @@ router.patch('/templates/:id', async (req, res) => {
       });
     }
 
-    const sent_grs_ids = req.body.templates || [];
+    const sent_grs_ids = req.body.groups || [];
     // Validate sent groups ids
     let all_groups_ids = await pool.query(
-      `select JSON_ARRAYAGG(id) templates from templates`
+      `select JSON_ARRAYAGG(id) groups from groups`
     );
 
     // if all_attributes_ids the value of all_attributes_ids[0.attributes IS NULL]
     all_groups_ids = all_groups_ids[0].groups;
 
     if (all_groups_ids && sent_grs_ids.length > 0) {
-      sent_grs_ids.map((template) => {
-        if (!all_groups_ids.includes(parseInt(template))) {
+      sent_grs_ids.map((group) => {
+        if (!all_groups_ids.includes(parseInt(group))) {
           const response = {
             errors: [
               {
                 type: 'general',
-                err: 'Template is not found'
+                err: 'Group is not found'
               }
             ]
           };
@@ -303,22 +298,24 @@ router.patch('/templates/:id', async (req, res) => {
       [body.name, body.description, id]
     );
 
-    await conn.batch(`delete from attribute_group where template_id = ?`, [id]);
+    await conn.batch(`delete from attribute_template where template_id = ?`, [
+      id
+    ]);
 
     if (sent_attrs_ids.length > 0) {
       const values = sent_attrs_ids.map((attribute_id) => [id, attribute_id]);
       await conn.batch(
-        `insert into attribute_group (group_id, attribute_id) values (?, ?)`,
+        `insert into attribute_template (template_id, attribute_id) values (?, ?)`,
         values
       );
     }
 
     await conn.batch(`delete from group_template where template_id = ?`, [id]);
 
-    if (sent_temps_ids.length > 0) {
-      const values = sent_temps_ids.map((temp_id) => [id, temp_id]);
+    if (sent_grs_ids.length > 0) {
+      const values = sent_grs_ids.map((temp_id) => [id, temp_id]);
       await conn.batch(
-        `insert into group_template (group_id, template_id) values (?, ?)`,
+        `insert into group_template (template_id,group_id) values (?, ?)`,
         values
       );
     }
@@ -329,15 +326,15 @@ router.patch('/templates/:id', async (req, res) => {
     if (result.length < 1) {
       return generateValGeneralErrorResponse(res);
     }
-    let group = result[0];
+    let template = result[0];
 
-    group = cleanTemplate(template);
+    template = cleanTemplate(template);
 
     res.status(201).json({ message, template });
 
     return res.end();
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     const response = {
       errors: [
         {

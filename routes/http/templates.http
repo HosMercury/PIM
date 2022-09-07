@@ -9,21 +9,21 @@ POST http://localhost:4000/api/templates
 content-type: application/json
 
 {
-  "name": "dhtghfawgsfgf",
+  "name": "templ x",
   "description": "",
   "attributes": [1, 2],
   "groups": [3]
 }
 
 ### Update one templates
-PATCH http://localhost:4000/api/templates/3
+PATCH http://localhost:4000/api/templates/19
 content-type: application/json
 
 {
   "name": "tesft",
   "description": "this is description",
-  "attributes": [1,2  ],
-  "groups": [1]
+  "attributes": [1,2,4],
+  "groups": [3]
 }
 
 

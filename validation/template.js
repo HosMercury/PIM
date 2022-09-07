@@ -12,7 +12,7 @@ async function validateTemplate({ name, description }, oldTemp = null) {
         `select json_arrayagg(LOWER(name)) as template_names from templates`
       );
 
-      const names = templates_names[0].templates_names;
+      const names = templates_names[0].template_names;
 
       if ((oldTemp && name !== oldTemp.name) || !oldTemp) {
         if (names.includes(name.toLowerCase())) {
@@ -28,7 +28,7 @@ async function validateTemplate({ name, description }, oldTemp = null) {
           'Name field must contains only letters, numbers, space, dash or underscore'
         );
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       errs.push('DB Error while validating the template data');
     }
   } else {
