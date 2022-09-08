@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import logo from '../assets/images/nex.png';
 import { Link } from 'react-router-dom';
 import MainMenuItem from './MainMenuItem';
@@ -111,7 +111,7 @@ function Layout({ children }) {
         </div>
 
         <div
-          className={`secondary-menu absolute z-10 h-40 sm:top-[145px] top-[131px] ${
+          className={`secondary-menu absolute z-10 h-52 sm:top-[145px] top-[131px] ${
             showAttributesMenu ? ' block ' : ' hidden '
           }
         `}
@@ -123,11 +123,12 @@ function Layout({ children }) {
           >
             <SecondaryMenuItem header="Attributes" />
             <SecondaryMenuItem header="Groups" />
+            <SecondaryMenuItem header="Templates" />
           </ul>
         </div>
 
         <div
-          className={`secondary-menu  absolute z-[12] h-40 sm:top-[256px] top-[238px]  ${
+          className={`secondary-menu  absolute z-[12] h-56 sm:top-[256px] top-[238px]  ${
             showProductsMenu ? ' block ' : ' hidden '
           }`}
         >
@@ -138,21 +139,7 @@ function Layout({ children }) {
           >
             <SecondaryMenuItem header="Products" />
             <SecondaryMenuItem header="Slugs" />
-          </ul>
-        </div>
-
-        <div
-          className={`secondary-menu  absolute z-[12] h-40 sm:top-[256px] top-[238px]  ${
-            showProductsMenu ? ' block ' : ' hidden '
-          }`}
-        >
-          <ul
-            className="text-gray-700 text-xl"
-            onMouseOver={() => setShowProductsMenu(true)}
-            onMouseOut={() => setShowProductsMenu(false)}
-          >
-            <SecondaryMenuItem header="Products" />
-            <SecondaryMenuItem header="Slugs" />
+            <SecondaryMenuItem header="Catogeries" />
           </ul>
         </div>
 
