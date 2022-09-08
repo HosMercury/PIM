@@ -7,7 +7,9 @@ import NoPage from '../pages/NoPage';
 import { ToastContainer } from 'react-toastify';
 import AuthContext from '../Context/AuthProvider';
 import GroupList from '../pages/GroupList';
+import TemplateList from '../pages/TemplateList';
 import GroupShow from '../pages/GroupShow';
+import TemplateShow from '../pages/TemplateShow';
 
 const App = () => {
   const { auth } = useContext(AuthContext);
@@ -34,6 +36,14 @@ const App = () => {
           <Route
             path="/groups/:id"
             element={auth ? <GroupShow /> : <Login />}
+          />
+          <Route
+            path="/templates"
+            element={auth ? <TemplateList /> : <Login />}
+          />
+          <Route
+            path="/templates/:id"
+            element={auth ? <TemplateShow /> : <Login />}
           />
           <Route path="*" element={auth ? <NoPage /> : <Login />} />
         </Routes>

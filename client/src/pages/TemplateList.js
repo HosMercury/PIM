@@ -13,7 +13,7 @@ const TemplateList = () => {
   const navigate = useNavigate();
   const [templates, setTemplates] = useState([]);
 
-  console.log(templates);
+  // console.log(templates);
 
   const getTemplates = async () => {
     const res = await fetch('/api/templates');
@@ -103,7 +103,7 @@ const TemplateList = () => {
 
   return (
     <Layout>
-      <Header title="Templates" first="Templates" second="" />
+      <Header title="templates" first="templates" second="" />
       <Table columns={columns} data={templates} name="templates">
         <button className="list-create-btn" onClick={() => setOpenModal(true)}>
           Create
